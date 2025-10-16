@@ -6,30 +6,7 @@ acf_add_local_field_group(array(
 	'title' => 'Page Options',
 	'fields' => array(
 	
-		array(
-			'key' => 'field_5c756acdc2285',
-			'label' => 'Background colour',
-			'name' => 'page_background_color',
-			'type' => 'swatch',
-			'instructions' => '',
-			'required' => 0,
-			'conditional_logic' => 0,
-			'wrapper' => array(
-				'width' => '25',
-				'class' => '',
-				'id' => '',
-			),
-			'choices' => get_theme_design_choices(['use_css_value' => true]),
-			'default_value' => array(
-			),
-			'allow_null' => 0,
-			'multiple' => 0,
-			'ui' => 1,
-			'ajax' => 0,
-			'layout' => 'horizontal',
-			'return_format' => 'label',
-			'placeholder' => '',
-		),
+
 		
 	),
 	'location' => array(	
