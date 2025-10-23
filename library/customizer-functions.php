@@ -141,7 +141,7 @@ new \Kirki\Field\Color_Palette(
 		],
 		'output'      => [
 			[
-				'element'  => '.top-bar, .desktop-menu a, .mobile-menu a',
+				'element'  => '.top-bar, .desktop-menu a:not(.button), .mobile-menu a:not(.button)',
 				'property' => 'color',
 			],
 		],

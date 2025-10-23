@@ -14,16 +14,5 @@ get_header(); ?>
 		</main>
 	</div>
 </div>
-<?php
-if (have_rows('flexible_content')) :
-	while (have_rows('flexible_content')) : the_row();
-	get_template_part('template-parts/acf/flexible-article');
-	get_template_part('template-parts/acf/flexible-grid');
-	get_template_part('template-parts/acf/full-width-50-50');
-	get_template_part('template-parts/acf/accordion');
-	get_template_part('template-parts/acf/tab');
-	get_template_part('template-parts/acf/carousel');
-	endwhile;
-endif;
-?>
+
 <?php get_footer();

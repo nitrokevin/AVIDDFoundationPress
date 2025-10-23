@@ -29,6 +29,28 @@ function a_unautop($content) {
 }
 add_filter('acf_the_content', 'a_unautop', 30);
 
+
+/**
+ * Dynamic ACF field population
+ * Used for populating select fields with data from ACF options pages or custom sources.
+ */
+
+add_filter('acf/load_field/name=options_page_selector', function($field) {
+    $field['choices'] = [];
+
+    if (function_exists('acf_get_options_pages')) {
+        $options_pages = acf_get_options_pages();
+        if ($options_pages) {
+            foreach ($options_pages as $slug => $page) {
+                $field['choices'][$slug] = $page['page_title'];
+            }
+        }
+    }
+
+    return $field;
+});
+
+
 // ------------------------------------------------------------
 // GUTENBERG SUPPORT
 // ------------------------------------------------------------
@@ -58,6 +80,22 @@ add_action( 'init', function() {
             'label' => __( 'Full Bleed', 'foundationpress' ),
         )
     );
+register_block_style(
+    'core/media-text',
+    array(
+        'name'  => 'staggered',
+        'label' => __( 'Staggered', 'foundationpress' ),
+    )
+);
+
+register_block_style(
+    'core/media-text',
+    array(
+        'name'  => 'scaled',
+        'label' => __( 'Scaled', 'foundationpress' ),
+    )
+);
+    
 });
 
 /**
@@ -251,3 +289,33 @@ function avidd_social_links_inline_shortcode($atts) {
     return implode(' ', $links);
 }
 add_shortcode('social_links', 'avidd_social_links_inline_shortcode');
+
+
+add_filter( 'nav_menu_link_attributes', function( $atts, $item, $args, $depth ) {
+
+    // Only target your top-bar menu
+    if ( 'top-bar-r' !== $args->theme_location ) {
+        return $atts;
+    }
+
+    // Only process items with a hash
+    if ( strpos( $item->url, '#' ) === false ) {
+        return $atts;
+    }
+
+    // Get current page path (trailing slash normalized)
+    $current_path = trailingslashit( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) );
+
+    // Parse menu item URL
+    $item_parts = parse_url( $item->url );
+    $item_path = isset( $item_parts['path'] ) ? trailingslashit( $item_parts['path'] ) : '/';
+    $item_hash = isset( $item_parts['fragment'] ) ? $item_parts['fragment'] : '';
+
+    // If menu item points to the same page, convert href to just #hash
+    if ( $item_path === $current_path && $item_hash ) {
+        $atts['href'] = '#' . $item_hash;
+    }
+
+    return $atts;
+
+}, 10, 4 );

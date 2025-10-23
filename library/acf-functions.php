@@ -1,4 +1,22 @@
-<?php if (function_exists('acf_add_local_field_group')) {
+<?php if (function_exists('acf_add_options_page')) {
+    acf_add_options_page([
+        'page_title' => 'FAQs',
+        'menu_title' => 'FAQs',
+        'menu_slug' => 'faqs',
+        'capability' => 'edit_posts',
+        'redirect' => false,
+    ]);
+    acf_add_options_page([
+        'page_title' => 'People',
+        'menu_title' => 'People',
+        'menu_slug' => 'people',
+        'capability' => 'edit_posts',
+        'redirect' => false,
+    ]);
+}
+
+
+if (function_exists('acf_add_local_field_group')) {
 
 //Page Options
 acf_add_local_field_group(array(
@@ -42,49 +60,11 @@ acf_add_local_field_group(array(
 	'key' => 'group_5d54589f208266',
 	'title' => 'Options Page',
 	'fields' => array(
-		array(
-			'key' => 'field_5c3j4ede232af66',
-			'label' => 'Accordion',
-			'name' => 'repeater_accordion',
-			'type' => 'repeater',
-			'instructions' => '',
-			'required' => 0,
-			'conditional_logic' => 0,
-			'wrapper' => array(
-				'width' => '',
-				'class' => '',
-				'id' => '',
-			),
-			'collapsed' => '',
-			'min' => 0,
-			'max' => 0,
-			'layout' => 'block',
-			'button_label' => 'Add Section',
-			'sub_fields' => array(
-		array(
-			'key' => 'field_5d49ad43a131e16',
-			'label' => 'Section heading',
-			'name' => 'section_heading',
-			'type' => 'text',
-			'instructions' => '',
-			'required' => 0,
-			'conditional_logic' => 0,
-			'wrapper' => array(
-				'width' => '33',
-				'class' => '',
-				'id' => '',
-			),
-			'default_value' => '',
-			'placeholder' => '',
-			'prepend' => '',
-			'append' => '',
-			'maxlength' => '',
-		),
 		
 		array(
 			'key' => 'field_5c34ede232af66',
-			'label' => 'Accordion Content',
-			'name' => 'repeater_content_accordion',
+			'label' => 'FAQ',
+			'name' => 'faq_repeater',
 			'type' => 'repeater',
 			'instructions' => '',
 			'required' => 0,
@@ -163,8 +143,8 @@ acf_add_local_field_group(array(
 				),
 			),
 		),
-	),
-),
+	
+
 ),
 
 	'location' => array(
@@ -319,29 +299,6 @@ acf_add_local_field_group(array(
 
 
 } //END ACF 
-
-
-
-
-
-
-if (function_exists('acf_add_options_page')) {
-	acf_add_options_page(array(
-		'page_title' 	=> 'FAQs',
-		'menu_title'	=> 'FAQs',
-		'menu_slug' 	=> 'faqs',
-		'capability'	=> 'edit_posts',
-		'redirect'		=> false
-	));
-	acf_add_options_page(array(
-		'page_title' 	=> 'People',
-		'menu_title'	=> 'People',
-		'menu_slug' 	=> 'people',
-		'capability'	=> 'edit_posts',
-		'icon_url' => 'dashicons-buddicons-buddypress-logo',
-		'redirect'		=> false
-	));
-}
 
 
 add_action('admin_head', 'gutenberg_sidebar');

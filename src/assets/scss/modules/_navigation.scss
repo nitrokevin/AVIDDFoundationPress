@@ -92,3 +92,94 @@
   will-change: transform;
   transform: translate3d(0, 0, 0);
 }
+.off-canvas-position {
+  @include breakpoint(small) {
+    @include off-canvas-position(top);
+
+  }
+
+  @include breakpoint(medium) {
+    @include off-canvas-position(right);
+  }
+}
+
+.off-canvas {
+  @include xy-grid;
+
+  @include breakpoint(small) {
+    @include flex-align($y:top);
+  }
+
+  @include breakpoint(medium) {
+    @include flex-align($y:middle);
+  }
+
+  >ul.menu {
+    @include xy-cell(12, $gutters:0);
+
+    padding: 0 2rem 1rem 2rem;
+    margin: 6rem 0 0 0;
+
+
+    a {
+
+      color: $black;
+      font-weight: 300;
+
+      @include breakpoint(small) {
+        font-size: rem-calc(24);
+        padding: 0.2rem 0.6rem 0.2rem 0;
+      }
+
+      @include breakpoint(medium) {
+        font-size: rem-calc(40);
+        padding: 0.2rem 0.6rem 0.2rem 0;
+      }
+
+    }
+
+
+
+    .close-button {
+      right: 0rem;
+    }
+  }
+
+
+  .menu .is-active>a {
+    color: $primary-color;
+    background-color: transparent;
+  }
+
+  .menu-item {
+
+    @include flex-align($x:left, $y:middle);
+
+  }
+
+
+}
+
+@for $i from 1 through 9 {
+  .is-open {
+    li:nth-of-type(#{$i}) {
+      opacity: 0;
+      animation: slidein ease-in-out;
+      animation-duration: 600ms;
+      animation-delay:calc(#{$i}*150ms);
+      animation-fill-mode: forwards;
+    }
+  }
+}
+
+@keyframes slidein {
+  0% {
+    transform: translateX(-14rem);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

@@ -5,16 +5,8 @@
 
 ?>
 
-	<?php if( get_field('accordion_type') == 'faq' ){ 
-		 if (have_rows('repeater_accordion','option')) :
-			$counter_section = 0;
-			while (have_rows('repeater_accordion','option')) : the_row(); 
-			$section_heading_color = get_sub_field('section_heading_color','option');
-			$header = get_sub_field('section_heading','option');
-			$counter_section++; ?>
-			<?php if ($header) { ?>
-				<h4 class="<?php echo $section_heading_color ?>"><?php echo $header ?></h4>
-			  <?php } ?>
+	<?php if( get_field('accordion_type') == 'faq' ){ ?>
+		 
 			  <ul class="accordion" data-accordion data-allow-all-closed="true">
 			  <?php 
     	 if (have_rows('repeater_content_accordion','option')) :
@@ -36,8 +28,7 @@
 
               <?php endwhile; 
              endif; ?>
-			 <?php endwhile; 
-             endif; ?>
+			
             <?php } elseif( get_field('accordion_type') == 'custom' ){ ?>
 				<ul class="accordion" data-accordion data-allow-all-closed="true">
 	<?php

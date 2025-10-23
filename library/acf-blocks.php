@@ -31,6 +31,7 @@ function register_acf_blocks() {
     register_block_type(  __DIR__ . '/acf-accordion/block.json' );
     register_block_type(  __DIR__ . '/acf-carousel/block.json' );
     register_block_type(  __DIR__ . '/acf-tab/block.json' );
+     register_block_type(  __DIR__ . '/acf-global-content-selector/block.json' );
 
 
     }
@@ -464,6 +465,24 @@ acf_add_local_field_group(array(
             'max_size' => '',
             'mime_types' => '',
         ),
+          array(
+            'key' => 'field_background_image',
+            'label' => 'Background Image',
+            'name' => 'background_image',
+            'type' => 'true_false',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => '',
+            ),
+            'message' => '',
+            'ui' => 1,
+            'ui_on_text' => '',
+            'ui_off_text' => '',
+        ),
         array(
             'key' => 'field_626dd35jf03e216',
             'label' => 'Carousel Heading',
@@ -557,5 +576,77 @@ acf_add_local_field_group(array(
     )
 );   
 
+
+// Global Content Selector
+acf_add_local_field_group(array(
+    'key' => 'group_global_content_selector',
+    'title' => 'Block: Global Content Selector',
+    'fields' => array(
+        array(
+            'key' => 'field_global_content_source',
+            'label' => 'Options Page Source',
+            'name' => 'options_page_selector',
+            'type' => 'select',
+            'instructions' => 'Select which global options page to pull data from.',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => '',
+            ),
+            'choices' => array(),
+            'allow_null' => 0,
+            'multiple' => 0,
+            'ui' => 1,
+            'ajax' => 0,
+            'return_format' => 'value',
+            'placeholder' => 'Select an options page',
+        ),
+        array(
+    'key' => 'field_layout_selector',
+    'label' => 'Layout Style',
+    'name' => 'layout_style',
+    'type' => 'select',
+    'instructions' => 'Choose how the content should be displayed.',
+    'required' => 0,
+    'conditional_logic' => 0,
+    'wrapper' => array(
+        'width' => '',
+        'class' => '',
+        'id' => '',
+    ),
+    'choices' => array(
+        'accordion' => 'Accordion',
+        'list'      => 'List',
+        'columns'      => 'Columns',
+        'vertical-tab' => 'Vertical Tabs',
+    ),
+    'allow_null' => 0,
+    'multiple' => 0,
+    'ui' => 1,
+    'ajax' => 0,
+    'return_format' => 'value',
+    'placeholder' => 'Select layout style',
+),
+    ),
+    'location' => array(
+        array(
+            array(
+                'param' => 'block',
+                'operator' => '==',
+                'value' => 'acf/global-content-selector',
+            ),
+        ),
+    ),
+    'menu_order' => 0,
+    'position' => 'normal',
+    'style' => 'seamless',
+    'label_placement' => 'top',
+    'instruction_placement' => 'label',
+    'active' => true,
+    'show_in_rest' => 0,
+    'description' => '',
+));
 
 } ?>
