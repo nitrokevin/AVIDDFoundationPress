@@ -248,7 +248,18 @@ add_filter('acf/fields/google_map/api', 'my_acf_google_map_api');
 // ------------------------------------------------------------
 // MISC
 // ------------------------------------------------------------
+/**
+ * Enable dark mode
+ */
+add_filter( 'body_class', function( $classes ) {
+	$dark_mode = get_theme_mod( 'dark_mode', 'off' );
 
+	if ( $dark_mode === '1' || $dark_mode === 1 || $dark_mode === true ) {
+		$classes[] = 'dark-enabled';
+	}
+
+	return $classes;
+});
 /**
  * Enable excerpts on pages
  */

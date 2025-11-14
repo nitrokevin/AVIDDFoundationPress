@@ -1,5 +1,5 @@
 // Dark Mode
-
+.dark-enabled {
 // Define a custom dark mode mixin
 @mixin dark-mode {
   @media (prefers-color-scheme: dark) {
@@ -8,11 +8,11 @@
 }
 
 @include dark-mode {
-	body{
+	
 		background-color: $black !important;
 		background: $black !important;
 		color:$white;
-	}
+	
 
 	.off-canvas{
 		background-color: $black !important;
@@ -21,4 +21,5 @@
 		 color: $white !important;
 	}
 
+}
 }

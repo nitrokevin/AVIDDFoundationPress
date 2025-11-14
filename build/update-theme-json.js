@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+const fs = require("fs");
+const path = require("path");
 
 const themeJsonPath = path.resolve("./theme.json");
 const extraJsonPath = path.resolve("./theme-extra.json");

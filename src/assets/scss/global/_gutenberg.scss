@@ -12,6 +12,12 @@ $code in $foundation-palette {
     color: color-pick-contrast($code,
         $colors: ($white, $black, $primary-color, $secondary-color),
         $tolerance: $global-color-pick-contrast-tolerance);
+
+    a:not(.button, .wp-block-button__link) {
+      color: color-pick-contrast($code,
+          $colors: ($primary-color, $secondary-color),
+          $tolerance: $global-color-pick-contrast-tolerance);
+    }
   }
 
   .has-#{$color}-color {
@@ -20,14 +26,24 @@ $code in $foundation-palette {
 
   .wp-block-button__link.has-#{$color}-background-color {
     background-color: $code;
-    transition: background-color .25s ease-out,
+    color: color-pick-contrast($code,
+        $colors: ($white, $black, $primary-color, $secondary-color),
+        $tolerance: $global-color-pick-contrast-tolerance);
+    transition: $button-transition,
       color .25s ease-out;
+
+    &:hover,
+    &:focus {
+      background-color: scale-color($code, $lightness: $button-background-hover-lightness) !important;
+
+    }
   }
 
   .wp-block-button__link.has-#{$color}-color {
     color: $code;
   }
 }
+
 
 /** === Gradients === */
 
