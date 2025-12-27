@@ -48,7 +48,7 @@ if (!empty($block['textColor'])) {
 $className .= ' ' . implode(' ', $classes);
 
 ?>
-<section id="<?php echo esc_attr($id); ?>" class="wp-block <?php echo esc_attr($className); ?>" >
+<section id="<?php echo esc_attr($id); ?>" class="<?php echo esc_attr($className); ?>">
     <div class="block-accordion-container "> 
 		<div class="block-accordion-grid" >
 		<div class="block-accordion-content " >

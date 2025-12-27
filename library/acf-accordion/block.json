@@ -7,7 +7,8 @@
     "icon": "plus-alt",
     "keywords": ["accordion"],
     "acf": {
-        "mode": "preview",
+        "blockVersion": 3,
+        "mode": "edit",
         "renderTemplate": "template-parts/blocks/accordion.php"
     },
     "align": "full",
@@ -17,6 +18,13 @@
          "background": true,
          "gradients": true,
          "link": false
-       }
+       },
+        "spacing": {
+          "padding": true,
+          "margin": true
+        },
+        "typography": {
+          "fontSize": true
+        }
      }
 }

@@ -119,4 +119,41 @@ add_filter('acf/format_value/type=swatch', function($value, $post_id, $field) {
 
     return $slug_map[$value] ?? $value;
 }, 10, 3);
+
+function aviddjson_hex_to_slug( $value ) {
+    if (empty($value)) {
+        return $value;
+    }
+
+    // Must be hex for slug lookup
+    if (!preg_match('/^#([a-f0-9]{3}){1,2}$/i', $value)) {
+        return $value;
+    }
+
+    $theme_json_path = get_stylesheet_directory() . '/theme.json';
+    if (!file_exists($theme_json_path)) {
+        return $value;
+    }
+
+    $json = json_decode(file_get_contents($theme_json_path), true);
+    $palette = $json['settings']['color']['palette'] ?? [];
+
+    $slug_map = [];
+
+    foreach ($palette as $color) {
+        if (!empty($color['color']) && !empty($color['slug'])) {
+            $hex  = strtolower($color['color']);
+            $slug = sanitize_title($color['slug']);
+            $slug_map[$hex] = $slug;
+        }
+    }
+
+    // Convert hex to slug if it exists, otherwise return original hex
+    $value_lower = strtolower($value);
+    return $slug_map[$value_lower] ?? $value;
+}
+
+add_filter('acf/format_value/type=color_picker', function($value, $post_id, $field) {
+    return aviddjson_hex_to_slug($value);
+}, 10, 3);
 ?>

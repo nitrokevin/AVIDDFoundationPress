@@ -120,7 +120,7 @@ acf_add_local_field_group(array(
                     'key' => 'field_626db2f7738ca',
                     'label' => 'Accordion Heading Background Colour',
                     'name' => 'accordion_heading_background_color',
-                    'type' => 'swatch',
+                    'type' => 'color_picker',
                     'instructions' => '',
                     'required' => 0,
                     'conditional_logic' => 0,
@@ -129,15 +129,17 @@ acf_add_local_field_group(array(
                         'class' => '',
                         'id' => '',
                     ),
-                   'choices' => get_theme_design_choices([
-    'include_colors'   => true,
-    'include_gradients' => false,
-    'key' => 'color', // return HEX as key for editor
-]),
+                  
+            'return_format' => 'string',
+			'allow_in_bindings' => 1,
+			'show_custom_palette' => 1,
+			'custom_palette_source' => 'themejson',
+			'show_color_wheel' => 0,
+			'palette_colors' => '',
                     'allow_null' => 1,
                     'default_value' => '',
                     'layout' => 'horizontal',
-                    'return_format' => 'value',
+                   
                     'other_choice' => 0,
                     'save_other_choice' => 0,
                 ),
