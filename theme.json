@@ -147,8 +147,12 @@
       "radius": "0.5rem"
     },
     "layout": {
-      "contentSize": "1000px",
-      "wideSize": "1200px"
+      "contentSize": "1260px",
+      "wideSize": "1260px"
+    },
+    "custom": {
+      "foundationGutterMobile": "1.25rem",
+      "foundationGutterDesktop": "1.875rem"
     }
   }
 }

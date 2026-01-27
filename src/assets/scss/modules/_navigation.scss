@@ -51,6 +51,7 @@
     .top-bar-left,
     .top-bar-center,
     .top-bar-right {
+      font-size: var(--font-navigation);
       flex: 1;
       img{
         max-width: 16rem;
@@ -125,14 +126,12 @@
 
       color: $black;
       font-weight: 300;
-
+      font-size: var(--font-navigation);
       @include breakpoint(small) {
-        font-size: rem-calc(24);
         padding: 0.2rem 0.6rem 0.2rem 0;
       }
 
       @include breakpoint(medium) {
-        font-size: rem-calc(40);
         padding: 0.2rem 0.6rem 0.2rem 0;
       }
 

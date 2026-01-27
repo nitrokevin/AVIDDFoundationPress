@@ -39,10 +39,8 @@
 			}
 			}
 		.accordion-title{
-			font-size: rem-calc(16);
-
+			font-size: var(--font-accordion);
 		}
-	
 		.accordion-title::before{
 			font-size: rem-calc(26);
 			margin:0;

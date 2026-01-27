@@ -30,8 +30,6 @@
 .tabs,
 .tabs-content{
 	@each $color, $code in $foundation-palette {
-
-		
 	&.#{$color} {
 		background:$code;
 	}
@@ -55,6 +53,8 @@
 
 	}
 }
-
+.tabs-title>a {
+	font-size: var(--font-tabs);
+}
 
 }

@@ -155,6 +155,38 @@ $block-grid-max: 8;
 
 // 4. Base Typography
 // ------------------
+:root {
+  --vw-min: #{map-get($breakpoints, medium)};
+  --vw-max: #{map-get($breakpoints, xxlarge)};
+
+  --fluid: calc((100vw - var(--vw-min)) / (var(--vw-max) - var(--vw-min)));
+}
+@function fluid($min-px, $max-px) {
+  $min: rem-calc($min-px);
+  $max: rem-calc($max-px);
+
+  @return clamp(#{$min},
+    calc(#{$min} + (#{$max} - #{$min}) * var(--fluid)),
+    #{$max});
+}
+:root {
+  /* Body / UI */
+  --font-p: #{fluid(16px, 18px)};
+
+  /* Headings */
+  --font-h1: #{fluid(28px, 48px)};
+  --font-h2: #{fluid(24px, 40px)};
+  --font-h3: #{fluid(20px, 32px)};
+  --font-h4: #{fluid(18px, 26px)};
+  --font-h5: #{fluid(16px, 22px)};
+  --font-h6: rem-calc(16px);
+
+  /* Components */
+  --font-button: #{fluid(16px, 20px)};
+  --font-accordion: #{fluid(16px, 20px)};
+  --font-tabs: #{fluid(16px, 20px)};
+  --font-navigation: #{fluid(16px, 20px)};
+}
 
 $header-font-family: $body-font-family;
 $header-font-weight: $global-weight-bold;
@@ -163,44 +195,7 @@ $font-family-monospace: Consolas, 'Liberation Mono', Courier, monospace;
 $header-color: inherit;
 $header-lineheight: 1.2;
 $header-margin-bottom: 1rem;
-$header-styles: (
-  small: (
-    'p' : ('font-size': 16),
-    'h1': ('font-size': 24),
-    'h2': ('font-size': 20),
-    'h3': ('font-size': 19),
-    'h4': ('font-size': 18),
-    'h5': ('font-size': 17),
-    'h6': ('font-size': 16),
-  ),
-  medium: (
-    'p' : ('font-size': 16),
-    'h1': ('font-size': 30),
-    'h2': ('font-size': 40),
-    'h3': ('font-size': 31),
-    'h4': ('font-size': 25),
-    'h5': ('font-size': 20),
-    'h6': ('font-size': 16),
-  ),
-  large: (
-    'p' : ('font-size': 16),
-    'h1': ('font-size': 38),
-    'h2': ('font-size': 40),
-    'h3': ('font-size': 31),
-    'h4': ('font-size': 25),
-    'h5': ('font-size': 20),
-    'h6': ('font-size': 16),
-  ),
-  xlarge: (
-    'p' : ('font-size': 16),
-    'h1': ('font-size': 42),
-    'h2': ('font-size': 40),
-    'h3': ('font-size': 31),
-    'h4': ('font-size': 25),
-    'h5': ('font-size': 20),
-    'h6': ('font-size': 16),
-  ),
-);
+$header-styles: ();
 $header-text-rendering: optimizeLegibility;
 $small-font-size: 80%;
 $header-small-font-color: $medium-gray;

@@ -281,7 +281,34 @@ const radiusMatch = scss.match(/\$global-radius:\s*([\d.]+(rem|px));/);
 if (radiusMatch) {
   themeJson.settings.border.radius = radiusMatch[1];
 }
+// ------------------------------------------------------------
+// 📐 NEW: Layout + gutters (Foundation → Gutenberg)
+// ------------------------------------------------------------
 
+themeJson.settings.custom = themeJson.settings.custom || {};
+
+// Extract gutter numeric values from SCSS map
+const gutterMatch = scss.match(/\$grid-column-gutter:\s*\(([\s\S]*?)\);/);
+if (gutterMatch) {
+  const mapBody = gutterMatch[1];
+  const lines = mapBody.split(",").map(l => l.trim());
+  const gutterMap = {};
+  lines.forEach(line => {
+    const [key, val] = line.split(":").map(s => s.trim());
+    gutterMap[key] = val; // val is e.g. 20px
+  });
+
+  // Convert to rem if desired (assuming base 16px)
+  const toRem = px => {
+    if (px.endsWith("px")) {
+      return `${parseFloat(px)/16}rem`;
+    }
+    return px; // already rem or other unit
+  };
+
+  themeJson.settings.custom.foundationGutterMobile = toRem(gutterMap.small);
+  themeJson.settings.custom.foundationGutterDesktop = toRem(gutterMap.medium);
+}
 // ------------------------------------------------------------
 // 💾 Write theme.json
 // ------------------------------------------------------------
