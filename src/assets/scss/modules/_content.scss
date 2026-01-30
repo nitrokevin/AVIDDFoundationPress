@@ -26,6 +26,10 @@
   // Full width template
   .main-content-full-width {
     @include xy-cell(12);
+    p,
+    li {
+      max-width: 100ch;
+    }
   }
 
   // Default template

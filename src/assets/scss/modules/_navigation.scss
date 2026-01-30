@@ -52,7 +52,11 @@
     .top-bar-center,
     .top-bar-right {
       font-size: var(--font-navigation);
-      flex: 1;
+         @include xy-cell(auto);
+
+         @include breakpoint(medium) {
+           @include xy-cell(auto);
+         }
       img{
         max-width: 16rem;
       padding: $global-padding}
