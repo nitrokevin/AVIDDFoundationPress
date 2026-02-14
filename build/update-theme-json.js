@@ -190,7 +190,7 @@ if (fs.existsSync(extraJsonPath)) {
     };
 
     // Merge colors (prevent duplicates)
-    if (extraJson.settings.color?.palette) {
+    if (extraJson.settings.color ?.palette) {
       extraJson.settings.color.palette.forEach(extraColor => {
         if (!seenColorSlugs.has(extraColor.slug)) {
           themeJson.settings.color.palette.push(extraColor);
@@ -200,7 +200,7 @@ if (fs.existsSync(extraJsonPath)) {
     }
 
     // Merge gradients (prevent duplicates)
-    if (extraJson.settings.color?.gradients) {
+    if (extraJson.settings.color ?.gradients) {
       extraJson.settings.color.gradients.forEach(extraGrad => {
         const existing = themeJson.settings.color.gradients;
         const hasSlug = seenGradients.has(extraGrad.slug);

@@ -330,3 +330,154 @@ add_filter( 'nav_menu_link_attributes', function( $atts, $item, $args, $depth ) 
     return $atts;
 
 }, 10, 4 );
+
+
+/**
+ * DIAGNOSTIC TOOL - Add this to a test page template or functions.php temporarily
+ * 
+ * This will show you exactly what's being saved in the database
+ * 
+ * Usage: Create a page template with this code, or add to functions.php
+ * and visit yoursite.com/?customizer_debug=1
+ */
+
+// Add this to functions.php to create a debug page
+add_action( 'template_redirect', function() {
+    if ( isset( $_GET['customizer_debug'] ) && current_user_can( 'manage_options' ) ) {
+        ?>
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Customizer Debug</title>
+            <style>
+                body { font-family: monospace; padding: 20px; background: #f5f5f5; }
+                h1 { color: #333; }
+                h2 { color: #666; margin-top: 30px; }
+                table { background: white; border-collapse: collapse; width: 100%; margin: 20px 0; }
+                th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+                th { background: #0073aa; color: white; }
+                .value { font-weight: bold; color: #0073aa; }
+                .empty { color: #999; font-style: italic; }
+                .success { color: #46b450; }
+                .warning { color: #f56e28; }
+                .error { color: #dc3232; }
+            </style>
+        </head>
+        <body>
+            <h1>🔍 Customizer Debug Information</h1>
+            
+            <h2>Color Palette Settings</h2>
+            <table>
+                <tr>
+                    <th>Setting Name</th>
+                    <th>Saved Value</th>
+                    <th>Status</th>
+                </tr>
+                <?php
+                $color_settings = [
+                    'color_palette_setting_0'  => 'Nav background colour',
+                    'color_palette_setting_1'  => 'Nav menu item colour',
+                    'color_palette_setting_3'  => 'Footer background colour',
+                    'color_palette_setting_4'  => 'Footer text colour',
+                    'color_palette_setting_5'  => 'Footer link colour',
+                    'color_palette_setting_10' => 'Page background colour',
+                ];
+                
+                foreach ( $color_settings as $setting => $label ) {
+                    $value = get_theme_mod( $setting );
+                    $status = $value ? '<span class="success">✓ Set</span>' : '<span class="warning">⚠ Empty</span>';
+                    $display_value = $value ? '<span class="value">' . esc_html( $value ) . '</span>' : '<span class="empty">Not set</span>';
+                    echo "<tr><td>{$label} ({$setting})</td><td>{$display_value}</td><td>{$status}</td></tr>";
+                }
+                ?>
+            </table>
+            
+            <h2>Social Media Settings</h2>
+            <table>
+                <tr>
+                    <th>Network</th>
+                    <th>Enabled (Checkbox)</th>
+                    <th>URL</th>
+                    <th>Will Display?</th>
+                </tr>
+                <?php
+                $social_networks = ['facebook', 'x', 'instagram', 'linkedin', 'pinterest', 'youtube', 'tiktok'];
+                
+                foreach ( $social_networks as $network ) {
+                    $enabled = get_theme_mod( "social-{$network}", '' );
+                    $url = get_theme_mod( "social-{$network}-url", '' );
+                    
+                    $enabled_display = $enabled === '1' 
+                        ? '<span class="success">✓ Checked (value: "1")</span>' 
+                        : '<span class="error">✗ Unchecked (value: "' . esc_html( $enabled ) . '")</span>';
+                    
+                    $url_display = !empty( $url ) 
+                        ? '<span class="value">' . esc_html( $url ) . '</span>' 
+                        : '<span class="empty">Empty</span>';
+                    
+                    $will_show = ( $enabled === '1' && !empty( $url ) ) 
+                        ? '<span class="success">✓ YES</span>' 
+                        : '<span class="error">✗ NO</span>';
+                    
+                    echo "<tr><td>" . ucfirst( $network ) . "</td><td>{$enabled_display}</td><td>{$url_display}</td><td>{$will_show}</td></tr>";
+                }
+                ?>
+            </table>
+            
+            <h2>Other Settings</h2>
+            <table>
+                <tr>
+                    <th>Setting</th>
+                    <th>Value</th>
+                </tr>
+                <?php
+                $other_settings = [
+                    'header_logo' => 'Header Logo',
+                    'header_background_image' => 'Header Background Image',
+                    'footer_background_image' => 'Footer Background Image',
+                    'contained_header' => 'Contained Header',
+                    'sticky_header' => 'Sticky Header',
+                    'fixed_header' => 'Fixed Header',
+                    'transparent_header' => 'Transparent Header',
+                    'dark_mode' => 'Dark Mode',
+                ];
+                
+                foreach ( $other_settings as $setting => $label ) {
+                    $value = get_theme_mod( $setting );
+                    $display_value = $value ? '<span class="value">' . esc_html( $value ) . '</span>' : '<span class="empty">Not set</span>';
+                    echo "<tr><td>{$label} ({$setting})</td><td>{$display_value}</td></tr>";
+                }
+                ?>
+            </table>
+            
+            <h2>Repeater Fields</h2>
+            <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Data</th>
+                </tr>
+                <?php
+                $footer_links = get_theme_mod( 'footer_links' );
+                $opening_times = get_theme_mod( 'opening_times' );
+                
+                echo "<tr><td>Footer Links</td><td><pre>" . esc_html( $footer_links ? $footer_links : 'Empty' ) . "</pre></td></tr>";
+                echo "<tr><td>Opening Times</td><td><pre>" . esc_html( $opening_times ? $opening_times : 'Empty' ) . "</pre></td></tr>";
+                ?>
+            </table>
+            
+            <h2>CSS Output Test</h2>
+            <p>This is what should be in your &lt;head&gt;:</p>
+            <pre style="background: white; padding: 20px; border: 1px solid #ddd;"><?php
+            ob_start();
+            avidd_customizer_css();
+            $css_output = ob_get_clean();
+            echo esc_html( $css_output );
+            ?></pre>
+            
+            <p><a href="<?php echo home_url(); ?>">← Back to site</a></p>
+        </body>
+        </html>
+        <?php
+        exit;
+    }
+});

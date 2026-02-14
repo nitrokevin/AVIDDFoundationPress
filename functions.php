@@ -64,12 +64,15 @@ require_once( 'library/colors.php' );
 require_once( 'library/custom-functions.php' );
 
 /** Customizer functions */
-require_once( 'library/customizer-functions.php' );
+require_once( 'library/customizer-native.php' );
 
 /** ACF functions */
 require_once( 'library/acf-functions.php' );
 /** ACF blocks */
 require_once( 'library/acf-blocks.php' );
+
+/** CPT */
+require_once('library/post-types.php');
 
 /** If your site requires protocol relative url's for theme assets, uncomment the line below */
 // require_once( 'library/class-foundationpress-protocol-relative-theme-assets.php' );

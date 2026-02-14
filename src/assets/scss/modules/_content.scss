@@ -24,13 +24,22 @@
   }
 
   // Full width template
-  .main-content-full-width {
+.main-content-full-width {
+  @include xy-cell(12);
+
+  @include breakpoint(medium) {
     @include xy-cell(12);
-    p,
-    li {
+  }
+
+  .entry-content {
+
+    // Apply to p and li, but NOT if they are descendants of a group
+    p:not(.wp-block-group *),
+    li:not(.wp-block-group *) {
       max-width: 100ch;
     }
   }
+}
 
   // Default template
   .main-content {

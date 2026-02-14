@@ -155,19 +155,26 @@ $block-grid-max: 8;
 
 // 4. Base Typography
 // ------------------
-:root {
-  --vw-min: #{map-get($breakpoints, medium)};
-  --vw-max: #{map-get($breakpoints, xxlarge)};
-
-  --fluid: calc((100vw - var(--vw-min)) / (var(--vw-max) - var(--vw-min)));
+@function strip-unit($value) {
+  @return $value / ($value * 0 + 1);
 }
-@function fluid($min-px, $max-px) {
-  $min: rem-calc($min-px);
-  $max: rem-calc($max-px);
 
-  @return clamp(#{$min},
-    calc(#{$min} + (#{$max} - #{$min}) * var(--fluid)),
-    #{$max});
+@function fluid($min-px, $max-px) {
+  // Use your existing map-get for the min breakpoint
+  $min-vw: strip-unit(map-get($breakpoints, medium));
+  $max-vw: 1920; // Your max width
+
+  $min-no-unit: strip-unit($min-px);
+  $max-no-unit: strip-unit($max-px);
+
+  // The math: how much it grows per viewport unit
+  $slope: ($max-no-unit - $min-no-unit) / ($max-vw - $min-vw);
+  $y-axis-intersection: -$min-vw * $slope + $min-no-unit;
+
+  // Final clamp output
+  @return clamp(#{rem-calc($min-px)},
+    calc(#{$slope * 100}vw + #{rem-calc($y-axis-intersection * 1px)}),
+    #{rem-calc($max-px)});
 }
 :root {
   /* Body / UI */

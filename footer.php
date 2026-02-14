@@ -20,26 +20,17 @@ $contact_address_6 = get_theme_mod('contact_address_6');
 $footer_background_image = get_theme_mod('footer_background_image');
 $site_name = get_bloginfo('name', 'display');
 
-$socials = [
-    'facebook' => get_theme_mod('social-facebook-url'),
-    'x' => get_theme_mod('social-x-url'),
-    'instagram' => get_theme_mod('social-instagram-url'),
-    'linkedin' => get_theme_mod('social-linkedin-url'),
-    'pinterest' => get_theme_mod('social-pinterest-url'),
-    'youtube' => get_theme_mod('social-youtube-url'),
-    'tiktok' => get_theme_mod('social-tiktok-url'),
-];
+// Only show social icons if at least one is enabled
+$has_social = false;
+$social_networks = ['facebook', 'x', 'instagram', 'linkedin', 'pinterest', 'youtube', 'tiktok'];
+foreach ($social_networks as $network) {
+    if (get_theme_mod("social-{$network}", '') === '1') {
+        $has_social = true;
+        break;
+    }
+}
 
-$social_icons = [
-    'facebook' => 'fa-brands fa-facebook-f fa-fw',
-    'x' => 'fa-brands fa-x-twitter fa-fw',
-    'instagram' => 'fa-brands fa-instagram fa-fw',
-    'linkedin' => 'fa-brands fa-linkedin-in fa-fw',
-    'pinterest' => 'fa-brands fa-pinterest fa-fw',
-    'youtube' => 'fa-brands fa-youtube fa-fw',
-    'tiktok' => 'fa-brands fa-tiktok fa-fw',
-];
-
+   
 if ($footer_background_image) {
     $sizes = [
         'small' => wp_get_attachment_image_url($footer_background_image, 'fp-small'),
@@ -48,7 +39,6 @@ if ($footer_background_image) {
         'xlarge' => wp_get_attachment_image_url($footer_background_image, 'fp-xlarge'),
     ];
 }
-
 ?>
 
 <footer class="footer" <?php if ($footer_background_image) { ?> data-interchange="[<?php echo esc_url($sizes['small']); ?>, small], [<?php echo esc_url($sizes['medium']); ?>, medium], [<?php echo esc_url($sizes['large']); ?>, large], [<?php echo esc_url($sizes['xlarge']); ?>, xlarge]" data-type="background"<?php } ?>>
@@ -60,26 +50,72 @@ if ($footer_background_image) {
 
             <section>
                 <?php foundationpress_footer_nav_l(); ?>
-                <ul class="footer-contact menu  footer-menu">
-                  <li><?php echo esc_html($contact_address_1); ?></li>
+                <ul class="footer-contact">
+                    <?php if (!empty($contact_address_1)) : ?>
+                    <li><?php echo esc_html($contact_address_1); ?></li>
+                    <?php endif; ?>
+
+                    <?php if (!empty($contact_address_2)) : ?>
                     <li><?php echo esc_html($contact_address_2); ?></li>
+                    <?php endif; ?>
+
+                    <?php if (!empty($contact_address_3)) : ?>
                     <li><?php echo esc_html($contact_address_3); ?></li>
+                    <?php endif; ?>
+
+                    <?php if (!empty($contact_address_4)) : ?>
                     <li><?php echo esc_html($contact_address_4); ?></li>
+                    <?php endif; ?>
+
+                    <?php if (!empty($contact_address_5)) : ?>
                     <li><?php echo esc_html($contact_address_5); ?></li>
+                    <?php endif; ?>
+
+                    <?php if (!empty($contact_address_6)) : ?>
                     <li><?php echo esc_html($contact_address_6); ?></li>
+                    <?php endif; ?>
+                </ul>
+                <ul class="footer-contact-phone-email">
+                   <?php if ( $contact_phone ) echo '<li>T: ' . esc_html( $contact_phone ) . '</li>'; ?>
+                <?php if ( $contact_email ) echo '<li><a href="mailto:' . esc_attr( $contact_email ) . '">E: ' . esc_html( $contact_email ) . '</a></li>'; ?>
                 </ul>
 
             </section>
             <section>
-                <ul class="social-links menu  footer-menu align-center">
-                    <?php foreach ($social_icons as $key => $icon_class) : ?>
-                        <?php if (!empty($socials[$key])) : ?>
-                            <li><a href="<?php echo esc_url($socials[$key]); ?>" rel="noreferrer" target="_blank" aria-label="<?php echo ucfirst($key); ?>">
+             <?php
+
+            if ($has_social) :
+                $social_icons = [
+                    'facebook'  => 'fa-brands fa-facebook-f fa-fw',
+                    'x'         => 'fa-brands fa-x-twitter fa-fw',
+                    'instagram' => 'fa-brands fa-instagram fa-fw',
+                    'linkedin'  => 'fa-brands fa-linkedin-in fa-fw',
+                    'pinterest' => 'fa-brands fa-pinterest fa-fw',
+                    'youtube'   => 'fa-brands fa-youtube fa-fw',
+                    'tiktok'    => 'fa-brands fa-tiktok fa-fw',
+                ];
+                ?>
+                  <ul class="social-links menu footer-menu align-center">
+                    <?php foreach ($social_icons as $network => $icon_class) : ?>
+                        <?php 
+                        // Check if this social network is enabled (checkbox is checked)
+                        $is_enabled = get_theme_mod("social-{$network}", '') === '1';
+                        $url = get_theme_mod("social-{$network}-url", '');
+                        
+                        if ($is_enabled && !empty($url)) : 
+                        ?>
+                            <li>
+                                <a href="<?php echo esc_url($url); ?>" 
+                                rel="noreferrer noopener" 
+                                target="_blank" 
+                                aria-label="<?php echo ucfirst($network); ?>">
                                     <i class="<?php echo esc_attr($icon_class); ?>"></i>
-                                </a></li>
+                                </a>
+                            </li>
                         <?php endif; ?>
                     <?php endforeach; ?>
                 </ul>
+            <?php endif; ?>
             </section>
             <section>
                 <?php foundationpress_footer_nav_r(); ?>
