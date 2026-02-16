@@ -1,5 +1,15 @@
 <?php
 /**
+ * THEME JSON BRIDGE: ACF & KIRKI INTEGRATION
+ * * This script provides helper functions to bridge the gap between theme.json 
+ * and third-party plugins (ACF, Kirki). 
+ * * Key Features:
+ * - Extracts color and gradient palettes directly from theme.json.
+ * - Formats data for ACF Swatch and Kirki choice fields.
+ * - Automatically maps HEX/Gradient CSS values back to CSS Slugs via filters
+ * (e.g., converting '#0073aa' to 'primary') for consistent CSS variable usage.
+ */
+/**
  * Get color and gradient choices from theme.json for ACF / Kirki / templates
  *
  * @param array $options Options:
@@ -51,7 +61,7 @@ function get_theme_design_choices($options = []) {
         $choices_for_editor['#000000'] = '#000000';
     }
 
-    // Gradients
+    // Gradients (supports linear, radial, conic, and repeating variants)
     if ($options['include_gradients'] && isset($json['settings']['color']['gradients'])) {
         foreach ($json['settings']['color']['gradients'] as $gradient) {
             if ($options['for_acf'] && $options['use_css_value'] && isset($gradient['gradient'])) {
@@ -85,7 +95,11 @@ add_filter('acf/format_value/type=swatch', function($value, $post_id, $field) {
         return $value;
     }
 
-    if (!preg_match('/^#([a-f0-9]{3}){1,2}$/i', $value) && strpos($value, 'gradient(') === false) {
+    // Check if it's a hex color or any type of gradient (linear, radial, conic, repeating, etc.)
+    $is_hex = preg_match('/^#([a-f0-9]{3}){1,2}$/i', $value);
+    $is_gradient = (strpos($value, 'gradient(') !== false);
+    
+    if (!$is_hex && !$is_gradient) {
         return $value;
     }
 
@@ -106,12 +120,22 @@ add_filter('acf/format_value/type=swatch', function($value, $post_id, $field) {
             }
         }
 
-        // Gradients
+        // Gradients (linear, radial, conic, repeating)
         if (isset($json['settings']['color']['gradients'])) {
             foreach ($json['settings']['color']['gradients'] as $gradient) {
                 $slug = sanitize_title($gradient['slug'] ?? '');
                 if ($slug && isset($gradient['gradient'])) {
+                    // Normalize whitespace for comparison
+                    $normalized_gradient = preg_replace('/\s+/', ' ', trim($gradient['gradient']));
+                    $normalized_value = preg_replace('/\s+/', ' ', trim($value));
+                    
                     $slug_map[$gradient['gradient']] = $slug;
+                    $slug_map[$normalized_gradient] = $slug;
+                    
+                    // Also map the normalized version of the incoming value
+                    if ($normalized_gradient === $normalized_value) {
+                        return $slug;
+                    }
                 }
             }
         }

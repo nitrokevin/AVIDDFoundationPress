@@ -55,7 +55,6 @@
   // Extend column attributes
   addFilter('blocks.registerBlockType', 'cbg/extend-column-attributes', function (settings, name) {
     if (name !== 'core/column') return settings;
-    console.log('Column Background + XY Grid: Registering attributes for core/column');
     settings.attributes = {
       ...settings.attributes,
       backgroundImage: {
@@ -80,7 +79,7 @@
   // Extend columns attributes
   addFilter('blocks.registerBlockType', 'cbg/extend-columns-attributes', function (settings, name) {
     if (name !== 'core/columns') return settings;
-    console.log('Column Background + XY Grid: Registering useFoundationGrid attribute for core/columns');
+   
     settings.attributes = {
       ...settings.attributes,
       useFoundationGrid: {
@@ -103,7 +102,7 @@
       xyGrid = {}
     } = attributes;
 
-    console.log('Column Background + XY Grid: Rendering Inspector controls for core/column');
+
 
     return createElement(Fragment, null,
       createElement(BlockEdit, props),

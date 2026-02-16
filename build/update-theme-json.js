@@ -1,3 +1,15 @@
+/**
+ * THEME JSON GENERATOR
+ * * This script synchronizes Foundation SCSS variables with WordPress theme.json.
+ * It automates the generation of:
+ * - 🎨 Color Palettes (Extracted from $foundation-palette)
+ * - 🌈 Gradients (Auto-generated Radial and Linear variations)
+ * - 🅰️ Typography (Font families and responsive font sizes)
+ * - 📐 Layout (Grid gutters and global border radius)
+ * * It also merges manual overrides from 'theme-extra.json' to allow for
+ * custom Gutenberg settings that aren't defined in SCSS.
+ */
+
 const fs = require("fs");
 const path = require("path");
 
@@ -76,11 +88,87 @@ if (!themeJson.settings.color.palette || themeJson.settings.color.palette.length
 console.log(`🎨 Added ${uniqueColors.length} unique colors`);
 
 // ------------------------------------------------------------
-// 🌈 Generate gradients intelligently (mirroring SCSS logic)
+// 🌈 Generate gradients intelligently (linear AND radial)
 // ------------------------------------------------------------
 
-// Helper to adjust color brightness (lighten or darken)
-// amount is positive to lighten, negative to darken
+// Helper: Convert HEX to HSL
+function hexToHSL(hex) {
+  // Remove '#' if present
+  let color = hex.replace(/^#/, "");
+  if (color.length === 3) {
+    color = color.split("").map(c => c + c).join("");
+  }
+
+  let r = parseInt(color.substr(0, 2), 16) / 255;
+  let g = parseInt(color.substr(2, 2), 16) / 255;
+  let b = parseInt(color.substr(4, 2), 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h, s, l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0; // achromatic
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+    switch (max) {
+      case r:
+        h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+        break;
+      case g:
+        h = ((b - r) / d + 2) / 6;
+        break;
+      case b:
+        h = ((r - g) / d + 4) / 6;
+        break;
+    }
+  }
+
+  h = Math.round(h * 360);
+  s = Math.round(s * 100);
+  l = Math.round(l * 100);
+
+  return {
+    h,
+    s,
+    l
+  };
+}
+
+// Helper: Create smooth radial gradient with multiple stops
+function createRadialGradient(hex, ellipseSize = "40% 60%", position = "55% 60%") {
+  const hsl = hexToHSL(hex);
+  const {
+    h,
+    s
+  } = hsl;
+  let {
+    l
+  } = hsl;
+
+  // Generate 24 color stops from lighter to darker
+  const stops = [];
+  const startL = Math.min(l + 10, 90); // Start a bit lighter
+  const endL = Math.max(l - 24, 10); // End much darker
+  const step = (startL - endL) / 23; // 24 stops total
+
+  const percentages = [
+    0, 10, 15, 19, 23, 27, 31, 34, 38, 41, 45, 48,
+    51, 55, 58, 61, 65, 68, 72, 76, 80, 84, 90, 100
+  ];
+
+  for (let i = 0; i < 24; i++) {
+    const currentL = Math.round(startL - (step * i));
+    const currentS = Math.max(s - Math.floor(i / 8), s - 2); // Slightly adjust saturation
+    stops.push(`hsl(${h}deg ${currentS}% ${currentL}%) ${percentages[i]}%`);
+  }
+
+  return `radial-gradient(ellipse ${ellipseSize} at ${position}, ${stops.join(", ")})`;
+}
+
+// Helper to adjust color brightness (lighten or darken) - for linear gradients
 function adjustColor(hex, amount) {
   // Remove '#' if present
   let color = hex.replace(/^#/, "");
@@ -112,7 +200,28 @@ const excluded = ["light", "dark", "white", "black"]; // avoid low-contrast comb
 const seenGradients = new Set();
 const gradientPairs = [];
 
-// Generate light-dark self-gradients for each color (except excluded)
+// ------------------------------------------------------------
+// 1️⃣ RADIAL GRADIENTS - One per color (smooth multi-stop)
+// ------------------------------------------------------------
+uniqueColors.forEach(color => {
+  if (excluded.includes(color.slug)) return;
+
+  const radialGradient = createRadialGradient(color.color);
+  const slug = `${color.slug}-radial`;
+
+  if (!seenGradients.has(slug)) {
+    gradientPairs.push({
+      slug,
+      name: `${color.name} Radial`,
+      gradient: radialGradient,
+    });
+    seenGradients.add(slug);
+  }
+});
+
+// ------------------------------------------------------------
+// 2️⃣ LINEAR GRADIENTS - Light-dark self-gradients
+// ------------------------------------------------------------
 uniqueColors.forEach(color => {
   if (excluded.includes(color.slug)) return;
 
@@ -132,6 +241,9 @@ uniqueColors.forEach(color => {
   }
 });
 
+// ------------------------------------------------------------
+// 3️⃣ LINEAR CROSS-PAIR GRADIENTS
+// ------------------------------------------------------------
 // Define intentional cross pairs
 const crossPairs = [
   ["primary", "secondary"],
@@ -173,7 +285,8 @@ crossPairs.forEach(([slugA, slugB]) => {
 
 themeJson.settings.color.gradients = gradientPairs;
 
-console.log(`🌈 Generated ${gradientPairs.length} unique gradients`);
+console.log(`🌈 Generated ${gradientPairs.length} unique gradients (radial + linear)`);
+
 // ------------------------------------------------------------
 // 🔀 Merge theme-extra.json if it exists
 // ------------------------------------------------------------
@@ -281,8 +394,9 @@ const radiusMatch = scss.match(/\$global-radius:\s*([\d.]+(rem|px));/);
 if (radiusMatch) {
   themeJson.settings.border.radius = radiusMatch[1];
 }
+
 // ------------------------------------------------------------
-// 📐 NEW: Layout + gutters (Foundation → Gutenberg)
+// 📐 Layout + gutters (Foundation → Gutenberg)
 // ------------------------------------------------------------
 
 themeJson.settings.custom = themeJson.settings.custom || {};
@@ -309,6 +423,7 @@ if (gutterMatch) {
   themeJson.settings.custom.foundationGutterMobile = toRem(gutterMap.small);
   themeJson.settings.custom.foundationGutterDesktop = toRem(gutterMap.medium);
 }
+
 // ------------------------------------------------------------
 // 💾 Write theme.json
 // ------------------------------------------------------------

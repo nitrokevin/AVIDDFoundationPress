@@ -25,7 +25,7 @@ function register_project_cpt() {
     'public'             => true,
     'show_ui'            => true,
     'show_in_menu'       => true,
-    'show_in_rest'       => true, // Gutenberg + ACF
+    'show_in_rest'       => true, 
     'has_archive'        => true,
     'rewrite'            => [
       'slug' => 'project'
@@ -33,10 +33,12 @@ function register_project_cpt() {
     'menu_icon'          => 'dashicons-clipboard', 
     'supports'           => [
       'title',
-      'editor',
       'thumbnail',
-      'excerpt'
+      'excerpt',
+      'page-attributes'
     ],
+    
+    'hierarchical' => true, // enables parent/child
   ];
 
   register_post_type( 'project', $args );
@@ -45,29 +47,45 @@ function register_project_cpt() {
 
 function register_project_taxonomies() {
 
-  $labels = [
-    'name'              => 'Project Categories',
-    'singular_name'     => 'Project Category',
-    'search_items'      => 'Search Categories',
-    'all_items'         => 'All Categories',
-    'parent_item'       => 'Parent Category',
-    'parent_item_colon' => 'Parent Category:',
-    'edit_item'         => 'Edit Category',
-    'update_item'       => 'Update Category',
-    'add_new_item'      => 'Add New Category',
-    'new_item_name'     => 'New Category Name',
-    'menu_name'         => 'Categories',
+  $taxonomies = [
+
+    'project_type' => [
+      'plural'       => 'Project Types',
+      'singular'     => 'Project Type',
+      'menu_name'    => 'Project Type',
+      'slug'         => 'project-type',
+      'hierarchical' => true,
+    ],
+
+
+
   ];
 
-  register_taxonomy( 'project_category', ['project'], [
-    'hierarchical'      => true, // like categories
-    'labels'            => $labels,
-    'show_ui'           => true,
-    'show_admin_column' => true,
-    'show_in_rest'      => true,
-    'rewrite'           => [
-      'slug' => 'project-category'
-    ],
-  ]);
+  foreach ($taxonomies as $taxonomy => $settings) {
+
+    $labels = [
+      'name'              => $settings['plural'],
+      'singular_name'     => $settings['singular'],
+      'search_items'      => 'Search ' . $settings['plural'],
+      'all_items'         => 'All ' . $settings['plural'],
+      'parent_item'       => 'Parent ' . $settings['singular'],
+      'parent_item_colon' => 'Parent ' . $settings['singular'] . ':',
+      'edit_item'         => 'Edit ' . $settings['singular'],
+      'update_item'       => 'Update ' . $settings['singular'],
+      'add_new_item'      => 'Add New ' . $settings['singular'],
+      'new_item_name'     => 'New ' . $settings['singular'] . ' Name',
+      'menu_name'         => $settings['menu_name'],
+    ];
+
+    register_taxonomy($taxonomy, ['project'], [
+      'hierarchical'      => $settings['hierarchical'],
+      'labels'            => $labels,
+      'show_ui'           => true,
+      'show_admin_column' => true,
+      'show_in_rest'      => true,
+      'rewrite'           => [
+        'slug' => $settings['slug'],
+      ],
+    ]);
+  }
 }
-?>

@@ -5,6 +5,11 @@
 (function ($) {
   'use strict';
 
+  // Only run in customizer preview
+  if (typeof wp === 'undefined' || typeof wp.customize === 'undefined') {
+    return;
+  }
+
   // Nav background color
   wp.customize('color_palette_setting_0', function (value) {
     value.bind(function (newval) {

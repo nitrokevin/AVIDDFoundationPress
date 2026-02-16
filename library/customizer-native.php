@@ -52,6 +52,32 @@ if ( ! function_exists( 'avidd_get_palette_hex_default' ) ) {
 	}
 }
 
+// Helper: Safely get repeater field data
+if ( ! function_exists( 'avidd_get_repeater_data' ) ) {
+	function avidd_get_repeater_data( $setting_id ) {
+		$data = get_theme_mod( $setting_id );
+		
+		// Handle empty values
+		if ( empty( $data ) ) {
+			return array();
+		}
+		
+		// Decode if it's a JSON string
+		if ( is_string( $data ) ) {
+			$decoded = json_decode( $data, true );
+			return is_array( $decoded ) ? $decoded : array();
+		}
+		
+		// Return if already an array
+		if ( is_array( $data ) ) {
+			return $data;
+		}
+		
+		// Fallback to empty array
+		return array();
+	}
+}
+
 // ============================================
 // CUSTOM CONTROLS
 // ============================================
@@ -419,7 +445,8 @@ function avidd_customize_register( $wp_customize ) {
 		'description' => __( 'Manage contact information, social media, and opening hours.', 'avidd' ),
 		'priority'    => 60,
 	));
-		$wp_customize->add_panel( 'notifications_panel', array(
+	
+	$wp_customize->add_panel( 'notifications_panel', array(
 		'title'       => __( 'Notifications', 'avidd' ),
 		'description' => __( 'Manage site notifications.', 'avidd' ),
 		'priority'    => 70,
@@ -456,12 +483,13 @@ function avidd_customize_register( $wp_customize ) {
 		'title' => __( 'Site Colors', 'avidd' ),
 		'panel' => 'design_layout_panel',
 	));
+	
 	$wp_customize->add_section( 'defaul_content_section', array(
 		'title' => __( 'Default content', 'avidd' ),
 		'panel' => 'design_layout_panel',
 	));
 
-	// Contact & Social sections
+	// Company Information sections
 	$wp_customize->add_section( 'contact_section', array(
 		'title' => __( 'Contact Details', 'avidd' ),
 		'panel' => 'company_information_panel',
@@ -476,12 +504,17 @@ function avidd_customize_register( $wp_customize ) {
 		'title' => __( 'Opening Times', 'avidd' ),
 		'panel' => 'company_information_panel',
 	));
-	//Notifications sections
+	
+	// Notifications sections
 	$wp_customize->add_section( 'notifications_section', array(
 		'title' => __( 'Header Notifications', 'avidd' ),
 		'panel' => 'notifications_panel',
 	));
-
+	
+	$wp_customize->add_section( 'email_notifications_section', array(
+		'title' => __( 'Email Notifications', 'avidd' ),
+		'panel' => 'notifications_panel',
+	));
 
 	// ============================================
 	// HEADER & NAVIGATION
@@ -642,7 +675,7 @@ function avidd_customize_register( $wp_customize ) {
 
 	// Footer links repeater
 	$wp_customize->add_setting( 'footer_links', array(
-		'default'           => '',
+		'default'           => array(),
 		'sanitize_callback' => 'avidd_sanitize_repeater',
 	));
 	$wp_customize->add_control( new Avidd_Repeater_Control( $wp_customize, 'footer_links', array(
@@ -661,7 +694,7 @@ function avidd_customize_register( $wp_customize ) {
 	)));
 
 	// ============================================
-	// CONTACT & SOCIAL
+	// COMPANY INFORMATION
 	// ============================================
 
 	// Contact Details Section
@@ -762,58 +795,6 @@ function avidd_customize_register( $wp_customize ) {
 		));
 	}
 
-	// ============================================
-	// DESIGN & LAYOUT
-	// ============================================
-
-	// Site Colors Section
-
-	// Page background colour
-	$wp_customize->add_setting( 'color_palette_setting_10', array(
-		'default'           => $default_settings,
-		'sanitize_callback' => 'sanitize_hex_color',
-		'transport'         => 'postMessage',
-	));
-	$wp_customize->add_control( new Avidd_Color_Palette_Control( $wp_customize, 'color_palette_setting_10', array(
-		'label'   => __( 'Page background colour', 'avidd' ),
-		'section' => 'site_colors_section',
-		'palette' => $palette_keys,
-		'style'   => 'round',
-	)));
-
-	// Dark Mode
-	$wp_customize->add_setting( 'dark_mode', array(
-		'default'           => 'off',
-		'sanitize_callback' => 'sanitize_text_field',
-	));
-	$wp_customize->add_control( 'dark_mode', array(
-		'label'   => __( 'Dark Mode', 'avidd' ),
-		'section' => 'site_colors_section',
-		'type'    => 'checkbox',
-	));
-
-
-	// Default Images
-	$wp_customize->add_setting( 'post_default_image', array(
-		'default'           => '',
-		'sanitize_callback' => 'esc_url_raw',
-	));
-	$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'post_default_image', array(
-		'label'   => __( 'Default Post Image', 'avidd' ),
-		'section' => 'defaul_content_section',
-	)));
-		// Default Images
-	$wp_customize->add_setting( 'event_default_image', array(
-		'default'           => '',
-		'sanitize_callback' => 'esc_url_raw',
-	));
-	$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'event_default_image', array(
-		'label'   => __( 'Default Event Image', 'avidd' ),
-		'section' => 'defaul_content_section',
-	)));
-
-
-
 	// Opening Times Section
 
 	$wp_customize->add_setting( 'opening_times', array(
@@ -871,10 +852,62 @@ function avidd_customize_register( $wp_customize ) {
 	)));
 
 	// ============================================
-	// Notifications
+	// DESIGN & LAYOUT
 	// ============================================
 
-	// Notifications Section
+	// Site Colors Section
+
+	// Page background colour
+	$wp_customize->add_setting( 'color_palette_setting_10', array(
+		'default'           => $default_settings,
+		'sanitize_callback' => 'sanitize_hex_color',
+		'transport'         => 'postMessage',
+	));
+	$wp_customize->add_control( new Avidd_Color_Palette_Control( $wp_customize, 'color_palette_setting_10', array(
+		'label'   => __( 'Page background colour', 'avidd' ),
+		'section' => 'site_colors_section',
+		'palette' => $palette_keys,
+		'style'   => 'round',
+	)));
+
+	// Dark Mode
+	$wp_customize->add_setting( 'dark_mode', array(
+		'default'           => 'off',
+		'sanitize_callback' => 'sanitize_text_field',
+	));
+	$wp_customize->add_control( 'dark_mode', array(
+		'label'   => __( 'Dark Mode', 'avidd' ),
+		'section' => 'site_colors_section',
+		'type'    => 'checkbox',
+	));
+
+	// Default Content Section
+
+	// Default Post Image
+	$wp_customize->add_setting( 'post_default_image', array(
+		'default'           => '',
+		'sanitize_callback' => 'esc_url_raw',
+	));
+	$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'post_default_image', array(
+		'label'   => __( 'Default Post Image', 'avidd' ),
+		'section' => 'defaul_content_section',
+	)));
+	
+	// Default Event Image
+	$wp_customize->add_setting( 'event_default_image', array(
+		'default'           => '',
+		'sanitize_callback' => 'esc_url_raw',
+	));
+	$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'event_default_image', array(
+		'label'   => __( 'Default Event Image', 'avidd' ),
+		'section' => 'defaul_content_section',
+	)));
+
+	// ============================================
+	// NOTIFICATIONS
+	// ============================================
+
+	// Header Notifications Section
 
 	$wp_customize->add_setting( 'notifications', array(
 		'default'           => '',
@@ -897,6 +930,18 @@ function avidd_customize_register( $wp_customize ) {
 				'label' => __( 'Link', 'avidd' ),
 			),
 		),
+	)));
+
+	// Email Notifications Section
+
+	// Email logo
+	$wp_customize->add_setting( 'email_logo', array(
+		'default'           => '',
+		'sanitize_callback' => 'esc_url_raw',
+	));
+	$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'email_logo', array(
+		'label'   => __( 'Email logo', 'avidd' ),
+		'section' => 'email_notifications_section',
 	)));
 }
 add_action( 'customize_register', 'avidd_customize_register' );
@@ -961,18 +1006,3 @@ function avidd_customizer_css() {
 	<?php
 }
 add_action( 'wp_head', 'avidd_customizer_css' );
-
-
-/**
- * Enqueue customizer preview JavaScript
- */
-function avidd_customize_preview_js() {
-	wp_enqueue_script(
-		'avidd-customizer-preview',
-		get_template_directory_uri() . '/dist/assets/js/editor.js', // Adjust path as needed
-		array( 'customize-preview', 'jquery' ),
-		null,
-		true
-	);
-}
-add_action( 'customize_preview_init', 'avidd_customize_preview_js' );

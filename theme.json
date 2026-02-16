@@ -64,6 +64,51 @@
       ],
       "gradients": [
         {
+          "slug": "primary-radial",
+          "name": "Primary Radial",
+          "gradient": "radial-gradient(ellipse 40% 60% at 55% 60%, hsl(204deg 78% 51%) 0%, hsl(204deg 78% 50%) 10%, hsl(204deg 78% 48%) 15%, hsl(204deg 78% 47%) 19%, hsl(204deg 78% 45%) 23%, hsl(204deg 78% 44%) 27%, hsl(204deg 78% 42%) 31%, hsl(204deg 78% 41%) 34%, hsl(204deg 77% 39%) 38%, hsl(204deg 77% 38%) 41%, hsl(204deg 77% 36%) 45%, hsl(204deg 77% 35%) 48%, hsl(204deg 77% 33%) 51%, hsl(204deg 77% 32%) 55%, hsl(204deg 77% 30%) 58%, hsl(204deg 77% 29%) 61%, hsl(204deg 76% 27%) 65%, hsl(204deg 76% 26%) 68%, hsl(204deg 76% 24%) 72%, hsl(204deg 76% 23%) 76%, hsl(204deg 76% 21%) 80%, hsl(204deg 76% 20%) 84%, hsl(204deg 76% 18%) 90%, hsl(204deg 76% 17%) 100%)"
+        },
+        {
+          "slug": "secondary-radial",
+          "name": "Secondary Radial",
+          "gradient": "radial-gradient(ellipse 40% 60% at 55% 60%, hsl(0deg 0% 56%) 0%, hsl(0deg 0% 55%) 10%, hsl(0deg 0% 53%) 15%, hsl(0deg 0% 52%) 19%, hsl(0deg 0% 50%) 23%, hsl(0deg 0% 49%) 27%, hsl(0deg 0% 47%) 31%, hsl(0deg 0% 46%) 34%, hsl(0deg -1% 44%) 38%, hsl(0deg -1% 43%) 41%, hsl(0deg -1% 41%) 45%, hsl(0deg -1% 40%) 48%, hsl(0deg -1% 38%) 51%, hsl(0deg -1% 37%) 55%, hsl(0deg -1% 35%) 58%, hsl(0deg -1% 34%) 61%, hsl(0deg -2% 32%) 65%, hsl(0deg -2% 31%) 68%, hsl(0deg -2% 29%) 72%, hsl(0deg -2% 28%) 76%, hsl(0deg -2% 26%) 80%, hsl(0deg -2% 25%) 84%, hsl(0deg -2% 23%) 90%, hsl(0deg -2% 22%) 100%)"
+        },
+        {
+          "slug": "light-gray-radial",
+          "name": "Light-gray Radial",
+          "gradient": "radial-gradient(ellipse 40% 60% at 55% 60%, hsl(0deg 0% 90%) 0%, hsl(0deg 0% 89%) 10%, hsl(0deg 0% 88%) 15%, hsl(0deg 0% 87%) 19%, hsl(0deg 0% 86%) 23%, hsl(0deg 0% 85%) 27%, hsl(0deg 0% 84%) 31%, hsl(0deg 0% 83%) 34%, hsl(0deg -1% 82%) 38%, hsl(0deg -1% 81%) 41%, hsl(0deg -1% 80%) 45%, hsl(0deg -1% 79%) 48%, hsl(0deg -1% 77%) 51%, hsl(0deg -1% 76%) 55%, hsl(0deg -1% 75%) 58%, hsl(0deg -1% 74%) 61%, hsl(0deg -2% 73%) 65%, hsl(0deg -2% 72%) 68%, hsl(0deg -2% 71%) 72%, hsl(0deg -2% 70%) 76%, hsl(0deg -2% 69%) 80%, hsl(0deg -2% 68%) 84%, hsl(0deg -2% 67%) 90%, hsl(0deg -2% 66%) 100%)"
+        },
+        {
+          "slug": "medium-gray-radial",
+          "name": "Medium-gray Radial",
+          "gradient": "radial-gradient(ellipse 40% 60% at 55% 60%, hsl(0deg 0% 89%) 0%, hsl(0deg 0% 88%) 10%, hsl(0deg 0% 86%) 15%, hsl(0deg 0% 85%) 19%, hsl(0deg 0% 83%) 23%, hsl(0deg 0% 82%) 27%, hsl(0deg 0% 80%) 31%, hsl(0deg 0% 79%) 34%, hsl(0deg -1% 77%) 38%, hsl(0deg -1% 76%) 41%, hsl(0deg -1% 74%) 45%, hsl(0deg -1% 73%) 48%, hsl(0deg -1% 71%) 51%, hsl(0deg -1% 70%) 55%, hsl(0deg -1% 68%) 58%, hsl(0deg -1% 67%) 61%, hsl(0deg -2% 65%) 65%, hsl(0deg -2% 64%) 68%, hsl(0deg -2% 62%) 72%, hsl(0deg -2% 61%) 76%, hsl(0deg -2% 59%) 80%, hsl(0deg -2% 58%) 84%, hsl(0deg -2% 56%) 90%, hsl(0deg -2% 55%) 100%)"
+        },
+        {
+          "slug": "dark-gray-radial",
+          "name": "Dark-gray Radial",
+          "gradient": "radial-gradient(ellipse 40% 60% at 55% 60%, hsl(0deg 0% 64%) 0%, hsl(0deg 0% 63%) 10%, hsl(0deg 0% 61%) 15%, hsl(0deg 0% 60%) 19%, hsl(0deg 0% 58%) 23%, hsl(0deg 0% 57%) 27%, hsl(0deg 0% 55%) 31%, hsl(0deg 0% 54%) 34%, hsl(0deg -1% 52%) 38%, hsl(0deg -1% 51%) 41%, hsl(0deg -1% 49%) 45%, hsl(0deg -1% 48%) 48%, hsl(0deg -1% 46%) 51%, hsl(0deg -1% 45%) 55%, hsl(0deg -1% 43%) 58%, hsl(0deg -1% 42%) 61%, hsl(0deg -2% 40%) 65%, hsl(0deg -2% 39%) 68%, hsl(0deg -2% 37%) 72%, hsl(0deg -2% 36%) 76%, hsl(0deg -2% 34%) 80%, hsl(0deg -2% 33%) 84%, hsl(0deg -2% 31%) 90%, hsl(0deg -2% 30%) 100%)"
+        },
+        {
+          "slug": "theme-color-1-radial",
+          "name": "Theme-color-1 Radial",
+          "gradient": "radial-gradient(ellipse 40% 60% at 55% 60%, hsl(151deg 33% 86%) 0%, hsl(151deg 33% 85%) 10%, hsl(151deg 33% 83%) 15%, hsl(151deg 33% 82%) 19%, hsl(151deg 33% 80%) 23%, hsl(151deg 33% 79%) 27%, hsl(151deg 33% 77%) 31%, hsl(151deg 33% 76%) 34%, hsl(151deg 32% 74%) 38%, hsl(151deg 32% 73%) 41%, hsl(151deg 32% 71%) 45%, hsl(151deg 32% 70%) 48%, hsl(151deg 32% 68%) 51%, hsl(151deg 32% 67%) 55%, hsl(151deg 32% 65%) 58%, hsl(151deg 32% 64%) 61%, hsl(151deg 31% 62%) 65%, hsl(151deg 31% 61%) 68%, hsl(151deg 31% 59%) 72%, hsl(151deg 31% 58%) 76%, hsl(151deg 31% 56%) 80%, hsl(151deg 31% 55%) 84%, hsl(151deg 31% 53%) 90%, hsl(151deg 31% 52%) 100%)"
+        },
+        {
+          "slug": "theme-color-2-radial",
+          "name": "Theme-color-2 Radial",
+          "gradient": "radial-gradient(ellipse 40% 60% at 55% 60%, hsl(229deg 26% 54%) 0%, hsl(229deg 26% 53%) 10%, hsl(229deg 26% 51%) 15%, hsl(229deg 26% 50%) 19%, hsl(229deg 26% 48%) 23%, hsl(229deg 26% 47%) 27%, hsl(229deg 26% 45%) 31%, hsl(229deg 26% 44%) 34%, hsl(229deg 25% 42%) 38%, hsl(229deg 25% 41%) 41%, hsl(229deg 25% 39%) 45%, hsl(229deg 25% 38%) 48%, hsl(229deg 25% 36%) 51%, hsl(229deg 25% 35%) 55%, hsl(229deg 25% 33%) 58%, hsl(229deg 25% 32%) 61%, hsl(229deg 24% 30%) 65%, hsl(229deg 24% 29%) 68%, hsl(229deg 24% 27%) 72%, hsl(229deg 24% 26%) 76%, hsl(229deg 24% 24%) 80%, hsl(229deg 24% 23%) 84%, hsl(229deg 24% 21%) 90%, hsl(229deg 24% 20%) 100%)"
+        },
+        {
+          "slug": "theme-color-3-radial",
+          "name": "Theme-color-3 Radial",
+          "gradient": "radial-gradient(ellipse 40% 60% at 55% 60%, hsl(208deg 40% 90%) 0%, hsl(208deg 40% 89%) 10%, hsl(208deg 40% 88%) 15%, hsl(208deg 40% 87%) 19%, hsl(208deg 40% 86%) 23%, hsl(208deg 40% 85%) 27%, hsl(208deg 40% 84%) 31%, hsl(208deg 40% 83%) 34%, hsl(208deg 39% 82%) 38%, hsl(208deg 39% 81%) 41%, hsl(208deg 39% 80%) 45%, hsl(208deg 39% 79%) 48%, hsl(208deg 39% 78%) 51%, hsl(208deg 39% 77%) 55%, hsl(208deg 39% 76%) 58%, hsl(208deg 39% 75%) 61%, hsl(208deg 38% 74%) 65%, hsl(208deg 38% 73%) 68%, hsl(208deg 38% 72%) 72%, hsl(208deg 38% 71%) 76%, hsl(208deg 38% 70%) 80%, hsl(208deg 38% 69%) 84%, hsl(208deg 38% 68%) 90%, hsl(208deg 38% 67%) 100%)"
+        },
+        {
+          "slug": "theme-color-4-radial",
+          "name": "Theme-color-4 Radial",
+          "gradient": "radial-gradient(ellipse 40% 60% at 55% 60%, hsl(357deg 40% 49%) 0%, hsl(357deg 40% 48%) 10%, hsl(357deg 40% 46%) 15%, hsl(357deg 40% 45%) 19%, hsl(357deg 40% 43%) 23%, hsl(357deg 40% 42%) 27%, hsl(357deg 40% 40%) 31%, hsl(357deg 40% 39%) 34%, hsl(357deg 39% 37%) 38%, hsl(357deg 39% 36%) 41%, hsl(357deg 39% 34%) 45%, hsl(357deg 39% 33%) 48%, hsl(357deg 39% 31%) 51%, hsl(357deg 39% 30%) 55%, hsl(357deg 39% 28%) 58%, hsl(357deg 39% 27%) 61%, hsl(357deg 38% 25%) 65%, hsl(357deg 38% 24%) 68%, hsl(357deg 38% 22%) 72%, hsl(357deg 38% 21%) 76%, hsl(357deg 38% 19%) 80%, hsl(357deg 38% 18%) 84%, hsl(357deg 38% 16%) 90%, hsl(357deg 38% 15%) 100%)"
+        },
+        {
           "slug": "primary",
           "name": "Primary Light → Dark",
           "gradient": "linear-gradient(135deg, #3fa1e2, #005192)"

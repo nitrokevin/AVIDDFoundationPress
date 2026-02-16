@@ -35,7 +35,7 @@
 
     // Apply to p and li, but NOT if they are descendants of a group
     p:not(.wp-block-group *),
-    li:not(.wp-block-group *) {
+    li:not(.wp-block-group *, .accordion-item) {
       max-width: 100ch;
     }
   }

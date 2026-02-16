@@ -332,152 +332,91 @@ add_filter( 'nav_menu_link_attributes', function( $atts, $item, $args, $depth ) 
 }, 10, 4 );
 
 
-/**
- * DIAGNOSTIC TOOL - Add this to a test page template or functions.php temporarily
- * 
- * This will show you exactly what's being saved in the database
- * 
- * Usage: Create a page template with this code, or add to functions.php
- * and visit yoursite.com/?customizer_debug=1
- */
 
-// Add this to functions.php to create a debug page
-add_action( 'template_redirect', function() {
-    if ( isset( $_GET['customizer_debug'] ) && current_user_can( 'manage_options' ) ) {
-        ?>
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Customizer Debug</title>
-            <style>
-                body { font-family: monospace; padding: 20px; background: #f5f5f5; }
-                h1 { color: #333; }
-                h2 { color: #666; margin-top: 30px; }
-                table { background: white; border-collapse: collapse; width: 100%; margin: 20px 0; }
-                th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-                th { background: #0073aa; color: white; }
-                .value { font-weight: bold; color: #0073aa; }
-                .empty { color: #999; font-style: italic; }
-                .success { color: #46b450; }
-                .warning { color: #f56e28; }
-                .error { color: #dc3232; }
-            </style>
-        </head>
-        <body>
-            <h1>🔍 Customizer Debug Information</h1>
-            
-            <h2>Color Palette Settings</h2>
-            <table>
-                <tr>
-                    <th>Setting Name</th>
-                    <th>Saved Value</th>
-                    <th>Status</th>
-                </tr>
-                <?php
-                $color_settings = [
-                    'color_palette_setting_0'  => 'Nav background colour',
-                    'color_palette_setting_1'  => 'Nav menu item colour',
-                    'color_palette_setting_3'  => 'Footer background colour',
-                    'color_palette_setting_4'  => 'Footer text colour',
-                    'color_palette_setting_5'  => 'Footer link colour',
-                    'color_palette_setting_10' => 'Page background colour',
-                ];
-                
-                foreach ( $color_settings as $setting => $label ) {
-                    $value = get_theme_mod( $setting );
-                    $status = $value ? '<span class="success">✓ Set</span>' : '<span class="warning">⚠ Empty</span>';
-                    $display_value = $value ? '<span class="value">' . esc_html( $value ) . '</span>' : '<span class="empty">Not set</span>';
-                    echo "<tr><td>{$label} ({$setting})</td><td>{$display_value}</td><td>{$status}</td></tr>";
-                }
-                ?>
-            </table>
-            
-            <h2>Social Media Settings</h2>
-            <table>
-                <tr>
-                    <th>Network</th>
-                    <th>Enabled (Checkbox)</th>
-                    <th>URL</th>
-                    <th>Will Display?</th>
-                </tr>
-                <?php
-                $social_networks = ['facebook', 'x', 'instagram', 'linkedin', 'pinterest', 'youtube', 'tiktok'];
-                
-                foreach ( $social_networks as $network ) {
-                    $enabled = get_theme_mod( "social-{$network}", '' );
-                    $url = get_theme_mod( "social-{$network}-url", '' );
-                    
-                    $enabled_display = $enabled === '1' 
-                        ? '<span class="success">✓ Checked (value: "1")</span>' 
-                        : '<span class="error">✗ Unchecked (value: "' . esc_html( $enabled ) . '")</span>';
-                    
-                    $url_display = !empty( $url ) 
-                        ? '<span class="value">' . esc_html( $url ) . '</span>' 
-                        : '<span class="empty">Empty</span>';
-                    
-                    $will_show = ( $enabled === '1' && !empty( $url ) ) 
-                        ? '<span class="success">✓ YES</span>' 
-                        : '<span class="error">✗ NO</span>';
-                    
-                    echo "<tr><td>" . ucfirst( $network ) . "</td><td>{$enabled_display}</td><td>{$url_display}</td><td>{$will_show}</td></tr>";
-                }
-                ?>
-            </table>
-            
-            <h2>Other Settings</h2>
-            <table>
-                <tr>
-                    <th>Setting</th>
-                    <th>Value</th>
-                </tr>
-                <?php
-                $other_settings = [
-                    'header_logo' => 'Header Logo',
-                    'header_background_image' => 'Header Background Image',
-                    'footer_background_image' => 'Footer Background Image',
-                    'contained_header' => 'Contained Header',
-                    'sticky_header' => 'Sticky Header',
-                    'fixed_header' => 'Fixed Header',
-                    'transparent_header' => 'Transparent Header',
-                    'dark_mode' => 'Dark Mode',
-                ];
-                
-                foreach ( $other_settings as $setting => $label ) {
-                    $value = get_theme_mod( $setting );
-                    $display_value = $value ? '<span class="value">' . esc_html( $value ) . '</span>' : '<span class="empty">Not set</span>';
-                    echo "<tr><td>{$label} ({$setting})</td><td>{$display_value}</td></tr>";
-                }
-                ?>
-            </table>
-            
-            <h2>Repeater Fields</h2>
-            <table>
-                <tr>
-                    <th>Field</th>
-                    <th>Data</th>
-                </tr>
-                <?php
-                $footer_links = get_theme_mod( 'footer_links' );
-                $opening_times = get_theme_mod( 'opening_times' );
-                
-                echo "<tr><td>Footer Links</td><td><pre>" . esc_html( $footer_links ? $footer_links : 'Empty' ) . "</pre></td></tr>";
-                echo "<tr><td>Opening Times</td><td><pre>" . esc_html( $opening_times ? $opening_times : 'Empty' ) . "</pre></td></tr>";
-                ?>
-            </table>
-            
-            <h2>CSS Output Test</h2>
-            <p>This is what should be in your &lt;head&gt;:</p>
-            <pre style="background: white; padding: 20px; border: 1px solid #ddd;"><?php
-            ob_start();
-            avidd_customizer_css();
-            $css_output = ob_get_clean();
-            echo esc_html( $css_output );
-            ?></pre>
-            
-            <p><a href="<?php echo home_url(); ?>">← Back to site</a></p>
-        </body>
-        </html>
-        <?php
-        exit;
+// ------------------------------------------------------------
+// Branded email notification
+// ------------------------------------------------------------
+// 1. Force CF7 emails to HTML
+add_filter('wp_mail_content_type', function($content_type) {
+    return 'text/html';
+});
+
+// 2. Add your HTML template wrapper
+add_filter('wpcf7_mail_components', function($components, $contact_form, $mail) {
+    // Get the logo URL
+$logo_id = get_theme_mod('email_logo');
+$logo_url = '';
+
+// Convert attachment ID to URL
+if ($logo_id) {
+    $logo_url = wp_get_attachment_image_url($logo_id, 'full');
+}
+
+// Fallback to site icon
+if (empty($logo_url)) {
+    $site_icon_id = get_option('site_icon');
+    if ($site_icon_id) {
+        $logo_url = wp_get_attachment_image_url($site_icon_id, 'full');
     }
+}
+    $site_name = wp_specialchars_decode(get_bloginfo('name'), ENT_QUOTES);
+    $site_url = home_url('/');
+    
+    // Fallback to site icon
+    if (empty($logo_url)) {
+        $site_icon_id = get_option('site_icon');
+        if ($site_icon_id) {
+            $logo_url = wp_get_attachment_image_url($site_icon_id, 'full');
+        }
+    }
+    
+    // Get the message and convert to paragraphs
+    $message_html = wpautop($components['body']);
+    
+    $html = '
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"></head>
+    <body style="margin:0; padding:0; background:#f6f6f6;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f6f6; padding:24px 12px;">
+            <tr><td align="center">
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#fff; border-radius:12px; overflow:hidden;">
+                    <tr>
+                        <td style="padding:22px 24px;">';
+    
+    if (!empty($logo_url)) {
+        $html .= '<a href="'.esc_url($site_url).'"><img src="'.esc_url($logo_url).'" alt="'.esc_attr($site_name).'" style="max-height:46px; height:auto; display:block;"></a>';
+    } else {
+        $html .= '<div style="font-weight:700; font-size:18px;">'.esc_html($site_name).'</div>';
+    }
+    
+    $html .= '
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:24px; font-family:Arial, sans-serif; font-size:15px; line-height:1.5; color:#222;">
+                            '.$message_html.'
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:18px 24px; background:#fafafa; border-top:1px solid #eee; font-size:12px; color:#666; font-family:Arial, sans-serif;">
+                            <a href="'.esc_url($site_url).'" style="color:#666; text-decoration:none;">'.$site_name.'</a><br>
+                        </td>
+                    </tr>
+                </table>
+            </td></tr>
+        </table>
+    </body>
+    </html>';
+    
+    $components['body'] = $html;
+    
+    return $components;
+}, 10, 3);
+
+// 3. Reset content type after CF7 sends (important!)
+add_action('wpcf7_mail_sent', function() {
+    remove_filter('wp_mail_content_type', function($content_type) {
+        return 'text/html';
+    });
 });

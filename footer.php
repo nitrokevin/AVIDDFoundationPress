@@ -79,6 +79,24 @@ if ($footer_background_image) {
                    <?php if ( $contact_phone ) echo '<li>T: ' . esc_html( $contact_phone ) . '</li>'; ?>
                 <?php if ( $contact_email ) echo '<li><a href="mailto:' . esc_attr( $contact_email ) . '">E: ' . esc_html( $contact_email ) . '</a></li>'; ?>
                 </ul>
+                     
+
+                            <?php
+                    $opening_times = avidd_get_repeater_data('opening_times');
+
+                    if (!empty($opening_times)) {
+                        foreach ($opening_times as $time) {
+                            if (!empty($time['day'])) {
+                                echo esc_html($time['day']) . ': ';
+                                if (!empty($time['opening_time'])) echo esc_html($time['opening_time']);
+                                if (!empty($time['opening_time']) && !empty($time['closing_time'])) echo ' - ';
+                                if (!empty($time['closing_time'])) echo esc_html($time['closing_time']);
+                                echo '<br>';
+                            }
+                        }
+                    }
+                    ?>
+
 
             </section>
             <section>
@@ -119,18 +137,20 @@ if ($footer_background_image) {
             </section>
             <section>
                 <?php foundationpress_footer_nav_r(); ?>
-                <?php
-                $footer_links = get_theme_mod('footer_links');
-                if ($footer_links) { ?>
-                    <div class="footer-links">
-                        <?php
-                        foreach ($footer_links as $footer_link) : ?>
-                            <a href="<?php echo esc_url($footer_link['link_url']); ?>">
-                                <?php echo wp_get_attachment_image($footer_link['footer_image'], 'thumbnail', false, ["class" => "footer-icon"]); ?>
-                            </a>
-                        <?php endforeach; ?>
-                    </div>
-                <?php } ?>
+                    <?php
+                    $footer_links = avidd_get_repeater_data('footer_links');
+
+                    if (!empty($footer_links)) { ?>
+                        <div class="footer-links">
+                            <?php foreach ($footer_links as $footer_link) : ?>
+                                <?php if (!empty($footer_link['footer_image']) ) : ?>
+                                    <a href="<?php echo esc_url($footer_link['link_url']); ?>">
+                                        <?php echo wp_get_attachment_image($footer_link['footer_image'], 'thumbnail', false, ["class" => "footer-icon"]); ?>
+                                    </a>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php } ?>
             </section>
         </div>
     </div>

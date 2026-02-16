@@ -24,7 +24,7 @@ function checkCategoryOrder($categories)
     //return new categories
     return $newCategories;
 }
-add_filter( 'block_categories', 'checkCategoryOrder', 99, 1);
+add_filter( 'block_categories_all', 'checkCategoryOrder', 99, 1);
   
 add_action( 'init', 'register_acf_blocks' );
 function register_acf_blocks() {
@@ -196,7 +196,7 @@ acf_add_local_field_group(array(
                 'key' => 'field_626da7410655fg',
                 'label' => 'Tab Bar Background Colour',
                 'name' => 'tab_bar_background_color',
-                'type' => 'swatch',
+                'type' => 'color_picker',
                 'instructions' => '',
                 'required' => 0,
                 'conditional_logic' => 0,
@@ -205,15 +205,16 @@ acf_add_local_field_group(array(
                     'class' => '',
                     'id' => '',
                 ),
-               'choices' => get_theme_design_choices([
-    'include_colors'   => true,
-    'include_gradients' => false,
-    'key' => 'color', // return HEX as key for editor
-]),
+          'return_format' => 'string',
+            'allow_in_bindings' => 1,
+    'show_custom_palette' => 1,
+    'custom_palette_source' => 'themejson',
+    'show_color_wheel' => 0,
+    'palette_colors' => '',
                 'allow_null' => 1,
                 'default_value' => '',
                 'layout' => 'horizontal',
-                'return_format' => 'value',
+               
                 'other_choice' => 0,
                 'save_other_choice' => 0,
             ),
@@ -259,7 +260,7 @@ acf_add_local_field_group(array(
                         'key' => 'field_626dcf6a205dc',
                         'label' => 'Tab Background Colour',
                         'name' => 'tab_background_color',
-                        'type' => 'swatch',
+                        'type' => 'color_picker',
                         'instructions' => '',
                         'required' => 0,
                         'conditional_logic' => 0,
@@ -268,15 +269,16 @@ acf_add_local_field_group(array(
                             'class' => '',
                             'id' => '',
                         ),
-                       'choices' => get_theme_design_choices([
-    'include_colors'   => true,
-    'include_gradients' => false,
-    'key' => 'color', // return HEX as key for editor
-]),
+               'return_format' => 'string',
+            'allow_in_bindings' => 1,
+    'show_custom_palette' => 1,
+    'custom_palette_source' => 'themejson',
+    'show_color_wheel' => 0,
+    'palette_colors' => '',
                         'allow_null' => 1,
                         'default_value' => '',
                         'layout' => 'horizontal',
-                        'return_format' => 'value',
+                  
                         'other_choice' => 0,
                         'save_other_choice' => 0,
                     ),
@@ -508,7 +510,7 @@ acf_add_local_field_group(array(
             'key' => 'field_626dd3503ell217',
             'label' => 'Carousel Background Colour',
             'name' => 'carousel_background_color',
-            'type' => 'swatch',
+            'type' => 'color_picker',
             'instructions' => '',
             'required' => 0,
             'conditional_logic' => 0,
@@ -517,17 +519,16 @@ acf_add_local_field_group(array(
                 'class' => '',
                 'id' => '',
             ),
-            // Compose swatch choices with gradients and colors, fallback to black if none found
-            'choices' => get_theme_design_choices([
-    'include_colors'   => true,
-    'include_gradients' => false,
-    'for_acf' => true,
-    'use_css_value' => true,
-]),
+         'return_format' => 'string',
+            'allow_in_bindings' => 1,
+    'show_custom_palette' => 1,
+    'custom_palette_source' => 'themejson',
+    'show_color_wheel' => 0,
+    'palette_colors' => '',
             'allow_null' => 1,
             'default_value' => '',
             'layout' => 'horizontal',
-            'return_format' => 'value',
+           
             'other_choice' => 0,
             'save_other_choice' => 0,
         ),
