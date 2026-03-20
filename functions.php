@@ -67,6 +67,7 @@ require_once( 'library/customizer-native.php' );
 
 /** ACF functions */
 require_once( 'library/acf-functions.php' );
+require_once( 'library/acf-option-pages.php' );
 /** ACF blocks */
 require_once( 'library/acf-blocks.php' );
 

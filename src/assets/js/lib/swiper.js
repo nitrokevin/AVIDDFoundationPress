@@ -1,8 +1,6 @@
 // Import Swiper bundle with all modules installed
 import Swiper from 'swiper/bundle';
 
-// Import styles bundle
-import 'swiper/css/bundle';
 
 window.addEventListener('load', function () {
     // Check if there are any elements with the 'swiper-container' class

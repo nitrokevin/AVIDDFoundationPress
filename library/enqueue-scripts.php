@@ -57,13 +57,7 @@ if ( ! function_exists( 'foundationpress_scripts' ) ) :
 
 		// Enqueue Foundation scripts
 		wp_enqueue_script( 'foundation', get_stylesheet_directory_uri() . '/dist/assets/js/' . foundationpress_asset_path( 'app.js' ), array( 'jquery' ), '2.10.4', true );
-	wp_enqueue_script(
-		'foundation-editor',
-		get_template_directory_uri() . '/dist/assets/js/editor.js', // Adjust path as needed
-		array( 'jquery' ),
-		null,
-		true
-	);
+
 		// Enqueue FontAwesome from CDN. Uncomment the line below if you need FontAwesome.
 		//wp_enqueue_script( 'fontawesome', 'https://use.fontawesome.com/5016a31c8c.js', array(), '4.7.0', true );
 		wp_enqueue_script( 'FontAwesome', '//kit.fontawesome.com/79a95a0ad8.js', array(), '7.0.0', false );
@@ -78,3 +72,43 @@ if ( ! function_exists( 'foundationpress_scripts' ) ) :
 
 	add_action( 'wp_enqueue_scripts', 'foundationpress_scripts' );
 endif;
+
+// Block editor scripts.
+if ( ! function_exists( 'foundationpress_editor_scripts' ) ) :
+	function foundationpress_editor_scripts() {
+		wp_enqueue_script(
+			'foundation-editor',
+			get_template_directory_uri() . '/dist/assets/js/editor.js',
+			array( 'wp-blocks', 'wp-element', 'wp-components', 'wp-editor', 'wp-hooks', 'wp-compose', 'wp-data', 'wp-i18n' ),
+			null,
+			true
+		);
+	}
+	add_action( 'enqueue_block_editor_assets', 'foundationpress_editor_scripts' );
+endif;
+
+
+// Customizer live preview.
+add_action( 'customize_preview_init', function() {
+	wp_enqueue_script(
+		'avidd-customizer-preview',
+		get_template_directory_uri() . '/dist/assets/js/customizer-preview.js',
+		array( 'jquery' ),
+		null,
+		true
+	);
+
+	// Inject gradient slug => CSS map for live preview resolution
+	$settings  = wp_get_global_settings();
+	$gradients = $settings['color']['gradients']['theme'] ?? [];
+	$map       = [];
+
+	foreach ( $gradients as $gradient ) {
+		$slug = sanitize_title( $gradient['slug'] ?? '' );
+		if ( $slug && ! empty( $gradient['gradient'] ) ) {
+			$map[ $slug ] = $gradient['gradient'];
+		}
+	}
+
+	wp_localize_script( 'avidd-customizer-preview', 'aviddGradients', $map );
+} );

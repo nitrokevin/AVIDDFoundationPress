@@ -57,18 +57,7 @@ add_filter('acf/load_field/name=options_page_selector', function($field) {
 
 add_theme_support('align-wide');
 
-function custom_block_categories($categories) {
-    return array_merge(
-        $categories,
-        [
-            [
-                'slug'  => 'avidd',
-                'title' => __('AVIDD Blocks', 'avidd'),
-            ],
-        ]
-    );
-}
-add_action('block_categories_all', 'custom_block_categories', 10, 2);
+
 
 
 //Custom alignment for columns
@@ -332,91 +321,84 @@ add_filter( 'nav_menu_link_attributes', function( $atts, $item, $args, $depth ) 
 }, 10, 4 );
 
 
-
 // ------------------------------------------------------------
-// Branded email notification
+// Branded email wrapper — ALL WordPress emails
 // ------------------------------------------------------------
-// 1. Force CF7 emails to HTML
-add_filter('wp_mail_content_type', function($content_type) {
-    return 'text/html';
-});
 
-// 2. Add your HTML template wrapper
-add_filter('wpcf7_mail_components', function($components, $contact_form, $mail) {
-    // Get the logo URL
-$logo_id = get_theme_mod('email_logo');
-$logo_url = '';
+function my_get_email_logo_url() {
+    $logo = get_theme_mod( 'email_logo' );
 
-// Convert attachment ID to URL
-if ($logo_id) {
-    $logo_url = wp_get_attachment_image_url($logo_id, 'full');
+    if ( ! empty( $logo ) ) {
+        return esc_url_raw( $logo );
+    }
+
+    $site_icon_id = get_option( 'site_icon' );
+    if ( $site_icon_id ) {
+        return wp_get_attachment_image_url( $site_icon_id, 'full' );
+    }
+
+    return '';
 }
 
-// Fallback to site icon
-if (empty($logo_url)) {
-    $site_icon_id = get_option('site_icon');
-    if ($site_icon_id) {
-        $logo_url = wp_get_attachment_image_url($site_icon_id, 'full');
-    }
-}
-    $site_name = wp_specialchars_decode(get_bloginfo('name'), ENT_QUOTES);
-    $site_url = home_url('/');
-    
-    // Fallback to site icon
-    if (empty($logo_url)) {
-        $site_icon_id = get_option('site_icon');
-        if ($site_icon_id) {
-            $logo_url = wp_get_attachment_image_url($site_icon_id, 'full');
-        }
-    }
-    
-    // Get the message and convert to paragraphs
-    $message_html = wpautop($components['body']);
-    
-    $html = '
-    <!DOCTYPE html>
-    <html>
-    <head><meta charset="utf-8"></head>
-    <body style="margin:0; padding:0; background:#f6f6f6;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f6f6; padding:24px 12px;">
-            <tr><td align="center">
-                <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#fff; border-radius:12px; overflow:hidden;">
-                    <tr>
-                        <td style="padding:22px 24px;">';
-    
-    if (!empty($logo_url)) {
-        $html .= '<a href="'.esc_url($site_url).'"><img src="'.esc_url($logo_url).'" alt="'.esc_attr($site_name).'" style="max-height:46px; height:auto; display:block;"></a>';
-    } else {
-        $html .= '<div style="font-weight:700; font-size:18px;">'.esc_html($site_name).'</div>';
-    }
-    
-    $html .= '
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding:24px; font-family:Arial, sans-serif; font-size:15px; line-height:1.5; color:#222;">
-                            '.$message_html.'
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding:18px 24px; background:#fafafa; border-top:1px solid #eee; font-size:12px; color:#666; font-family:Arial, sans-serif;">
-                            <a href="'.esc_url($site_url).'" style="color:#666; text-decoration:none;">'.$site_name.'</a><br>
-                        </td>
-                    </tr>
-                </table>
-            </td></tr>
-        </table>
-    </body>
-    </html>';
-    
-    $components['body'] = $html;
-    
-    return $components;
-}, 10, 3);
+function my_brand_email_html( $body ) {
+    $logo_url  = my_get_email_logo_url();
+    $site_name = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+    $site_url  = home_url( '/' );
 
-// 3. Reset content type after CF7 sends (important!)
-add_action('wpcf7_mail_sent', function() {
-    remove_filter('wp_mail_content_type', function($content_type) {
-        return 'text/html';
-    });
-});
+    $is_html      = preg_match( '/<[a-z][\s\S]*>/i', $body );
+    $message_html = $is_html ? $body : wpautop( $body );
+
+    $logo_html = ! empty( $logo_url )
+        ? '<a href="' . esc_url( $site_url ) . '"><img src="' . esc_url( $logo_url ) . '" alt="' . esc_attr( $site_name ) . '" style="max-height:46px; height:auto; display:block;"></a>'
+        : '<div style="font-weight:700; font-size:18px;">' . esc_html( $site_name ) . '</div>';
+
+    return '<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0; padding:0; background:#f6f6f6;">
+    <!-- my-brand-wrapper -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f6f6; padding:24px 12px;">
+        <tr><td align="center">
+            <table role="presentation" width="650" cellpadding="0" cellspacing="0" style="background:#fff; border-radius:12px; overflow:hidden;">
+                <tr>
+                    <td style="padding:22px 24px;">' . $logo_html . '</td>
+                </tr>
+                <tr>
+                    <td style="padding:24px; font-family:Arial, sans-serif; font-size:15px; line-height:1.5; color:#222;">
+                        ' . $message_html . '
+                    </td>
+                </tr>
+        
+            </table>
+        </td></tr>
+    </table>
+</body>
+</html>';
+}
+
+/**
+ * Strip WooCommerce's own email header (logo/banner) before it gets added.
+ * This prevents WC's logo appearing inside our wrapper.
+ */
+add_filter( 'woocommerce_email_header', '__return_empty_string', 99 );
+add_filter( 'woocommerce_email_footer', '__return_empty_string', 99 );
+
+/**
+ * Single wp_mail filter handles everything.
+ * Already-wrapped emails are skipped.
+ */
+add_filter( 'wp_mail', function( $args ) {
+    if ( str_contains( $args['message'], '<!-- my-brand-wrapper -->' ) ) {
+        return $args;
+    }
+
+    // Force HTML content type
+    $headers = is_array( $args['headers'] ) ? $args['headers'] : explode( "\n", str_replace( "\r\n", "\n", $args['headers'] ) );
+    $headers = array_filter( $headers, fn( $h ) => stripos( trim( $h ), 'content-type' ) === false );
+    $headers[] = 'Content-Type: text/html; charset=UTF-8';
+    $args['headers'] = array_values( $headers );
+
+    $args['message'] = my_brand_email_html( $args['message'] );
+
+    return $args;
+} );

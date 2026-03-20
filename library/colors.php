@@ -105,6 +105,9 @@ function get_theme_design_choices( $options = [] ) {
                 // ACF swatch with CSS keys — use gradient CSS string as key
                 if ( $css ) $choices[ $css ] = $name;
             } elseif ( $options['for_acf'] || $options['for_kirki'] ) {
+                // *** KEY CHANGE vs original ***
+                // Store gradient slug as key (not CSS string) so the Customizer
+                // and ACF swatch store a clean slug rather than a long CSS value.
                 $choices[ $slug ] = $name;
             } elseif ( $options['use_css_value'] ) {
                 if ( $css ) $choices[ $slug ] = $css;

@@ -32,6 +32,7 @@ function register_acf_blocks() {
     register_block_type(  __DIR__ . '/acf-carousel/block.json' );
     register_block_type(  __DIR__ . '/acf-tab/block.json' );
      register_block_type(  __DIR__ . '/acf-global-content-selector/block.json' );
+ 
 
 
     }

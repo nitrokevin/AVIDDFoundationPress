@@ -1,22 +1,4 @@
 
-section, div {
-	@each $color, $code in $foundation-palette {
-		&.#{$color} {
-			background-color: $code;
-			color:color-pick-contrast($code, $colors: ($white, $black, $primary-color, $secondary-color), $tolerance: $global-color-pick-contrast-tolerance) !important;
-			
-		}
-	}
-}
-section article {
-	@each $color, $code in $foundation-palette {
-		&.#{$color} {
-			background-color: $code;
-			color:color-pick-contrast($code, $colors: ($white, $black, $primary-color, $secondary-color), $tolerance: $global-color-pick-contrast-tolerance) !important;
-		}
-	}
-}
-
 // ------------------------------------
 // Auto-generate gradients from Foundation palette
 // ------------------------------------
@@ -56,5 +38,15 @@ $foundation-cross-gradients: ();
   }
 }
 
+$foundation-radial-gradients: ();
+
+@each $name, $color in $foundation-palette {
+  @if type-of($color) == 'color' and lightness($color) > 15% and lightness($color) < 95% {
+    $gradient: radial-gradient(ellipse 40% 60% at 55% 60%, scale-color($color, $lightness: 10%) 0%, scale-color($color, $lightness: -24%) 100%);
+    $foundation-radial-gradients: map-merge($foundation-radial-gradients, (#{$name}-radial: $gradient));
+  }
+}
+
 // Merge all gradients together
 $all-gradients: map-merge($foundation-gradients, $foundation-cross-gradients);
+$all-gradients: map-merge($all-gradients, $foundation-radial-gradients);

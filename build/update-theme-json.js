@@ -53,10 +53,10 @@ if (!match) {
 
 const colors = match[1]
   .split(",")
-  .map(line => line.trim())
+  .map((line) => line.trim())
   .filter(Boolean)
-  .map(line => {
-    let [slug, value] = line.split(":").map(s => s.trim());
+  .map((line) => {
+    let [slug, value] = line.split(":").map((s) => s.trim());
     slug = slug.replace(/^['"]|['"]$/g, ""); // strip quotes from slug if present
     const color = value.replace(/['"]+/g, "");
     return {
@@ -72,7 +72,7 @@ const excludedSlugs = new Set(["success", "warning", "alert"]);
 // Remove duplicate slugs (from SCSS) and exclude unwanted colors
 const uniqueColors = [];
 const seenColorSlugs = new Set();
-colors.forEach(c => {
+colors.forEach((c) => {
   if (!seenColorSlugs.has(c.slug) && !excludedSlugs.has(c.slug)) {
     uniqueColors.push(c);
     seenColorSlugs.add(c.slug);
@@ -81,7 +81,10 @@ colors.forEach(c => {
 
 themeJson.settings.color.palette = uniqueColors;
 // Disable default Gutenberg colors if palette is empty
-if (!themeJson.settings.color.palette || themeJson.settings.color.palette.length === 0) {
+if (
+  !themeJson.settings.color.palette ||
+  themeJson.settings.color.palette.length === 0
+) {
   themeJson.settings.color.custom = false;
   themeJson.settings.color.palette = [];
 }
@@ -96,7 +99,10 @@ function hexToHSL(hex) {
   // Remove '#' if present
   let color = hex.replace(/^#/, "");
   if (color.length === 3) {
-    color = color.split("").map(c => c + c).join("");
+    color = color
+      .split("")
+      .map((c) => c + c)
+      .join("");
   }
 
   let r = parseInt(color.substr(0, 2), 16) / 255;
@@ -105,7 +111,9 @@ function hexToHSL(hex) {
 
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
-  let h, s, l = (max + min) / 2;
+  let h,
+    s,
+    l = (max + min) / 2;
 
   if (max === min) {
     h = s = 0; // achromatic
@@ -133,20 +141,19 @@ function hexToHSL(hex) {
   return {
     h,
     s,
-    l
+    l,
   };
 }
 
 // Helper: Create smooth radial gradient with multiple stops
-function createRadialGradient(hex, ellipseSize = "40% 60%", position = "55% 60%") {
+function createRadialGradient(
+  hex,
+  ellipseSize = "40% 60%",
+  position = "55% 60%",
+) {
   const hsl = hexToHSL(hex);
-  const {
-    h,
-    s
-  } = hsl;
-  let {
-    l
-  } = hsl;
+  const { h, s } = hsl;
+  let { l } = hsl;
 
   // Generate 24 color stops from lighter to darker
   const stops = [];
@@ -155,12 +162,12 @@ function createRadialGradient(hex, ellipseSize = "40% 60%", position = "55% 60%"
   const step = (startL - endL) / 23; // 24 stops total
 
   const percentages = [
-    0, 10, 15, 19, 23, 27, 31, 34, 38, 41, 45, 48,
-    51, 55, 58, 61, 65, 68, 72, 76, 80, 84, 90, 100
+    0, 10, 15, 19, 23, 27, 31, 34, 38, 41, 45, 48, 51, 55, 58, 61, 65, 68, 72,
+    76, 80, 84, 90, 100,
   ];
 
   for (let i = 0; i < 24; i++) {
-    const currentL = Math.round(startL - (step * i));
+    const currentL = Math.round(startL - step * i);
     const currentS = Math.max(s - Math.floor(i / 8), s - 2); // Slightly adjust saturation
     stops.push(`hsl(${h}deg ${currentS}% ${currentL}%) ${percentages[i]}%`);
   }
@@ -173,13 +180,16 @@ function adjustColor(hex, amount) {
   // Remove '#' if present
   let color = hex.replace(/^#/, "");
   if (color.length === 3) {
-    color = color.split("").map(c => c + c).join("");
+    color = color
+      .split("")
+      .map((c) => c + c)
+      .join("");
   }
   let num = parseInt(color, 16);
 
   let r = (num >> 16) + amount;
-  let g = ((num >> 8) & 0x00FF) + amount;
-  let b = (num & 0x0000FF) + amount;
+  let g = ((num >> 8) & 0x00ff) + amount;
+  let b = (num & 0x0000ff) + amount;
 
   r = Math.min(255, Math.max(0, r));
   g = Math.min(255, Math.max(0, g));
@@ -203,7 +213,7 @@ const gradientPairs = [];
 // ------------------------------------------------------------
 // 1️⃣ RADIAL GRADIENTS - One per color (smooth multi-stop)
 // ------------------------------------------------------------
-uniqueColors.forEach(color => {
+uniqueColors.forEach((color) => {
   if (excluded.includes(color.slug)) return;
 
   const radialGradient = createRadialGradient(color.color);
@@ -222,7 +232,7 @@ uniqueColors.forEach(color => {
 // ------------------------------------------------------------
 // 2️⃣ LINEAR GRADIENTS - Light-dark self-gradients
 // ------------------------------------------------------------
-uniqueColors.forEach(color => {
+uniqueColors.forEach((color) => {
   if (excluded.includes(color.slug)) return;
 
   const lightColor = adjustColor(color.color, 40); // lighten by 40
@@ -231,7 +241,10 @@ uniqueColors.forEach(color => {
   const gradientString = `linear-gradient(135deg, ${lightColor}, ${darkColor})`;
   const slug = `${color.slug}`;
 
-  if (!seenGradients.has(slug) && !gradientPairs.some(g => g.gradient === gradientString)) {
+  if (
+    !seenGradients.has(slug) &&
+    !gradientPairs.some((g) => g.gradient === gradientString)
+  ) {
     gradientPairs.push({
       slug,
       name: `${color.name} Light → Dark`,
@@ -253,7 +266,7 @@ const crossPairs = [
 
 // Map slugs to color objects for quick lookup
 const colorMap = {};
-uniqueColors.forEach(c => {
+uniqueColors.forEach((c) => {
   colorMap[c.slug] = c;
 });
 
@@ -273,7 +286,10 @@ crossPairs.forEach(([slugA, slugB]) => {
   const gradientString = `linear-gradient(135deg, ${a.color}, ${b.color})`;
   const slug = createGradientName(a, b);
 
-  if (!seenGradients.has(slug) && !gradientPairs.some(g => g.gradient === gradientString)) {
+  if (
+    !seenGradients.has(slug) &&
+    !gradientPairs.some((g) => g.gradient === gradientString)
+  ) {
     gradientPairs.push({
       slug,
       name: createGradientLabel(a, b),
@@ -285,7 +301,9 @@ crossPairs.forEach(([slugA, slugB]) => {
 
 themeJson.settings.color.gradients = gradientPairs;
 
-console.log(`🌈 Generated ${gradientPairs.length} unique gradients (radial + linear)`);
+console.log(
+  `🌈 Generated ${gradientPairs.length} unique gradients (radial + linear)`,
+);
 
 // ------------------------------------------------------------
 // 🔀 Merge theme-extra.json if it exists
@@ -303,8 +321,8 @@ if (fs.existsSync(extraJsonPath)) {
     };
 
     // Merge colors (prevent duplicates)
-    if (extraJson.settings.color ?.palette) {
-      extraJson.settings.color.palette.forEach(extraColor => {
+    if (extraJson.settings.color?.palette) {
+      extraJson.settings.color.palette.forEach((extraColor) => {
         if (!seenColorSlugs.has(extraColor.slug)) {
           themeJson.settings.color.palette.push(extraColor);
           seenColorSlugs.add(extraColor.slug);
@@ -313,11 +331,13 @@ if (fs.existsSync(extraJsonPath)) {
     }
 
     // Merge gradients (prevent duplicates)
-    if (extraJson.settings.color ?.gradients) {
-      extraJson.settings.color.gradients.forEach(extraGrad => {
+    if (extraJson.settings.color?.gradients) {
+      extraJson.settings.color.gradients.forEach((extraGrad) => {
         const existing = themeJson.settings.color.gradients;
         const hasSlug = seenGradients.has(extraGrad.slug);
-        const hasGradientString = existing.some(g => g.gradient === extraGrad.gradient);
+        const hasGradientString = existing.some(
+          (g) => g.gradient === extraGrad.gradient,
+        );
         if (!hasSlug && !hasGradientString) {
           themeJson.settings.color.gradients.push(extraGrad);
           seenGradients.add(extraGrad.slug);
@@ -332,20 +352,26 @@ if (fs.existsSync(extraJsonPath)) {
 // ------------------------------------------------------------
 // Extract font families
 const bodyFontFamilyMatch = scss.match(/\$body-font-family\s*:\s*([^;]+);/);
-const monoFontFamilyMatch = scss.match(/\$font-family-monospace\s*:\s*([^;]+);/);
+const monoFontFamilyMatch = scss.match(
+  /\$font-family-monospace\s*:\s*([^;]+);/,
+);
 
 // Extract header styles for xlarge breakpoint
 const headerStylesMatch = scss.match(/\$header-styles:\s*\(\s*([^)]+)\);/m);
 let fontSizes = [];
 if (headerStylesMatch) {
   // Find xlarge block
-  const xlargeBlockMatch = headerStylesMatch[1].match(/xlarge\s*:\s*\(([\s\S]*?)\)(?:,|$)/m);
+  const xlargeBlockMatch = headerStylesMatch[1].match(
+    /xlarge\s*:\s*\(([\s\S]*?)\)(?:,|$)/m,
+  );
   if (xlargeBlockMatch) {
     const xlargeBlock = xlargeBlockMatch[1];
     // Find p, h1, h2, h3 font-size
     const tags = ["p", "h1", "h2", "h3"];
-    tags.forEach(tag => {
-      const tagMatch = xlargeBlock.match(new RegExp(`${tag}\\s*:\\s*\\(([^)]+)\\)`, "m"));
+    tags.forEach((tag) => {
+      const tagMatch = xlargeBlock.match(
+        new RegExp(`${tag}\\s*:\\s*\\(([^)]+)\\)`, "m"),
+      );
       if (tagMatch) {
         // Find font-size property in the tag block
         const fontSizeMatch = tagMatch[1].match(/font-size\s*:\s*([^,)\n]+)/);
@@ -353,7 +379,7 @@ if (headerStylesMatch) {
           fontSizes.push({
             slug: tag,
             name: tag.toUpperCase(),
-            size: fontSizeMatch[1].trim()
+            size: fontSizeMatch[1].trim(),
           });
         }
       }
@@ -370,14 +396,14 @@ if (bodyFontFamilyMatch) {
   fontFamilies.push({
     slug: "base",
     name: "Base",
-    fontFamily: bodyFontFamilyMatch[1].trim()
+    fontFamily: bodyFontFamilyMatch[1].trim(),
   });
 }
 if (monoFontFamilyMatch) {
   fontFamilies.push({
     slug: "mono",
     name: "Monospace",
-    fontFamily: monoFontFamilyMatch[1].trim()
+    fontFamily: monoFontFamilyMatch[1].trim(),
   });
 }
 if (fontFamilies.length > 0) {
@@ -405,17 +431,17 @@ themeJson.settings.custom = themeJson.settings.custom || {};
 const gutterMatch = scss.match(/\$grid-column-gutter:\s*\(([\s\S]*?)\);/);
 if (gutterMatch) {
   const mapBody = gutterMatch[1];
-  const lines = mapBody.split(",").map(l => l.trim());
+  const lines = mapBody.split(",").map((l) => l.trim());
   const gutterMap = {};
-  lines.forEach(line => {
-    const [key, val] = line.split(":").map(s => s.trim());
+  lines.forEach((line) => {
+    const [key, val] = line.split(":").map((s) => s.trim());
     gutterMap[key] = val; // val is e.g. 20px
   });
 
   // Convert to rem if desired (assuming base 16px)
-  const toRem = px => {
+  const toRem = (px) => {
     if (px.endsWith("px")) {
-      return `${parseFloat(px)/16}rem`;
+      return `${parseFloat(px) / 16}rem`;
     }
     return px; // already rem or other unit
   };

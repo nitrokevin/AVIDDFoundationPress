@@ -2,132 +2,440 @@
 Frontend styles for gutenberg blocks
 */
 
-/** === Base Color Palatte === */
-/** === Solid Colors === */
-@each $color,
-$code in $foundation-palette {
+// =============================================================================
+// COLOR MAPS
+// =============================================================================
 
-  .has-#{$color}-background-color {
-    background-color: $code;
-    color: color-pick-contrast($code,
-        $colors: ($white, $black, $primary-color, $secondary-color),
-        $tolerance: $global-color-pick-contrast-tolerance);
+$locked-text-colors: (
+  primary: "white",
+  secondary: "white",
+  theme-color-1: "black",
+  theme-color-2: "black",
+  theme-color-3: "black",
+  theme-color-4: "white",
+  white: "secondary",
+  black: "white",
+  light-gray: "secondary",
+  medium-gray: "black",
+  dark-gray: "black"
+);
 
-    a:not(.button, .wp-block-button__link) {
-      color: color-pick-contrast($code,
-          $colors: ($primary-color, $secondary-color),
-          $tolerance: $global-color-pick-contrast-tolerance);
-    }
-  }
+$locked-link-colors: (
+  primary: theme-color-2,
+  secondary: theme-color-1,
+  theme-color-1: secondary,
+  theme-color-2: primary,
+  theme-color-3: secondary,
+  theme-color-4: theme-color-2,
+  white: primary,
+  black: theme-color-3,
+  light-gray: secondary,
+  medium-gray: primary,
+  dark-gray: theme-color-3,
+);
 
-  .has-#{$color}-color {
-    color: $code;
-  }
+// Note: radial variants are intentionally absent — they default to $white below.
+// Add entries here if specific radial gradients need different text colors.
+$locked-gradient-text-colors: (
+  primary: "white",
+  secondary: "black",
+  light-gray: "black",
+  medium-gray: "black",
+  dark-gray: "white",
+  theme-color-1: "white",
+  theme-color-2: "white",
+  theme-color-3: "white",
+  theme-color-4: "white",
+  primary-secondary: "white",
+  secondary-theme-color-1: "white",
+  primary-theme-color-1: "white"
+);
 
-  .wp-block-button__link.has-#{$color}-background-color {
-    background-color: $code;
-    color: color-pick-contrast($code,
-        $colors: ($white, $black, $primary-color, $secondary-color),
-        $tolerance: $global-color-pick-contrast-tolerance);
-    transition: $button-transition,
-      color .25s ease-out;
-
-    &:hover,
-    &:focus {
-      background-color: scale-color($code, $lightness: $button-background-hover-lightness) !important;
-
-    }
-  }
-
-  .wp-block-button__link.has-#{$color}-color {
-    color: $code;
-  }
-}
+$locked-gradient-link-colors: (primary-to-secondary: secondary);
 
 
-/** === Gradients === */
+// =============================================================================
+// MIXINS
+// =============================================================================
 
+// ------------------------------------
+// Alignfull bleed
+// ------------------------------------
 
-// Apply gradients and text colors
-@each $gradient,
-$settings in $all-gradients {
-  .has-#{$gradient}-gradient-background {
-    background: $settings;
-   
-  }
-}
-
-/** === Button === */
-.wp-block-button {
-
-	// add general foundation button styling
-	.wp-block-button__link {
-		@extend .button;
-	}
-
-	// add special styling for squared buttons
-	&.is-style-squared .wp-block-button__link {
-		border-radius: 0;
-	}
-
-	// add outline styles
-	&.is-style-outline .wp-block-button__link{
-		@extend .hollow;
-    background: transparent;
-	}
-}
-
-/** === File === */
-.wp-block-file .wp-block-file__button{
-  @include button();
-}
-
-/** === Group === */
-.wp-block-group.alignfull {
-  margin-left: calc( -50vw + 50%  );
-  margin-right: calc( -50vw + 50% );
+@mixin alignfull-bleed {
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
   max-width: 100vw;
-  padding:$global-padding 0;
   overflow-x: hidden;
-  .wp-block-group__inner-container{
-    @include xy-grid-container;
-    @each $breakpoint, $size in $grid-margin-gutters {
-      @include breakpoint($breakpoint) {
-        padding: $global-padding $size;
+}
+
+@mixin alignfull-inner-gutters {
+  @include xy-grid-container;
+  @each $breakpoint, $size in $grid-margin-gutters {
+    @include breakpoint($breakpoint) {
+      padding: $global-padding $size;
+    }
+  }
+}
+
+// ------------------------------------
+// Full bleed pseudo-element helpers
+// ------------------------------------
+
+@mixin bleed-pseudo-base {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100%;
+  z-index: -1;
+}
+
+@mixin bleed-left {
+  @include bleed-pseudo-base;
+  left: 0;
+  margin-left: calc(50% - 50vw);
+
+  @include breakpoint(medium) {
+    margin-left: calc(100% - 100vw);
+    width: 50vw;
+  }
+}
+@mixin bleed-left-column {
+  @include bleed-pseudo-base;
+  left: 0;
+  margin-left: calc(50% - 50vw);
+
+  @include breakpoint(medium) {
+    margin-left: calc(100% - 50vw);
+    width: 50vw;
+  }
+}
+
+@mixin bleed-right {
+  @include bleed-pseudo-base;
+  right: 0;
+  margin-right: calc(50% - 50vw);
+  
+
+  @include breakpoint(medium) {
+    margin-right: calc(100% - 100vw);
+  
+    width: 50vw;
+  }
+}
+
+@mixin bleed-right-column {
+  @include bleed-pseudo-base;
+  right: 0;
+  margin-right: calc(50% - 50vw);
+
+  @include breakpoint(medium) {
+    margin-right: calc(100% - 100vw);
+      margin-left:unset;
+    width: 50vw;
+  }
+}
+
+// Full bleed solid color on a block — ::before left half, ::after right half
+@mixin bleed-solid-color($code) {
+  &::before {
+    @include bleed-left;
+    background-color: $code;
+  }
+  &::after {
+    @include bleed-right;
+    background-color: $code;
+  }
+}
+
+// Full bleed gradient on a block — single ::before spanning full 100vw
+@mixin bleed-gradient($gradient) {
+  background: transparent !important;
+  &::before {
+    @include bleed-pseudo-base;
+    left: 0;
+    margin-left: calc(50% - 50vw);
+    background: $gradient;
+  }
+  &::after {
+    display: none;
+  }
+}
+
+// Generate all color + gradient bleed rules scoped to the current selector
+@mixin bleed-color-rules {
+  @each $color, $code in $foundation-palette {
+    &.has-#{$color}-background-color {
+      @include bleed-solid-color($code);
+    }
+  }
+
+  @each $slug, $gradient in $all-gradients {
+    &.has-#{$slug}-gradient-background {
+      @include bleed-gradient($gradient);
+    }
+  }
+}
+
+// Generate all color + gradient bleed rules for child .wp-block-column elements
+@mixin bleed-column-color-rules {
+  @each $color, $code in $foundation-palette {
+    .wp-block-column.has-#{$color}-background-color {
+      background: transparent !important;
+      &::before {
+        @include bleed-left-column;
+        background-color: $code;
+      }
+      &:last-child::before {
+        @include bleed-right-column;
+        background-color: $code;
+      }
+    }
+  }
+
+  @each $slug, $gradient in $all-gradients {
+    .wp-block-column.has-#{$slug}-gradient-background {
+      background: transparent !important;
+      &::before {
+        @include bleed-left-column;
+        background: $gradient;
+      }
+      &:last-child::before {
+        @include bleed-right-column;
+        background: $gradient;
       }
     }
   }
 }
 
-@mixin table-borders($color) {
-  @include breakpoint(small){
-    border: 2px solid $color;
+
+// =============================================================================
+// SOLID COLORS
+// =============================================================================
+
+@each $color, $code in $foundation-palette {
+
+  // Background + text pairing
+  .has-#{$color}-background-color {
+    background-color: $code;
+
+    @if map-has-key($locked-text-colors, $color) {
+      $locked-color: map-get($locked-text-colors, $color);
+      color: map-get($foundation-palette, $locked-color);
+    } @else {
+      color: color-pick-contrast($code,
+        $colors: ($white, $black, $primary-color, $secondary-color),
+        $tolerance: $global-color-pick-contrast-tolerance);
+    }
+
+    a:not(.button, .wp-block-button__link), h1, h2, h3, h4, h5 {
+      @if map-has-key($locked-link-colors, $color) {
+        $locked-color: map-get($locked-link-colors, $color);
+        color: map-get($foundation-palette, $locked-color);
+      } @else {
+        color: color-pick-contrast($code,
+          $colors: ($primary-color, $secondary-color),
+          $tolerance: $global-color-pick-contrast-tolerance);
+      }
+    }
   }
-  @include breakpoint(medium){
-    border: 6px solid $color;
+
+  // Text color class
+  .has-#{$color}-color {
+    color: $code;
+  }
+
+  // Button background + text
+  .wp-block-button__link.has-#{$color}-background-color {
+    background-color: $code;
+
+    @if map-has-key($locked-text-colors, $color) {
+      color: brand-color(map-get($locked-text-colors, $color));
+    } @else {
+      color: color-pick-contrast($code,
+        $colors: ($white, $black, $primary-color, $secondary-color),
+        $tolerance: $global-color-pick-contrast-tolerance);
+    }
+
+    transition: $button-transition, color .25s ease-out;
+
+    &:hover,
+    &:focus {
+      background-color: scale-color($code, $lightness: $button-background-hover-lightness) !important;
+
+      @if map-has-key($locked-text-colors, $color) {
+        color: brand-color(map-get($locked-text-colors, $color));
+      } @else {
+        color: color-pick-contrast(
+          scale-color($code, $lightness: $button-background-hover-lightness),
+          $colors: ($white, $black, $primary-color, $secondary-color),
+          $tolerance: $global-color-pick-contrast-tolerance);
+      }
+    }
+  }
+
+  // Button text color
+  .wp-block-button__link.has-#{$color}-color {
+    color: $code;
+  
   }
 }
 
-.wp-block-table thead, .wp-block-table tbody, .wp-block-table tfoot, .wp-block-table tbody tr, .wp-block-table td, .wp-block-table th {
-  @include table-borders($white);
+
+// =============================================================================
+// GRADIENTS
+// =============================================================================
+
+@each $gradient, $settings in $all-gradients {
+  .has-#{$gradient}-gradient-background {
+    background: $settings;
+
+    @if map-has-key($locked-gradient-text-colors, $gradient) {
+      color: map-get($foundation-palette, map-get($locked-gradient-text-colors, $gradient));
+    } @else {
+      color: $white;
+    }
+
+    a:not(.button, .wp-block-button__link) {
+      color: map-get($foundation-palette, map-get($locked-gradient-link-colors, $gradient));
+    }
+  }
+}
+
+
+// =============================================================================
+// BUTTON
+// =============================================================================
+.wp-block-buttons.is-style-full-bleed {
+  position: relative;
+    padding: $global-padding * 2 0;
+    @include bleed-color-rules;
+}
+.wp-block-buttons.is-nowrap{
+  flex-wrap: wrap;
+  @include breakpoint(medium) {
+  flex-wrap: nowrap;
+  }
+}
+.wp-block-button {
+  .wp-block-button__link {
+    @extend .button;
+  }
+
+  &.is-style-squared .wp-block-button__link {
+    border-radius: 0;
+  }
+  &.is-style-fill {
+  .wp-block-button__link {
+      border-radius: $global-radius;
+  padding: 0.85rem 1.75rem 0.85rem 3rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+  overflow: hidden; /* clips the expanding circle */
+  transition: color 0.6s ease;
+  &:hover::before {
+  transform: scale(1.2); /* large enough to flood the button */
+}
+   &::before {
+  content: '';
+position: absolute;
+left: 1rem;
+width: 1.5rem;
+height: 1.5rem;
+border-radius: 100%;
+background-color: #8fa85a;
+transform: scale(1);
+transition: transform 0.4s ease-out;
+z-index: -1;
+}
+  }
+}
+
+
+  &.is-style-outline .wp-block-button__link {
+    @extend .hollow;
+    background: transparent;
+      border-radius: 0;
+  }
+
+
+.wp-block-button__link span,
+.wp-block-button__link {
+  z-index: 1; /* keeps text above the expanding circle */
+}
+
+
+
+}
+// =============================================================================
+// FILE
+// =============================================================================
+
+.wp-block-file .wp-block-file__button {
+  @include button();
+}
+
+
+// =============================================================================
+// ALIGNFULL BLOCKS
+// =============================================================================
+
+.wp-block-group.alignfull,
+.wp-block-cover.alignfull {
+  @include alignfull-bleed;
+  padding: $global-padding 0;
+
+  .wp-block-group__inner-container,
+  .wp-block-cover__inner-container {
+    @include alignfull-inner-gutters;
+  }
+}
+
+.wp-block-image.alignfull {
+  @include alignfull-bleed;
+}
+
+
+// =============================================================================
+// TABLE
+// =============================================================================
+
+.wp-block-table {
+  font-size: rem-calc(14);
+
+  @include breakpoint(medium) {
+    font-size: rem-calc(16);
+  }
+
+  thead, tbody, tfoot, tbody tr, td, th {
+    border: 2px solid $white;
+
+    @include breakpoint(medium) {
+      border-width: 6px;
+    }
+  }
 }
 
 .has-light-gray-background-color {
-  .wp-block-table thead, .wp-block-table tbody, .wp-block-table tfoot, .wp-block-table tbody tr, .wp-block-table td, .wp-block-table th {
-    @include table-borders($light-gray);
+  .wp-block-table thead,
+  .wp-block-table tbody,
+  .wp-block-table tfoot,
+  .wp-block-table tbody tr,
+  .wp-block-table td,
+  .wp-block-table th {
+    border-color: $light-gray;
   }
 }
 
-.wp-block-table {
-  @include breakpoint(small){
-    font-size: rem-calc(14);
-  }
-  @include breakpoint(medium){
-    font-size: rem-calc(16);
-  }
-}
-/** === Inner content use foundation gutters === */
-.is-layout-constrained> :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+
+// =============================================================================
+// INNER CONTENT — FOUNDATION GUTTERS
+// =============================================================================
+
+.is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
   padding-inline: var(--wp--custom--foundation-gutter-mobile);
 
   @include breakpoint(medium) {
@@ -135,7 +443,10 @@ $settings in $all-gradients {
   }
 }
 
-/** === Columns === */
+
+// =============================================================================
+// COLUMNS
+// =============================================================================
 
 @media (min-width: 640px) {
   .wp-block-columns {
@@ -151,12 +462,9 @@ $settings in $all-gradients {
 
 .wp-block-columns {
   &.alignfull {
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    max-width: 100vw;
+    @include alignfull-bleed;
 
-    @each $breakpoint,
-    $size in $grid-margin-gutters {
+    @each $breakpoint, $size in $grid-margin-gutters {
       @include breakpoint($breakpoint) {
         padding-left: $size;
         padding-right: $size;
@@ -165,192 +473,128 @@ $settings in $all-gradients {
   }
 
   &.alignwide {
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    max-width: 100vw;
+    @include alignfull-bleed;
 
-    @each $breakpoint,
-    $size in $grid-margin-gutters {
+    @each $breakpoint, $size in $grid-margin-gutters {
       @include breakpoint($breakpoint) {
-        padding-left: $size*4;
-        padding-right: $size*4;
+        padding-left: $size * 4;
+        padding-right: $size * 4;
+      }
+    }
+  }
+}
+
+.wp-block-columns.is-style-full-bleed {
+  position: relative;
+  gap: 0;
+
+  .wp-block-column {
+    position: relative;
+    padding: $global-padding 0;
+
+    &:first-child {
+      @include breakpoint(large) {
+        padding: $global-padding $global-padding $global-padding 0;
+      }
+    }
+
+    &:last-child {
+      @include breakpoint(large) {
+        padding: $global-padding 0 $global-padding $global-padding;
       }
     }
   }
 
-}
-
-// Full Bleed styling
-.wp-block-columns.is-style-full-bleed {
-  position: relative;
-  gap: 0;
-  .wp-block-column{
-      position: relative;
-      padding: $global-padding 0;
-  }
-
   .wp-block-column.has-background-image {
+    background: transparent;
 
-    background: transparent; // column itself transparent
-    
-       &::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-         margin-left: calc(50% - 50vw);
-         width: 100vw;
-         min-height: 25rem;
-        height: 100%;
-        z-index: -1;
-             background: var(--column-bg);
-             background-size: cover;
-             background-position: center;
-             background-repeat: no-repeat;
-       }
-        &:last-child::before {
-          left: auto;
-          right: 0;
-          margin-right: calc(50% - 50vw);
+    &::before {
+      @include bleed-pseudo-base;
+      left: 0;
+      margin-left: calc(50% - 50vw);
+      min-height: 25rem;
+      background: var(--column-bg);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
 
-          @include breakpoint(medium) {
-            margin-right: calc(100% - 50vw);
-            width: 50vw;
-          }
+    &:last-child::before {
+      left: auto;
+      right: 0;
+      margin-right: calc(50% - 50vw);
 
-          @include breakpoint(large) {
-            margin-right: calc(100% - 50vw);
-            width: 50vw;
-          }
-        }
+      @include breakpoint(medium) {
+        margin-right: calc(100% - 50vw);
+        width: 50vw;
+      }
+    }
+
     @include breakpoint(medium) {
       padding: $global-padding;
     }
   }
 
-  .wp-block-column:first-child {
-    @include breakpoint(large) {
-      padding: $global-padding $global-padding $global-padding 0;
-    }
+  @include bleed-column-color-rules;
+    @include bleed-color-rules;
+}
+// =============================================================================
+// Group
+// =============================================================================
+.wp-block-group{ &.alignfull {
+    @include alignfull-bleed;
   }
-
-  .wp-block-column:last-child {
-    @include breakpoint(large) {
-      padding: $global-padding 0 $global-padding $global-padding;
-    }
-  }
-
-  // ------------------------------------
-  // SOLID COLOR BACKGROUNDS
-  // ------------------------------------
-  @each $color,
-  $code in $foundation-palette {
-    .wp-block-column.has-#{$color}-background-color {
-      background: transparent !important;
-      &::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        margin-left: calc(50% - 50vw);
-        width: 100vw;
-        height: 100%;
-        z-index: -1;
-        background-color: $code;
-
-        @include breakpoint(medium) {
-          margin-left: calc(100% - 50vw);
-          width: 50vw;
-        }
-
-        @include breakpoint(large) {
-          margin-left: calc(100% - 50vw);
-          width: 50vw;
-        }
-      }
-
-      &:last-child::before {
-        left: auto;
-        right: 0;
-        margin-right: calc(50% - 50vw);
-
-        @include breakpoint(medium) {
-          margin-right: calc(100% - 50vw);
-          width: 50vw;
-        }
-
-        @include breakpoint(large) {
-          margin-right: calc(100% - 50vw);
-          width: 50vw;
-        }
-      }
-    }
-  }
-
-  // ------------------------------------
-  // GRADIENT BACKGROUNDS
-  // ------------------------------------
-  @each $slug, $gradient in $all-gradients {
-    .wp-block-column.has-#{$slug}-gradient-background {
-       background: transparent !important;
-      &::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        margin-left: calc(50% - 50vw);
-        width: 100vw;
-        height: 100%;
-        z-index: -1;
-        background: $gradient;
-
-        @include breakpoint(medium) {
-          margin-left: calc(100% - 50vw);
-          width: 50vw;
-        }
-
-        @include breakpoint(large) {
-          margin-left: calc(100% - 50vw);
-          width: 50vw;
-        }
-      }
-
-      &:last-child::before {
-        left: auto;
-        right: 0;
-        margin-right: calc(50% - 50vw);
-
-        @include breakpoint(medium) {
-          margin-right: calc(100% - 50vw);
-          width: 50vw;
-        }
-
-        @include breakpoint(large) {
-          margin-right: calc(100% - 50vw);
-          width: 50vw;
-        }
-      }
-    }
+  &.is-style-full-bleed {
+  position: relative;
+  padding: $global-padding * 2 0;
+    @include bleed-color-rules;
   }
 }
 
-
-/** === cover === */
-.wp-block-cover.alignfull {
-  margin-left: calc(-50vw + 50%);
-  margin-right: calc(-50vw + 50%);
-  max-width: 100vw;
-  padding: $global-padding 0;
-  overflow-x: hidden;
-
-  .wp-block-cover__inner-container {
-    @include xy-grid-container;
-
-    @each $breakpoint,
-    $size in $grid-margin-gutters {
-      @include breakpoint($breakpoint) {
-        padding: $global-padding $size;
-      }
-    }
+// =============================================================================
+// MEDIA & TEXT
+// =============================================================================
+.wp-block-media-text{ &.alignfull {
+    @include alignfull-bleed;
   }
+}
+.wp-block-media-text{
+   .wp-block-media-text__media{
+     margin-bottom: $global-margin;
+    @include breakpoint(medium) {
+    margin-bottom: 0;
+    }
+   }}
+.wp-block-media-text{
+ .wp-block-media-text__content{
+  @include breakpoint(medium) {
+     @include xy-cell-offset(2);
+    
+  }
+
+  padding: 0;
+ }
+}
+.wp-block-media-text.has-media-on-the-right{
+ .wp-block-media-text__content{
+   @include breakpoint(medium) {
+     @include xy-cell-offset(0);
+    @include xy-cell(10);
+  }
+ }
+}
+.wp-block-media-text.is-style-full-bleed {
+  position: relative;
+  gap: 0;
+    padding: $global-padding 0;
+    @include breakpoint(medium){
+    padding: $global-padding*2 0;
+    }
+
+  .wp-block-media-text__media,
+  .wp-block-media-text__content {
+    position: relative;
+  }
+
+  @include bleed-color-rules;
 }
