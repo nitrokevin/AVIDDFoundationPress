@@ -15,20 +15,18 @@
 
 if ( ! function_exists( 'foundationpress_asset_path' ) ) :
 	function foundationpress_asset_path( $filename ) {
-		$filename_split = explode( '.', $filename );
-		$dir            = end( $filename_split );
-		$manifest_path  = dirname( dirname( __FILE__ ) ) . '/dist/assets/' . $dir . '/rev-manifest.json';
+		static $manifests = [];
 
-		if ( file_exists( $manifest_path ) ) {
-			$manifest = json_decode( file_get_contents( $manifest_path ), true );
-		} else {
-			$manifest = array();
+		$ext           = pathinfo( $filename, PATHINFO_EXTENSION );
+		$manifest_path = dirname( dirname( __FILE__ ) ) . '/dist/assets/' . $ext . '/rev-manifest.json';
+
+		if ( ! isset( $manifests[ $manifest_path ] ) ) {
+			$manifests[ $manifest_path ] = file_exists( $manifest_path )
+				? json_decode( file_get_contents( $manifest_path ), true ) ?? []
+				: [];
 		}
 
-		if ( array_key_exists( $filename, $manifest ) ) {
-			return $manifest[ $filename ];
-		}
-		return $filename;
+		return $manifests[ $manifest_path ][ $filename ] ?? $filename;
 	}
 endif;
 
@@ -38,8 +36,10 @@ if ( ! function_exists( 'foundationpress_scripts' ) ) :
 
 		// Enqueue the main Stylesheet.
 		wp_enqueue_style( 'main-stylesheet', get_stylesheet_directory_uri() . '/dist/assets/css/' . foundationpress_asset_path( 'app.css' ), array(), '1.0.0', 'all' );
-		wp_enqueue_style( 'google-font', '//fonts.googleapis.com/css?family=Nunito+Sans:300,600&display=fallback', array(), '2.10.4', 'all' );
-
+		wp_enqueue_style( 'google-font',
+    'https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600&display=swap',
+    [], null, 'all'
+);
 
 	
 		// Enqueue jQuery migrate. Uncomment the line below to enable.

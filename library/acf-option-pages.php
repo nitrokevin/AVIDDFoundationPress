@@ -25,12 +25,12 @@ if (function_exists('acf_add_local_field_group')) {
 
 //FAQ OPTIONS PAGE
 acf_add_local_field_group(array(
-	'key' => 'group_5d54589f208266',
-	'title' => 'Options Page',
+	'key' => 'group_options_page_faq',
+	'title' => 'FAQ Options Page',
 	'fields' => array(
 		
 		array(
-			'key' => 'field_5c34ede232af66',
+			'key' => 'field_faq_repeater',
 			'label' => 'FAQ',
 			'name' => 'faq_repeater',
 			'type' => 'repeater',
@@ -49,7 +49,7 @@ acf_add_local_field_group(array(
 			'button_label' => 'Add Accordion',
 			'sub_fields' => array(
 				array(
-					'key' => 'field_5c34ee0032af76',
+					'key' => 'field_faq_header',
 					'label' => 'Header',
 					'name' => 'header',
 					'type' => 'text',
@@ -69,7 +69,7 @@ acf_add_local_field_group(array(
 				),
 
 				array(
-					'key' => 'field_614b0df41e61b6',
+					'key' => 'field_faq_categories',
 					'label' => 'Categories',
 					'name' => 'categories',
 					'type' => 'taxonomy',
@@ -91,7 +91,7 @@ acf_add_local_field_group(array(
 					'allow_null' => 0,
 				),
 				array(
-					'key' => 'field_5c34ee0932af86',
+					'key' => 'field_faq_content',
 					'label' => 'Content',
 					'name' => 'content',
 					'type' => 'wysiwyg',
@@ -135,13 +135,13 @@ acf_add_local_field_group(array(
 ));
 
 acf_add_local_field_group(array(
-		'key' => 'group_5d54589f208269',
+		'key' => 'group_options_page_people',
 		'title' => 'People',
 		'fields' => array(
 		
 	
 			array(
-				'key' => 'field_5c34ede232af66f1',
+				'key' => 'field_people_repeater',
 				'label' => 'People',
 				'name' => 'people_repeater',
 				'type' => 'repeater',
@@ -161,7 +161,7 @@ acf_add_local_field_group(array(
 				'sub_fields' => array(
 				
 					array(
-						'key' => 'field_5c812c9h28a19c2',
+						'key' => 'field_people_image',
 						'label' => 'Image',
 						'name' => 'image',
 						'type' => 'image',
@@ -180,7 +180,7 @@ acf_add_local_field_group(array(
 					),
 					
 					array(
-						'key' => 'field_5c34ee003g2af746',
+						'key' => 'field_people_name',
 						'label' => 'Name',
 						'name' => 'name',
 						'type' => 'text',
@@ -194,7 +194,7 @@ acf_add_local_field_group(array(
 					
 					),
 					array(
-						'key' => 'field_5c34ee0032arf746',
+						'key' => 'field_people_job',
 						'label' => 'Job Title',
 						'name' => 'job',
 						'type' => 'text',
@@ -209,7 +209,7 @@ acf_add_local_field_group(array(
 					),
 				
 					array(
-						'key' => 'field_524ee20032arf746',
+						'key' => 'field_people_email',
 						'label' => 'Email',
 						'name' => 'email',
 						'type' => 'text',
@@ -225,7 +225,7 @@ acf_add_local_field_group(array(
 				
 				
 					array(
-						'key' => 'field_5c34ere0932af86',
+						'key' => 'field_people_biography',
 						'label' => 'Biography',
 						'name' => 'biography',
 						'type' => 'wysiwyg',

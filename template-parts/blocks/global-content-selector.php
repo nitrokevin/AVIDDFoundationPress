@@ -7,7 +7,7 @@
 
 // Ensure ACF is available
 if (!function_exists('get_field')) {
-    echo '<p><em>' . esc_html__('Advanced Custom Fields is required for this block.', 'ashwoodhomes') . '</em></p>';
+    echo '<p><em>' . esc_html__('Advanced Custom Fields is required for this block.', 'avidd') . '</em></p>';
     return;
 }
 
@@ -106,11 +106,11 @@ $repeater_field = $map[ $options_page ] ?? '';
         <div class="block-global-content-content cell">
             <?php
             if (!$options_page) {
-                echo '<p><em>' . esc_html__('No options page selected.', 'ashwoodhomes') . '</em></p>';
+                echo '<p><em>' . esc_html__('No options page selected.', 'avidd') . '</em></p>';
             } elseif (!$repeater_field) {
-                echo '<p><em>' . esc_html__('Invalid options page selected.', 'ashwoodhomes') . '</em></p>';
+                echo '<p><em>' . esc_html__('Invalid options page selected.', 'avidd') . '</em></p>';
             } elseif (!have_rows($repeater_field, $options_context)) {
-                echo '<p><em>' . esc_html__('No data found for this options page.', 'ashwoodhomes') . '</em></p>';
+                echo '<p><em>' . esc_html__('No data found for this options page.', 'avidd') . '</em></p>';
             } else {
                 // Render the selected repeater
                 if ($layout === 'accordion') {

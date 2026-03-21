@@ -7,7 +7,7 @@
 @charset 'utf-8';
 @import 'foundation';
 @import 'settings';
-
+@import "global/wp-admin";
 @import "global/gutenberg";
 @import "global/colors";
 @import "components/accordion";
