@@ -3,17 +3,22 @@
         'page_title' => 'FAQs',
         'menu_title' => 'FAQs',
         'menu_slug' => 'faqs',
-        'capability' => 'publish_posts',
+        'capability' => 'manage_options',
         'redirect' => false,
     ]);
     acf_add_options_page([
         'page_title' => 'People',
         'menu_title' => 'People',
         'menu_slug' => 'people',
-        'capability' => 'publish_posts',
+        'capability' => 'manage_options',
         'redirect' => false,
     ]);
 }
+define('AVIDD_OPTIONS_REPEATER_MAP', [
+    'faqs'   => 'faq_repeater',
+    'people' => 'people_repeater',
+]);
+
 
 
 if (function_exists('acf_add_local_field_group')) {

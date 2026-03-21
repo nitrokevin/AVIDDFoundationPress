@@ -24,7 +24,7 @@
 
               <?php endwhile; 
              endif; ?>
-			
+	</ul>
             <?php } elseif( get_field('accordion_type') == 'custom' ){ ?>
 				<ul class="accordion" data-accordion data-allow-all-closed="true">
 	<?php
@@ -53,5 +53,5 @@
 		</li>
 		<?php } ?>
 		<?php } ?>	
+		</ul>
 	<?php } ?>	
-</ul>

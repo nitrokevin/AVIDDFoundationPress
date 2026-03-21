@@ -40,38 +40,6 @@ function foundationpress_column_bg_enqueue_assets() {
 add_action('enqueue_block_assets', 'foundationpress_column_bg_enqueue_assets');
 
 /**
- * Enqueue editor JavaScript
- */
-function foundationpress_column_bg_enqueue_editor_assets() {
-    $theme_dir = get_stylesheet_directory();
-    $asset_path = $theme_dir . '/dist/assets/js/editor.js';
-    $asset_url  = get_stylesheet_directory_uri() . '/dist/assets/js/editor.js';
-
-    if (!file_exists($asset_path)) {
-        error_log('FoundationPress Column BG: JavaScript file not found at ' . $asset_path);
-        return;
-    }
-
-    wp_enqueue_script(
-        'foundationpress-column-bg-editor',
-        $asset_url,
-        [
-            'wp-blocks',
-            'wp-element',
-            'wp-i18n',
-            'wp-components',
-            'wp-compose',
-            'wp-block-editor',
-            'wp-data',
-            'wp-hooks',
-        ],
-        filemtime($asset_path),
-        true
-    );
-}
-add_action('enqueue_block_editor_assets', 'foundationpress_column_bg_enqueue_editor_assets');
-
-/**
  * Render column background + XY-grid classes
  */
 function foundationpress_render_column_background($block_content, $block) {
@@ -86,9 +54,11 @@ function foundationpress_render_column_background($block_content, $block) {
     // Find parent columns block for stacked on mobile logic
     $parent_block = null;
     $post_id = get_the_ID();
-if ( !$post_id && is_admin() && isset( $_REQUEST['post_id'] ) ) {
-    $post_id = intval( $_REQUEST['post_id'] );
+if ( !$post_id && is_admin() && isset( $_POST['post_id'] ) ) {
+    $post_id = absint( $_POST['post_id'] );
 }
+
+
     if ($post_id) {
         $post = get_post($post_id);
         if ($post && $post->post_content) {

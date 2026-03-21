@@ -6,7 +6,7 @@
 <?php if (have_rows('repeater_content_tab')) {
 		$counter = 0; 
 		$tab_bar_background_color = get_field('tab_bar_background_color');?>
-		<ul class="tabs <?php echo $tab_bar_background_color ?>" data-tabs id="<?php echo esc_attr($id); ?>">
+		<ul class="tabs <?php echo esc_attr( $tab_bar_background_color); ?>" data-tabs id="<?php echo esc_attr($id); ?>">
 			<?php while (have_rows('repeater_content_tab')) { the_row(); 
 			$tab_heading = get_sub_field('tab_heading');
 			$tab_background_color = get_sub_field('tab_background_color');
@@ -14,7 +14,7 @@
 			$counter++;
 			?>
 			<li class="tabs-title <?php if( $counter ==1 ){ echo "is-active"; } ?> <?php echo esc_attr( $tab_bar_background_color ); ?>">
-				<a href="#tab<?php echo $counter?>-<?php echo esc_attr($id); ?>" aria-selected="true">
+				<a href="#tab<?php echo php echo absint( $counter ); ?>-<?php echo esc_attr($id); ?>" aria-selected="true">
 					<?php echo esc_html( $tab_heading ); ?>
 				</a>
 			</li>

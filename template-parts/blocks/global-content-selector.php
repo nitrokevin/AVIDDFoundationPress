@@ -95,7 +95,9 @@ $className .= ' ' . implode(' ', array_map('esc_attr', $classes));
 $options_page = get_field('options_page_selector') ?: '';
 $layout = get_field('layout_style') ?: 'list'; // Default to 'list' if not set
 $options_context = 'options'; // Use 'options' context since post_id => options
-$repeater_field = $options_page === 'faqs' ? 'faq_repeater' : ($options_page === 'people' ? 'people_repeater' : '');
+$map = defined('AVIDD_OPTIONS_REPEATER_MAP') ? AVIDD_OPTIONS_REPEATER_MAP : [];
+$repeater_field = $map[ $options_page ] ?? '';
+
 
 ?>
 

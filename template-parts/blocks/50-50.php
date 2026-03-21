@@ -76,7 +76,7 @@ $counter++;
 				</div>
 				</div>
 			</article>
-			<article class="<?php echo esc_attr( sanitize_html_class( $right_background ) ); ?> <?php if($right_overlay == 1){?>overlay<?php }?>" <?php if ($right_background_image) { ?> data-interchange="[<?php echo $right_small; ?>, small], [<?php echo $right_medium; ?>, medium], [<?php echo $right_large; ?>, large]" data-type="background" <?php } ?>>	
+			<article class="<?php echo esc_attr( sanitize_html_class( $right_background ) ); ?> <?php if($right_overlay == 1){?>overlay<?php }?>" <?php if ($right_background_image) { ?> data-interchange="[<?php echo esc_url( $right_small); ?>, small], [<?php echo esc_url( $right_medium); ?>, medium], [<?php echo esc_url( $right_large); ?>, large]" data-type="background" <?php } ?>>	
 				<div class="article-padding ">
 			    	<div class="article-grid ">
 				    <div class="entry-content">

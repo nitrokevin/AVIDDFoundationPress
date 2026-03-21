@@ -2,7 +2,7 @@
 
 	<div class="splide__track">
 		<ul class="splide__list">
-			<?php if (have_rows('people_repeater','option')) { 
+			<?php if (have_rows('people_repeater','options')) { 
 				while (have_rows('people_repeater','option')) { the_row();
 					$group = get_sub_field('group');
 					$name = get_sub_field('name');

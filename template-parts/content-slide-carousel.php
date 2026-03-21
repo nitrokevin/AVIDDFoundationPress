@@ -42,7 +42,7 @@
                             <img src="<?php echo esc_url($src); ?>" 
                                  srcset="<?php echo esc_attr($srcset); ?>" 
                                  sizes="(max-width: 100vw) 480px" 
-                                 alt="<?php echo $alt; ?>" />
+                                 alt="<?php echo esc_attr( $image['alt'] );  ?>" />
                         </div>
                     <?php endif; ?>
 					</div>

@@ -50,7 +50,7 @@ if ( ! function_exists( 'foundationpress_scripts' ) ) :
 
 		// Enqueue FontAwesome from CDN. Uncomment the line below if you need FontAwesome.
 		//wp_enqueue_script( 'fontawesome', 'https://use.fontawesome.com/5016a31c8c.js', array(), '4.7.0', true );
-		wp_enqueue_script( 'FontAwesome', '//kit.fontawesome.com/79a95a0ad8.js', array(), '7.0.0', false );
+		wp_enqueue_script( 'FontAwesome', 'https://kit.fontawesome.com/79a95a0ad8.js', array(), null , false );
 
 		
 		// Add the comment-reply library on pages where it is necessary
