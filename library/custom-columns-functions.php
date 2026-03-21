@@ -86,9 +86,9 @@ function foundationpress_render_column_background($block_content, $block) {
     // Find parent columns block for stacked on mobile logic
     $parent_block = null;
     $post_id = get_the_ID();
-    if (!$post_id && isset($_REQUEST['post_id'])) {
-        $post_id = intval($_REQUEST['post_id']);
-    }
+if ( !$post_id && is_admin() && isset( $_REQUEST['post_id'] ) ) {
+    $post_id = intval( $_REQUEST['post_id'] );
+}
     if ($post_id) {
         $post = get_post($post_id);
         if ($post && $post->post_content) {

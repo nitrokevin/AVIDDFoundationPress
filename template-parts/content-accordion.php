@@ -12,13 +12,13 @@
                 $category = get_sub_field('category');
                 ?>
                 
-                <li data-filter="category-<?php echo $category ?>" class="accordion-item category-<?php echo $category ?> filter-simple-item" data-accordion-item>
+                <li data-filter="category-<?php echo esc_attr( $category ); ?>" class="accordion-item category-<?php echo esc_attr( $category ); ?> filter-simple-item" data-accordion-item>
                   <!-- Accordion tab title -->
-                  <a href="#" class="accordion-title"><?php echo $header ?></a>
+                  <a href="#" class="accordion-title"><?php echo esc_html( $header );?></a>
 
                   <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
                   <div class="accordion-content" data-tab-content>
-                    <?php echo $content ?>
+                    <?php echo wp_kses_post( $content );?>
                   </div>
                 </li>
 

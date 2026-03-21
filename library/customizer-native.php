@@ -1206,11 +1206,20 @@ add_action( 'customize_register', 'avidd_customize_register' );
 // ============================================
 
 function avidd_sanitize_repeater( $input ) {
-	$decoded = json_decode( $input, true );
-	if ( ! is_array( $decoded ) ) {
-		return '';
-	}
-	return $input;
+    $decoded = json_decode( $input, true );
+    if ( ! is_array( $decoded ) ) {
+        return '';
+    }
+    array_walk_recursive( $decoded, function( &$value, $key ) {
+        if ( filter_var( $value, FILTER_VALIDATE_URL ) ) {
+            $value = esc_url_raw( $value );
+        } elseif ( wp_strip_all_tags( $value ) !== $value ) {
+            $value = wp_kses_post( $value );
+        } else {
+            $value = sanitize_text_field( $value );
+        }
+    });
+    return wp_json_encode( $decoded );
 }
 
 // ============================================

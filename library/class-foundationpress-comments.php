@@ -85,7 +85,7 @@ if ( ! class_exists( 'Foundationpress_Comments' ) ) :
 				</section><!-- /.comment-content -->
 
 				<div class="comment-meta comment-meta-data hide">
-					<a href="<?php echo htmlspecialchars( get_comment_link( get_comment_ID() ) ); ?>"><?php comment_date(); ?> at <?php comment_time(); ?></a> <?php edit_comment_link( '(Edit)' ); ?>
+					<a href="<?php echo esc_url( get_comment_link( get_comment_ID() ) ); ?>">
 				</div><!-- /.comment-meta -->
 
 				<div class="reply">
