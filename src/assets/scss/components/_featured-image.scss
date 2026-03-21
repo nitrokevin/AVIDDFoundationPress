@@ -60,7 +60,7 @@
             aspect-ratio: 5 / 6;
         }
         @include breakpoint(medium) {
-          aspect-ratio: 20 / 13; 
+          aspect-ratio: 5 / 4; 
          
         }
         @include breakpoint(large) {
