@@ -32,19 +32,25 @@
  * }
  */
 function aviddj_get_theme_colors() {
-    static $cache = null;
+  static $cache = null;
+  if ( $cache !== null ) return $cache;
 
-    if ( $cache !== null ) return $cache;
-
-    $settings = wp_get_global_settings();
-
-    $cache = [
-        'palette'   => $settings['color']['palette']['theme']   ?? [],
-        'gradients' => $settings['color']['gradients']['theme'] ?? [],
-    ];
-
+  $cache_key = 'avidd_theme_colors';
+  $cached    = wp_cache_get( $cache_key, 'avidd_theme' );
+  if ( $cached !== false ) {
+    $cache = $cached;
     return $cache;
+  }
+
+  $settings = wp_get_global_settings();
+  $cache = [
+    'palette'   => $settings['color']['palette']['theme']   ?? [],
+    'gradients' => $settings['color']['gradients']['theme'] ?? [],
+  ];
+  wp_cache_set( $cache_key, $cache, 'avidd_theme', HOUR_IN_SECONDS );
+  return $cache;
 }
+
 
 /**
  * Get color and gradient choices for ACF / Kirki / templates.

@@ -55,11 +55,6 @@ add_filter('acf/load_field/name=options_page_selector', function($field) {
 // GUTENBERG SUPPORT
 // ------------------------------------------------------------
 
-add_theme_support('align-wide');
-
-
-
-
 //Custom alignment for columns
 add_action( 'init', function() {
     register_block_style(

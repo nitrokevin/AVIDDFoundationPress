@@ -52,17 +52,17 @@ $carousel_type = get_field('carousel_type');
 
 
 ?>
-<section id="<?php echo esc_attr($id); ?>" class="wp-block <?php echo esc_attr($className); ?> <?php echo $carousel_type; ?>">
+<section id="<?php echo esc_attr($id); ?>" class="wp-block <?php echo esc_attr($className); ?> <?php echo esc_attr($carousel_type); ?>">
     <div class="block-carousel-container "> 
 		<div class="block-carousel-grid" >
 			<div class="block-carousel-content" >
 		
-	<?php if($carousel_type == 'people-carousel'){
+	<?php if($carousel_type === 'people-carousel'){
 		 get_template_part('template-parts/content', 'people-carousel'); 
-		 } if($carousel_type == 'slide-carousel'){ 
+		 } if($carousel_type === 'slide-carousel'){ 
 			 get_template_part('template-parts/content', 'slide-carousel'); 
 
-		 } if($carousel_type == 'gallery-carousel'){ 
+		 } if($carousel_type === 'gallery-carousel'){ 
 			
 			get_template_part('template-parts/content', 'gallery-carousel'); 
 

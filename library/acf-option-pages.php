@@ -3,14 +3,14 @@
         'page_title' => 'FAQs',
         'menu_title' => 'FAQs',
         'menu_slug' => 'faqs',
-        'capability' => 'edit_posts',
+        'capability' => 'publish_posts',
         'redirect' => false,
     ]);
     acf_add_options_page([
         'page_title' => 'People',
         'menu_title' => 'People',
         'menu_slug' => 'people',
-        'capability' => 'edit_posts',
+        'capability' => 'publish_posts',
         'redirect' => false,
     ]);
 }
@@ -262,5 +262,3 @@ acf_add_local_field_group(array(
 
 
 } //END ACF 
-
-

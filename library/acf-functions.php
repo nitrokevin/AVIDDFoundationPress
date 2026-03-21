@@ -36,7 +36,7 @@ acf_add_local_field_group(array(
 			'required' => 0,
 			'conditional_logic' => array(	
 				array(
-					'field' => 'field_5c812c928y139c1',
+					'field' => 'field_slider_true_false',
 					'operator' => '==',
 					'value' => '1',
 				),

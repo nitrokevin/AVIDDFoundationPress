@@ -39,19 +39,9 @@ if ( ! function_exists( 'foundationpress_scripts' ) ) :
 		// Enqueue the main Stylesheet.
 		wp_enqueue_style( 'main-stylesheet', get_stylesheet_directory_uri() . '/dist/assets/css/' . foundationpress_asset_path( 'app.css' ), array(), '1.0.0', 'all' );
 		wp_enqueue_style( 'google-font', '//fonts.googleapis.com/css?family=Nunito+Sans:300,600&display=fallback', array(), '2.10.4', 'all' );
-		// Deregister the jquery version bundled with WordPress.
-		wp_deregister_script( 'jquery' );
 
-		// CDN hosted jQuery placed in the header, as some plugins require that jQuery is loaded in the header.
-		wp_enqueue_script( 'jquery', '//code.jquery.com/jquery-3.7.1.min.js', array(), '3.7.1', false );
 
-		// Deregister the jquery-migrate version bundled with WordPress.
-		wp_deregister_script( 'jquery-migrate' );
 	
-
-		// CDN hosted jQuery migrate for compatibility with jQuery 3.x
-		wp_register_script( 'jquery-migrate', '//code.jquery.com/jquery-migrate-3.2.0.min.js', array('jquery'), '3.2.0', false );
-
 		// Enqueue jQuery migrate. Uncomment the line below to enable.
 		// wp_enqueue_script( 'jquery-migrate' );
 

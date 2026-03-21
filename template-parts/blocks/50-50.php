@@ -28,10 +28,10 @@ $counter=0;
 $section_background = get_field('section_background');
 $section_background_image = get_field('section_background_image');
 
-if ($section_background_image) {;
-$small = $section_background_image['size']['featured-small'];
-$medium = $section_background_image['sizes']['featured-medium'];
-$large = $section_background_image['sizes']['featured-large'];
+if ( $section_background_image ) {
+  $small  = esc_url( $section_background_image['sizes']['featured-small'] );
+  $medium = esc_url( $section_background_image['sizes']['featured-medium'] );
+  $large  = esc_url( $section_background_image['sizes']['featured-large'] );
 };
 $left_content = get_field('left_content');
 $left_background = get_field('left_background');
@@ -56,7 +56,7 @@ $right_large = $right_background_image['sizes']['fp-large'];
 $counter++;
 
 ?>
-<section id="<?php echo esc_attr($id); ?>" class="<?php echo esc_attr($className); ?> full-width-50-50-outer-container <?php echo $section_background; ?>  <?php if ($section_background_image) { ?> section-background-image<?php } ?>" <?php if ($section_background_image) { ?> data-interchange="[<?php echo $small; ?>, small], [<?php echo $medium; ?>, medium], [<?php echo $large; ?>, large]" data-type="background" <?php } ?>>
+<section id="<?php echo esc_attr($id); ?>" class="<?php echo esc_attr($className); ?> full-width-50-50-outer-container <?php echo esc_attr( $section_background ); ?>  <?php if ($section_background_image) { ?> section-background-image<?php } ?>" <?php if ($section_background_image) { ?> data-interchange="[<?php echo $small; ?>, small], [<?php echo $medium; ?>, medium], [<?php echo $large; ?>, large]" data-type="background" <?php } ?>>
     <div class="full-width-50-50-container"> 
 		<div class="full-width-50-50-grid" >
 				

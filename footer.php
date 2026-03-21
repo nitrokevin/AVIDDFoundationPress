@@ -30,11 +30,11 @@ foreach ($social_networks as $network) {
     }
 }
 
-   
-if ($footer_background_image) {
-    $sizes = [
-        'small' => wp_get_attachment_image_url($footer_background_image, 'fp-small'),
-        'medium' => wp_get_attachment_image_url($footer_background_image, 'fp-medium'),
+    $sizes = [];
+ if ( $footer_background_image ) {
+  $sizes = [
+    'small'  => wp_get_attachment_image_url( $footer_background_image, 'fp-small' ),
+    'medium' => wp_get_attachment_image_url( $footer_background_image, 'fp-medium' ),
         'large' => wp_get_attachment_image_url($footer_background_image, 'fp-large'),
         'xlarge' => wp_get_attachment_image_url($footer_background_image, 'fp-xlarge'),
     ];

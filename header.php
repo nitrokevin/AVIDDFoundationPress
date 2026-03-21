@@ -23,9 +23,12 @@ $contained     = get_theme_mod('contained_header', true);
 	<?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
-<?php if (get_theme_mod('wpt_mobile_menu_layout') === 'offcanvas') : ?>
-		<?php get_template_part( 'template-parts/mobile-off-canvas' ); ?>
-	<?php endif; ?>
+<?php wp_body_open(); ?>
+
+<?php if ( get_theme_mod( 'wpt_mobile_menu_layout' ) === 'offcanvas' ) : ?>
+  <?php get_template_part( 'template-parts/mobile-off-canvas' ); ?>
+<?php endif; ?>
+
 
 <?php if ( $sticky_header ) : ?>
 <div data-sticky-container class="<?php echo ($fixed_header && has_post_thumbnail()) ? 'fixed-header' : ''; ?>">

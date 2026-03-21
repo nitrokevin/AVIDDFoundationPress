@@ -8,6 +8,7 @@
  * @package FoundationPress
  * @since FoundationPress 1.0.0
  */
+defined( 'ABSPATH' ) || die( __( 'Please do not load this page directly. Thanks!', 'foundationpress' ) );
 
 if ( have_comments() ) :
 ?>
@@ -51,8 +52,7 @@ endif;
 	Prevent access to this file directly
 	*/
 
-	defined( 'ABSPATH' ) || die( __( 'Please do not load this page directly. Thanks!', 'foundationpress' ) );
-
+	
 	if ( post_password_required() ) { ?>
 	<section id="comments">
 		<div class="notice">

@@ -15,8 +15,8 @@ function register_project_cpt() {
     'view_item'          => 'View Project',
     'view_items'         => 'View Projects',
     'search_items'       => 'Search Projects',
-    'not_found'          => 'No products found',
-    'not_found_in_trash' => 'No products found in Trash',
+    'not_found'          => __( 'No projects found', 'foundationpress' ),
+    'not_found_in_trash' => __( 'No projects found in Trash', 'foundationpress' ),
     'all_items'          => 'All Projects',
   ];
 

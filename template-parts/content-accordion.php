@@ -1,16 +1,12 @@
 <?php
 /**
-
+ * ACF Accordion Content
  */
-
 ?>
-
-	<?php if( get_field('accordion_type') == 'faq' ){ ?>
-		 
-			  <ul class="accordion" data-accordion data-allow-all-closed="true">
-			  <?php 
-    	 if (have_rows('repeater_content_accordion','option')) :
-              while (have_rows('repeater_content_accordion','option')) : the_row();
+<?php if( get_field('accordion_type') == 'faq' ){ ?>
+	<ul class="accordion" data-accordion data-allow-all-closed="true">
+	 <?php if (have_rows('repeater_content_accordion','option')) :
+         while (have_rows('repeater_content_accordion','option')) : the_row();
                 $header = get_sub_field('header');
                 $content = get_sub_field('content');
                 $category = get_sub_field('category');
@@ -43,19 +39,19 @@
 		$counter++;
 		?>
 
-		<li class="accordion-item <?php echo $accordion_heading_background_color ?>" data-accordion-item>  
+		<li class="accordion-item <?php echo esc_attr( sanitize_html_class( $accordion_heading_background_color ) ); ?>" data-accordion-item>  
 			<a href="#" class="accordion-title">
-					<?php echo $accordion_heading ?>
+				<?php echo esc_html ($accordion_heading); ?>
 			</a>
 			<div class="accordion-content" data-tab-content>
 				<div class="accordion-content-container">
 					<div class="accordion-content-inner">
-						<?php  echo $accordion_content; ?>
-					</div>
+						<?php  echo wp_kses_post ($accordion_content); ?>
 					</div>
 				</div>
+			</div>
 		</li>
 		<?php } ?>
 		<?php } ?>	
-		<?php } ?>	
+	<?php } ?>	
 </ul>

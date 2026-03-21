@@ -17,16 +17,17 @@
 
 					?>
 			<li class="splide__slide">
-				<div class="image" data-interchange="[<?php echo $small; ?>, small], [<?php echo $small; ?>, medium]" data-type="background"></div>
+				<div class="image" data-interchange="[<?php echo esc_url($small); ?>, small], [<?php echo esc_url($medium); ?>, medium]" data-type="background"></div>
 			<div class="info">
-			<?php if($name){ ?>
-				<h5><?php echo $name; ?></h5>
-				<?php } ?>
+			<?php if ( $name ) : ?>
+				<h5><?php echo esc_html( $name ); ?></h5>
+			<?php endif; ?>
+
 			<?php if($job){?>
-				<p><?php echo $job; ?></p>
+				<p><?php echo esc_html($job); ?></p>
 				<?php } ?>
 				<?php if($biography){?>
-				<p><?php echo $biography; ?></p>
+				<p><?php echo wp_kses_post($biography); ?></p>
 				<?php } ?>
 		
 			</div>
