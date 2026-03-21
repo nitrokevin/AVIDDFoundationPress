@@ -14,7 +14,7 @@
 			$counter++;
 			?>
 			<li class="tabs-title <?php if( $counter ==1 ){ echo "is-active"; } ?> <?php echo esc_attr( $tab_bar_background_color ); ?>">
-				<a href="#tab<?php echo php echo absint( $counter ); ?>-<?php echo esc_attr($id); ?>" aria-selected="true">
+				<a href="#tab<?php echo absint( $counter ); ?>-<?php echo esc_attr($id); ?>" aria-selected="true">
 					<?php echo esc_html( $tab_heading ); ?>
 				</a>
 			</li>
