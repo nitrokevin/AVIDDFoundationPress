@@ -30,33 +30,20 @@ p.wp-caption-text {
 }
 
 .gallery {
-	@include xy-grid;
-	@include xy-gutters($negative: true);
+  @include xy-grid;
+  @include xy-gutters($negative: true);
 
-	@for $i from 1 through 9 {
-		&.gallery-columns-#{$i} {
-			@include xy-grid-layout(2, '.gallery-item');
-		}
+  // Small: always 2 columns regardless of gallery-columns setting
+  [class^='gallery-columns-'] { @include xy-grid-layout(2, '.gallery-item'); }
 
-		@include breakpoint(medium) {
-			&.gallery-columns-#{$i} {
-				@include xy-grid-layout(4, '.gallery-item', $gutters: (small: 30px));
-			}
-		}
+  @include breakpoint(medium) {
+    [class^='gallery-columns-'] { @include xy-grid-layout(4, '.gallery-item', $gutters:(small:30px)); }
+  }
 
-		@include breakpoint(large) {
-			&.gallery-columns-#{$i} {
-				@include xy-grid-layout($i, '.gallery-item', $gutters: (small: 30px));
-			}
-		}
-	}
-
-	.gallery-icon > a {
-		@include thumbnail;
-		@include thumbnail-link;
-	}
-
-	.gallery-icon > img {
-		@include thumbnail;
-	}
+  // Large: respect the actual column count
+  @for $i from 1 through 9 {
+    @include breakpoint(large) {
+      &.gallery-columns-#{$i} { @include xy-grid-layout($i, '.gallery-item', $gutters:(small:30px)); }
+    }
+  }
 }

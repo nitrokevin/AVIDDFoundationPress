@@ -35,7 +35,6 @@
       order:3;
       @include breakpoint(medium) {
         @include xy-cell(12);
-        order:3;
         text-align: center;
       }
 
@@ -100,69 +99,4 @@ display: block;
     }
   }
 }
-}
-.business-details-section{
-  &.alignfull{
-		
-			margin-left: calc( -50vw + 50% );
-	margin-right: calc( -50vw  + 50%  );
-	max-width: 100vw;
-		
-	}
-  .business-details-container{
-    @include xy-grid-container;
-    .business-details-grid{
-      @include xy-grid;
-      @include flex-align($x:center, $y:top);
-      padding: rem-calc(30) 0;
-      .business-details{
-        @include xy-cell();
-        @include breakpoint(medium) {
-          @include xy-cell(auto);
-        }
-        h1,h2,h3,h4{
-          color:$primary-color;
-        }
-        .opening-hours{
-          tbody, tr{background-color: inherit;}
-          td{padding: 0;}
-        }
-        ul {
-          list-style-type: none;
-          margin: 0 0 $global-margin 0;
-          padding: 0;
-          a{
-            padding-left:0;
-          }
-        }
-
-      }
-    }
-  }
-}
-.newsletter-footer{
-  background-color: $primary-color;
-  h1,h2,h3,h4,h5{
-    color: $secondary-color;
-  }
-  .newsletter-footer-container{
-    @include xy-grid-container;
-    .newsletter-footer-grid{
-    @include xy-grid;
-    @include flex-align($x:center, $y:top);
-    text-align: center;
-   padding-top:$global-padding;
-    }
-  }
-  .newsletter-footer-form{
-   display: flex;
-   padding-bottom:$global-padding;
-   .tnp-field{
-    padding-right:$global-padding;
-   }
-  .tnp-field-button input[type=submit] {
-    @include button(false, $secondary-color, $button-background-hover, $button-color, hollow);
-  }
-}
-
 }

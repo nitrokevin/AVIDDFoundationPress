@@ -1,24 +1,17 @@
 .block-accordion{
-	  &.has-background {
-	    margin-left: calc(-50vw + 50%);
-	    margin-right: calc(-50vw + 50%);
-	    max-width: 100vw;
+	  &.alignfull, &.has-background {
+		@include alignfull-bleed;
 	  }
 	padding-left: 0;
 	padding-right: 0;
-	&.alignfull{
-		.block-accordion-grid{
-			margin-left: calc( -50vw + 50% );
-	margin-right: calc( -50vw  + 50%  );
-	max-width: 100vw;
-		}
-	}
+	
 	.block-accordion-container {
 		@include xy-grid-container;
 		.block-accordion-content{
 			@include xy-cell(12);
-		
-	
+			@include breakpoint(medium){
+				@include xy-cell(12);
+			}
 		}
 	}
 

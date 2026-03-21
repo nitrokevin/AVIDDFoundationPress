@@ -329,28 +329,13 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
   &.is-style-fill {
   .wp-block-button__link {
       border-radius: $global-radius;
-  padding: 0.85rem 1.75rem 0.85rem 3rem;
+
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
   position: relative;
-  overflow: hidden; /* clips the expanding circle */
-  transition: color 0.6s ease;
-  &:hover::before {
-  transform: scale(1.2); /* large enough to flood the button */
-}
-   &::before {
-  content: '';
-position: absolute;
-left: 1rem;
-width: 1.5rem;
-height: 1.5rem;
-border-radius: 100%;
-background-color: #8fa85a;
-transform: scale(1);
-transition: transform 0.4s ease-out;
-z-index: -1;
-}
+
+
   }
 }
 
@@ -536,7 +521,7 @@ z-index: -1;
   }
 
   @include bleed-column-color-rules;
-    @include bleed-color-rules;
+   
 }
 // =============================================================================
 // Group
@@ -547,7 +532,7 @@ z-index: -1;
   &.is-style-full-bleed {
   position: relative;
   padding: $global-padding * 2 0;
-    @include bleed-color-rules;
+  
   }
 }
 
@@ -596,5 +581,15 @@ z-index: -1;
     position: relative;
   }
 
+
+}
+
+
+
+
+.wp-block-columns.is-style-full-bleed,
+.wp-block-group.is-style-full-bleed,
+.wp-block-buttons.is-style-full-bleed,
+.wp-block-media-text.is-style-full-bleed {
   @include bleed-color-rules;
 }
