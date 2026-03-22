@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Allow users to select Topbar or Offcanvas menu. Adds body class of offcanvas or topbar based on which they choose.
  *
@@ -6,23 +7,26 @@
  * @since FoundationPress 1.0.0
  */
 
-if ( ! function_exists( 'wpt_register_theme_customizer' ) ) :
-	function wpt_register_theme_customizer( $wp_customize ) {
+if (! function_exists('wpt_register_theme_customizer')) :
+	function wpt_register_theme_customizer($wp_customize)
+	{
 
 		// Create custom panels
 		$wp_customize->add_panel(
-			'mobile_menu_settings', array(
+			'mobile_menu_settings',
+			array(
 				'priority'       => 1000,
 				'theme_supports' => '',
-				'title'          => __( 'Mobile Menu Settings', 'foundationpress' ),
-				'description'    => __( 'Controls the mobile menu', 'foundationpress' ),
+				'title'          => __('Mobile Menu Settings', 'foundationpress'),
+				'description'    => __('Controls the mobile menu', 'foundationpress'),
 			)
 		);
 
 		// Create custom field for mobile navigation layout
 		$wp_customize->add_section(
-			'mobile_menu_layout', array(
-				'title'    => __( 'Mobile navigation layout', 'foundationpress' ),
+			'mobile_menu_layout',
+			array(
+				'title'    => __('Mobile navigation layout', 'foundationpress'),
 				'panel'    => 'mobile_menu_settings',
 				'priority' => 1000,
 			)
@@ -52,16 +56,16 @@ if ( ! function_exists( 'wpt_register_theme_customizer' ) ) :
 				)
 			)
 		);
-
 	}
 
-	add_action( 'customize_register', 'wpt_register_theme_customizer' );
+	add_action('customize_register', 'wpt_register_theme_customizer');
 
 	// Add class to body to help w/ CSS
-	add_filter( 'body_class', 'mobile_nav_class' );
-	function mobile_nav_class( $classes ) {
-		$layout    = get_theme_mod( 'wpt_mobile_menu_layout', 'topbar' );
-		$classes[] = ( $layout === 'offcanvas' ) ? 'offcanvas' : 'topbar';
+	add_filter('body_class', 'mobile_nav_class');
+	function mobile_nav_class($classes)
+	{
+		$layout    = get_theme_mod('wpt_mobile_menu_layout', 'topbar');
+		$classes[] = ($layout === 'offcanvas') ? 'offcanvas' : 'topbar';
 		return $classes;
 	}
 endif;

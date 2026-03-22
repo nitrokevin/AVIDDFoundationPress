@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The template for displaying pages
  *
@@ -12,17 +13,17 @@
 
 get_header(); ?>
 
-<?php get_template_part( 'template-parts/featured-image' ); ?>
-<?php if ( have_posts() || has_blocks() ) : ?>
-<div class="main-container">
-    <div class="main-grid">
-        <main class="main-content-full-width">
-            <?php while ( have_posts() ) : the_post(); ?>
-                <?php get_template_part( 'template-parts/content', 'page' ); ?>
-            <?php endwhile; ?>
-        </main>
+<?php get_template_part('template-parts/featured-image'); ?>
+<?php if (have_posts() || has_blocks()) : ?>
+    <div class="main-container">
+        <div class="main-grid">
+            <main class="main-content-full-width">
+                <?php while (have_posts()) : the_post(); ?>
+                    <?php get_template_part('template-parts/content', 'page'); ?>
+                <?php endwhile; ?>
+            </main>
+        </div>
     </div>
-</div>
 <?php endif; ?>
 <?php
 get_footer();

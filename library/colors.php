@@ -1,4 +1,5 @@
 <?php
+
 /**
  * THEME JSON BRIDGE: ACF & KIRKI INTEGRATION
  *
@@ -31,24 +32,25 @@
  *   'gradients' => array  Gradient entries from theme.json.
  * }
  */
-function aviddj_get_theme_colors() {
-  static $cache = null;
-  if ( $cache !== null ) return $cache;
+function aviddj_get_theme_colors()
+{
+    static $cache = null;
+    if ($cache !== null) return $cache;
 
-  $cache_key = 'avidd_theme_colors';
-  $cached    = wp_cache_get( $cache_key, 'avidd_theme' );
-  if ( $cached !== false ) {
-    $cache = $cached;
+    $cache_key = 'avidd_theme_colors';
+    $cached    = wp_cache_get($cache_key, 'avidd_theme');
+    if ($cached !== false) {
+        $cache = $cached;
+        return $cache;
+    }
+
+    $settings = wp_get_global_settings();
+    $cache = [
+        'palette'   => $settings['color']['palette']['theme']   ?? [],
+        'gradients' => $settings['color']['gradients']['theme'] ?? [],
+    ];
+    wp_cache_set($cache_key, $cache, 'avidd_theme', HOUR_IN_SECONDS);
     return $cache;
-  }
-
-  $settings = wp_get_global_settings();
-  $cache = [
-    'palette'   => $settings['color']['palette']['theme']   ?? [],
-    'gradients' => $settings['color']['gradients']['theme'] ?? [],
-  ];
-  wp_cache_set( $cache_key, $cache, 'avidd_theme', HOUR_IN_SECONDS );
-  return $cache;
 }
 
 
@@ -64,61 +66,62 @@ function aviddj_get_theme_colors() {
  * }
  * @return array Associative array of key => label choices.
  */
-function get_theme_design_choices( $options = [] ) {
+function get_theme_design_choices($options = [])
+{
     $options = array_merge([
         'include_colors'    => true,
         'include_gradients' => true,
         'use_css_value'     => false,
         'for_kirki'         => false,
         'for_acf'           => false,
-    ], $options );
+    ], $options);
 
     $data    = aviddj_get_theme_colors();
     $choices = [];
 
     // Colors
-    if ( $options['include_colors'] && ! empty( $data['palette'] ) ) {
-        foreach ( $data['palette'] as $color ) {
-            if ( $options['for_acf'] && $options['use_css_value'] ) {
+    if ($options['include_colors'] && ! empty($data['palette'])) {
+        foreach ($data['palette'] as $color) {
+            if ($options['for_acf'] && $options['use_css_value']) {
                 // ACF swatch with CSS keys — use HEX as key, name as label
-                if ( ! empty( $color['color'] ) && preg_match( '/^#([a-f0-9]{3}|[a-f0-9]{6})$/i', $color['color'] ) ) {
-                    $choices[ $color['color'] ] = $color['name'] ?? $color['color'];
+                if (! empty($color['color']) && preg_match('/^#([a-f0-9]{3}|[a-f0-9]{6})$/i', $color['color'])) {
+                    $choices[$color['color']] = $color['name'] ?? $color['color'];
                 }
             } else {
-                $key = $color['color'] ?? sanitize_title( $color['slug'] ?? '' );
-                if ( $key ) $choices[ $key ] = $color['name'] ?? $key;
+                $key = $color['color'] ?? sanitize_title($color['slug'] ?? '');
+                if ($key) $choices[$key] = $color['name'] ?? $key;
             }
         }
 
         // Fallback so ACF swatch always has at least one option
-        if ( $options['for_acf'] && $options['use_css_value'] && empty( $choices ) ) {
+        if ($options['for_acf'] && $options['use_css_value'] && empty($choices)) {
             $choices['#000000'] = 'Black';
         }
-    } elseif ( $options['for_acf'] && $options['use_css_value'] ) {
+    } elseif ($options['for_acf'] && $options['use_css_value']) {
         $choices['#000000'] = 'Black';
     }
 
     // Gradients
-    if ( $options['include_gradients'] && ! empty( $data['gradients'] ) ) {
-        foreach ( $data['gradients'] as $gradient ) {
-            $slug = sanitize_title( $gradient['slug'] ?? '' );
+    if ($options['include_gradients'] && ! empty($data['gradients'])) {
+        foreach ($data['gradients'] as $gradient) {
+            $slug = sanitize_title($gradient['slug'] ?? '');
             $name = $gradient['name'] ?? $slug;
             $css  = $gradient['gradient'] ?? '';
 
-            if ( ! $slug ) continue;
+            if (! $slug) continue;
 
-            if ( $options['for_acf'] && $options['use_css_value'] ) {
+            if ($options['for_acf'] && $options['use_css_value']) {
                 // ACF swatch with CSS keys — use gradient CSS string as key
-                if ( $css ) $choices[ $css ] = $name;
-            } elseif ( $options['for_acf'] || $options['for_kirki'] ) {
+                if ($css) $choices[$css] = $name;
+            } elseif ($options['for_acf'] || $options['for_kirki']) {
                 // *** KEY CHANGE vs original ***
                 // Store gradient slug as key (not CSS string) so the Customizer
                 // and ACF swatch store a clean slug rather than a long CSS value.
-                $choices[ $slug ] = $name;
-            } elseif ( $options['use_css_value'] ) {
-                if ( $css ) $choices[ $slug ] = $css;
+                $choices[$slug] = $name;
+            } elseif ($options['use_css_value']) {
+                if ($css) $choices[$slug] = $css;
             } else {
-                $choices[ $slug ] = $name;
+                $choices[$slug] = $name;
             }
         }
     }
@@ -132,17 +135,18 @@ function get_theme_design_choices( $options = [] ) {
  * @param  string $value HEX color string e.g. '#640FA1'.
  * @return string Slug if found, original value otherwise.
  */
-function aviddjson_hex_to_slug( $value ) {
-    if ( empty( $value ) || ! preg_match( '/^#([a-f0-9]{3}){1,2}$/i', $value ) ) {
+function aviddjson_hex_to_slug($value)
+{
+    if (empty($value) || ! preg_match('/^#([a-f0-9]{3}){1,2}$/i', $value)) {
         return $value;
     }
 
     $data = aviddj_get_theme_colors();
 
-    foreach ( $data['palette'] as $color ) {
-        if ( ! empty( $color['color'] ) && ! empty( $color['slug'] ) ) {
-            if ( strtolower( $color['color'] ) === strtolower( $value ) ) {
-                return sanitize_title( $color['slug'] );
+    foreach ($data['palette'] as $color) {
+        if (! empty($color['color']) && ! empty($color['slug'])) {
+            if (strtolower($color['color']) === strtolower($value)) {
+                return sanitize_title($color['slug']);
             }
         }
     }
@@ -157,19 +161,20 @@ function aviddjson_hex_to_slug( $value ) {
  * @param  string $value Gradient CSS string e.g. 'linear-gradient(135deg, #640FA1, #210535)'.
  * @return string Slug if found, original value otherwise.
  */
-function aviddjson_gradient_to_slug( $value ) {
-    if ( empty( $value ) || strpos( $value, 'gradient(' ) === false ) {
+function aviddjson_gradient_to_slug($value)
+{
+    if (empty($value) || strpos($value, 'gradient(') === false) {
         return $value;
     }
 
     $data             = aviddj_get_theme_colors();
-    $normalized_value = preg_replace( '/\s+/', ' ', trim( $value ) );
+    $normalized_value = preg_replace('/\s+/', ' ', trim($value));
 
-    foreach ( $data['gradients'] as $gradient ) {
-        $slug       = sanitize_title( $gradient['slug'] ?? '' );
-        $normalized = preg_replace( '/\s+/', ' ', trim( $gradient['gradient'] ?? '' ) );
+    foreach ($data['gradients'] as $gradient) {
+        $slug       = sanitize_title($gradient['slug'] ?? '');
+        $normalized = preg_replace('/\s+/', ' ', trim($gradient['gradient'] ?? ''));
 
-        if ( $slug && $normalized === $normalized_value ) {
+        if ($slug && $normalized === $normalized_value) {
             return $slug;
         }
     }
@@ -188,21 +193,22 @@ function aviddjson_gradient_to_slug( $value ) {
  * @return string Gutenberg class e.g. 'has-primary-background-color'
  *                or 'has-primary-radial-gradient-background'.
  */
-function aviddj_get_background_class( $slug ) {
-    if ( empty( $slug ) ) return '';
+function aviddj_get_background_class($slug)
+{
+    if (empty($slug)) return '';
 
     $data = aviddj_get_theme_colors();
 
     // Check colors first — palette slugs take priority over gradient slugs
-    foreach ( $data['palette'] as $color ) {
-        if ( sanitize_title( $color['slug'] ?? '' ) === $slug ) {
+    foreach ($data['palette'] as $color) {
+        if (sanitize_title($color['slug'] ?? '') === $slug) {
             return 'has-' . $slug . '-background-color';
         }
     }
 
     // Then check gradients
-    foreach ( $data['gradients'] as $gradient ) {
-        if ( sanitize_title( $gradient['slug'] ?? '' ) === $slug ) {
+    foreach ($data['gradients'] as $gradient) {
+        if (sanitize_title($gradient['slug'] ?? '') === $slug) {
             return 'has-' . $slug . '-gradient-background';
         }
     }
@@ -219,9 +225,9 @@ function aviddj_get_background_class( $slug ) {
 /**
  * Convert color_picker HEX values to their theme.json slug on format.
  */
-add_filter( 'acf/format_value/type=color_picker', function( $value, $post_id, $field ) {
-    return aviddjson_hex_to_slug( $value );
-}, 10, 3 );
+add_filter('acf/format_value/type=color_picker', function ($value, $post_id, $field) {
+    return aviddjson_hex_to_slug($value);
+}, 10, 3);
 
 
 // =============================================================================
@@ -236,9 +242,11 @@ add_filter( 'acf/format_value/type=color_picker', function( $value, $post_id, $f
  * - 'gutenberg_classes' ON  → get_field() returns 'has-primary-background-color'
  * - 'gutenberg_classes' OFF → get_field() returns the raw slug e.g. 'primary'
  */
-class ACF_Field_Theme_Swatch extends acf_field {
+class ACF_Field_Theme_Swatch extends acf_field
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->name     = 'theme_swatch';
         $this->label    = 'Theme Swatch';
         $this->category = 'choice';
@@ -253,46 +261,47 @@ class ACF_Field_Theme_Swatch extends acf_field {
         parent::__construct();
     }
 
-    public function render_field( $field ) {
+    public function render_field($field)
+    {
         $choices = $field['choices'] ?? [];
         $value   = $field['value'] ?? '';
         $name    = $field['name'];
         $null    = $field['allow_null'] ?? 0;
 
-        if ( empty( $choices ) && ! $null ) return;
-        ?>
+        if (empty($choices) && ! $null) return;
+?>
         <div class="acf-theme-swatches">
 
-            <?php if ( $null ) : ?>
+            <?php if ($null) : ?>
                 <label class="swatch-item swatch-item--null">
-                    <input type="radio" name="<?php echo esc_attr( $name ); ?>" value="" <?php checked( $value, '' ); ?> />
-                    <span class="swatch swatch--none" title="<?php esc_attr_e( 'None' ); ?>">
+                    <input type="radio" name="<?php echo esc_attr($name); ?>" value="" <?php checked($value, ''); ?> />
+                    <span class="swatch swatch--none" title="<?php esc_attr_e('None'); ?>">
                         <span class="swatch__cross"></span>
                     </span>
                 </label>
             <?php endif; ?>
 
-            <?php foreach ( $choices as $css_value => $label ) :
-                $is_gradient = strpos( $css_value, 'gradient(' ) !== false;
-                $class       = 'swatch ' . ( $is_gradient ? 'swatch--gradient' : 'swatch--color' );
+            <?php foreach ($choices as $css_value => $label) :
+                $is_gradient = strpos($css_value, 'gradient(') !== false;
+                $class       = 'swatch ' . ($is_gradient ? 'swatch--gradient' : 'swatch--color');
             ?>
-                <label class="swatch-item" title="<?php echo esc_attr( $label ); ?>">
+                <label class="swatch-item" title="<?php echo esc_attr($label); ?>">
                     <input
                         type="radio"
-                        name="<?php echo esc_attr( $name ); ?>"
-                        value="<?php echo esc_attr( $css_value ); ?>"
-                        <?php checked( $value, $css_value ); ?>
-                    />
-                    <span class="<?php echo esc_attr( $class ); ?>" style="background: <?php echo esc_attr( $css_value ); ?>;"></span>
+                        name="<?php echo esc_attr($name); ?>"
+                        value="<?php echo esc_attr($css_value); ?>"
+                        <?php checked($value, $css_value); ?> />
+                    <span class="<?php echo esc_attr($class); ?>" style="background: <?php echo esc_attr($css_value); ?>;"></span>
                 </label>
             <?php endforeach; ?>
 
         </div>
-        <?php
+<?php
     }
 
-    public function render_field_settings( $field ) {
-        acf_render_field_setting( $field, [
+    public function render_field_settings($field)
+    {
+        acf_render_field_setting($field, [
             'label'         => 'Include Colors',
             'name'          => 'include_colors',
             'type'          => 'true_false',
@@ -300,7 +309,7 @@ class ACF_Field_Theme_Swatch extends acf_field {
             'default_value' => 1,
         ]);
 
-        acf_render_field_setting( $field, [
+        acf_render_field_setting($field, [
             'label'         => 'Include Gradients',
             'name'          => 'include_gradients',
             'type'          => 'true_false',
@@ -308,7 +317,7 @@ class ACF_Field_Theme_Swatch extends acf_field {
             'default_value' => 1,
         ]);
 
-        acf_render_field_setting( $field, [
+        acf_render_field_setting($field, [
             'label'         => 'Gutenberg Classes',
             'name'          => 'gutenberg_classes',
             'type'          => 'true_false',
@@ -322,10 +331,11 @@ class ACF_Field_Theme_Swatch extends acf_field {
      * Auto-populate choices from theme.json so field groups stay clean.
      * Uses ! empty() to safely handle ACF passing settings as "1"/"0" strings.
      */
-    public function load_field( $field ) {
+    public function load_field($field)
+    {
         $field['choices'] = get_theme_design_choices([
-            'include_colors'    => ! empty( $field['include_colors'] ),
-            'include_gradients' => ! empty( $field['include_gradients'] ),
+            'include_colors'    => ! empty($field['include_colors']),
+            'include_gradients' => ! empty($field['include_gradients']),
             'for_acf'           => true,
             'use_css_value'     => true,
         ]);
@@ -346,28 +356,29 @@ class ACF_Field_Theme_Swatch extends acf_field {
      *   'linear-gradient(135deg, …)' → 'primary'
      *   'radial-gradient(ellipse …)' → 'primary-radial'
      */
-    public function format_value( $value, $post_id, $field ) {
-        if ( empty( $value ) ) return $value;
+    public function format_value($value, $post_id, $field)
+    {
+        if (empty($value)) return $value;
 
         // Convert HEX to slug
-        if ( preg_match( '/^#([a-f0-9]{3}){1,2}$/i', $value ) ) {
-            $value = aviddjson_hex_to_slug( $value );
+        if (preg_match('/^#([a-f0-9]{3}){1,2}$/i', $value)) {
+            $value = aviddjson_hex_to_slug($value);
         }
 
         // Convert gradient CSS string to slug
-        if ( strpos( $value, 'gradient(' ) !== false ) {
-            $value = aviddjson_gradient_to_slug( $value );
+        if (strpos($value, 'gradient(') !== false) {
+            $value = aviddjson_gradient_to_slug($value);
         }
 
         // Return Gutenberg class or raw slug depending on field setting
-        if ( ! empty( $field['gutenberg_classes'] ) ) {
-            return aviddj_get_background_class( $value );
+        if (! empty($field['gutenberg_classes'])) {
+            return aviddj_get_background_class($value);
         }
 
         return $value;
     }
 }
 
-add_action( 'acf/include_field_types', function () {
+add_action('acf/include_field_types', function () {
     new ACF_Field_Theme_Swatch();
 });

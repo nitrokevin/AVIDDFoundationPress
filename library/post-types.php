@@ -1,7 +1,8 @@
-<?php 
-add_action( 'init', 'register_project_cpt' );
-add_action( 'init', 'register_project_taxonomies' );
-function register_project_cpt() {
+<?php
+add_action('init', 'register_project_cpt');
+add_action('init', 'register_project_taxonomies');
+function register_project_cpt()
+{
 
   $labels = [
     'name'               => 'Projects',
@@ -15,8 +16,8 @@ function register_project_cpt() {
     'view_item'          => 'View Project',
     'view_items'         => 'View Projects',
     'search_items'       => 'Search Projects',
-    'not_found'          => __( 'No projects found', 'foundationpress' ),
-    'not_found_in_trash' => __( 'No projects found in Trash', 'foundationpress' ),
+    'not_found'          => __('No projects found', 'foundationpress'),
+    'not_found_in_trash' => __('No projects found in Trash', 'foundationpress'),
     'all_items'          => 'All Projects',
   ];
 
@@ -25,27 +26,28 @@ function register_project_cpt() {
     'public'             => true,
     'show_ui'            => true,
     'show_in_menu'       => true,
-    'show_in_rest'       => true, 
+    'show_in_rest'       => true,
     'has_archive'        => true,
     'rewrite'            => [
       'slug' => 'project'
     ],
-    'menu_icon'          => 'dashicons-clipboard', 
+    'menu_icon'          => 'dashicons-clipboard',
     'supports'           => [
       'title',
       'thumbnail',
       'excerpt',
       'page-attributes'
     ],
-    
+
     'hierarchical' => true, // enables parent/child
   ];
 
-  register_post_type( 'project', $args );
+  register_post_type('project', $args);
 }
 
 
-function register_project_taxonomies() {
+function register_project_taxonomies()
+{
 
   $taxonomies = [
 

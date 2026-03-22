@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Register Menus
  *
@@ -9,11 +10,11 @@
 
 register_nav_menus(
 	array(
-		'top-bar-r'  => esc_html__( 'Right Top Bar', 'foundationpress' ),
-		'top-bar-l'  => esc_html__( 'Left Top Bar', 'foundationpress' ),
-		'footer-nav-l'  => esc_html__( 'Footer Left', 'foundationpress' ),
-		'footer-nav-r'  => esc_html__( 'Footer Right', 'foundationpress' ),
-		'mobile-nav' => esc_html__( 'Mobile', 'foundationpress' ),
+		'top-bar-r'  => esc_html__('Right Top Bar', 'foundationpress'),
+		'top-bar-l'  => esc_html__('Left Top Bar', 'foundationpress'),
+		'footer-nav-l'  => esc_html__('Footer Left', 'foundationpress'),
+		'footer-nav-r'  => esc_html__('Footer Right', 'foundationpress'),
+		'mobile-nav' => esc_html__('Mobile', 'foundationpress'),
 	)
 );
 
@@ -23,8 +24,9 @@ register_nav_menus(
  *
  * @link http://codex.wordpress.org/Function_Reference/wp_nav_menu
  */
-if ( ! function_exists( 'foundationpress_top_bar_l' ) ) {
-	function foundationpress_top_bar_l() {
+if (! function_exists('foundationpress_top_bar_l')) {
+	function foundationpress_top_bar_l()
+	{
 		wp_nav_menu(
 			array(
 				'container'      => false,
@@ -43,8 +45,9 @@ if ( ! function_exists( 'foundationpress_top_bar_l' ) ) {
  *
  * @link http://codex.wordpress.org/Function_Reference/wp_nav_menu
  */
-if ( ! function_exists( 'foundationpress_top_bar_r' ) ) {
-	function foundationpress_top_bar_r() {
+if (! function_exists('foundationpress_top_bar_r')) {
+	function foundationpress_top_bar_r()
+	{
 		wp_nav_menu(
 			array(
 				'container'      => false,
@@ -63,8 +66,9 @@ if ( ! function_exists( 'foundationpress_top_bar_r' ) ) {
  *
  * @link http://codex.wordpress.org/Function_Reference/wp_nav_menu
  */
-if ( ! function_exists( 'foundationpress_footer_nav_l' ) ) {
-	function foundationpress_footer_nav_l() {
+if (! function_exists('foundationpress_footer_nav_l')) {
+	function foundationpress_footer_nav_l()
+	{
 		wp_nav_menu(
 			array(
 				'container'      => false,
@@ -83,8 +87,9 @@ if ( ! function_exists( 'foundationpress_footer_nav_l' ) ) {
  *
  * @link http://codex.wordpress.org/Function_Reference/wp_nav_menu
  */
-if ( ! function_exists( 'foundationpress_footer_nav_r' ) ) {
-	function foundationpress_footer_nav_r() {
+if (! function_exists('foundationpress_footer_nav_r')) {
+	function foundationpress_footer_nav_r()
+	{
 		wp_nav_menu(
 			array(
 				'container'      => false,
@@ -103,12 +108,13 @@ if ( ! function_exists( 'foundationpress_footer_nav_r' ) ) {
 /**
  * Mobile navigation - topbar (default) or offcanvas
  */
-if ( ! function_exists( 'foundationpress_mobile_nav' ) ) {
-	function foundationpress_mobile_nav() {
+if (! function_exists('foundationpress_mobile_nav')) {
+	function foundationpress_mobile_nav()
+	{
 		wp_nav_menu(
 			array(
 				'container'      => false,                         // Remove nav container
-				'menu'           => __( 'mobile-nav', 'foundationpress' ),
+				'menu'           => __('mobile-nav', 'foundationpress'),
 				'menu_class'     => 'vertical menu',
 				'theme_location' => 'mobile-nav',
 				'items_wrap'     => '<ul id="%1$s" class="%2$s" data-accordion-menu data-submenu-toggle="true">%3$s</ul>',
@@ -126,13 +132,14 @@ if ( ! function_exists( 'foundationpress_mobile_nav' ) ) {
  * 2) Click 'Screen Options' from the top panel and enable 'CSS CLasses' and 'Link Relationship (XFN)'
  * 3) On your menu item, type 'has-form' in the CSS-classes field. Type 'button' in the XFN field
  * 4) Save Menu. Your menu item will now appear as a button in your top-menu
-*/
-if ( ! function_exists( 'foundationpress_add_menuclass' ) ) {
-	function foundationpress_add_menuclass( $ulclass ) {
-		$find    = array( '/<a rel="button"/', '/<a title=".*?" rel="button"/' );
-		$replace = array( '<a rel="button" class="button"', '<a rel="button" class="button"' );
+ */
+if (! function_exists('foundationpress_add_menuclass')) {
+	function foundationpress_add_menuclass($ulclass)
+	{
+		$find    = array('/<a rel="button"/', '/<a title=".*?" rel="button"/');
+		$replace = array('<a rel="button" class="button"', '<a rel="button" class="button"');
 
-		return preg_replace( $find, $replace, $ulclass, 1 );
+		return preg_replace($find, $replace, $ulclass, 1);
 	}
-	add_filter( 'wp_nav_menu', 'foundationpress_add_menuclass' );
+	add_filter('wp_nav_menu', 'foundationpress_add_menuclass');
 }

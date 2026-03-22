@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Theme Custom Functions
  * ACF, TinyMCE, Embed, and Admin Tweaks
@@ -16,7 +17,8 @@ add_filter('acf_the_content', 'wp_make_content_images_responsive');
 /**
  * Remove <p> wrappers around images and replace with <figure>
  */
-function img_unautop($content) {
+function img_unautop($content)
+{
     return preg_replace('/<p>\s*(<a .*?><img.*?><\/a>|<img.*?>)\s*<\/p>/s', '<figure class="figure">$1</figure>', $content);
 }
 add_filter('acf_the_content', 'img_unautop', 30);
@@ -24,7 +26,8 @@ add_filter('acf_the_content', 'img_unautop', 30);
 /**
  * Remove <p> wrappers around buttons (<a> elements)
  */
-function a_unautop($content) {
+function a_unautop($content)
+{
     return preg_replace('/<p>\s*(<a .*?>.*?<\/a>)\s*<\/p>/s', '$1', $content);
 }
 add_filter('acf_the_content', 'a_unautop', 30);
@@ -35,7 +38,7 @@ add_filter('acf_the_content', 'a_unautop', 30);
  * Used for populating select fields with data from ACF options pages or custom sources.
  */
 
-add_filter('acf/load_field/name=options_page_selector', function($field) {
+add_filter('acf/load_field/name=options_page_selector', function ($field) {
     $field['choices'] = [];
 
     if (function_exists('acf_get_options_pages')) {
@@ -56,36 +59,36 @@ add_filter('acf/load_field/name=options_page_selector', function($field) {
 // ------------------------------------------------------------
 
 //Custom alignment for columns
-add_action( 'init', function() {
+add_action('init', function () {
     register_block_style(
         'core/columns',
         array(
             'name'  => 'full-bleed',
-            'label' => __( 'Full Bleed', 'foundationpress' ),
+            'label' => __('Full Bleed', 'foundationpress'),
         )
     );
-register_block_style(
-    'core/media-text',
-    array(
-        'name'  => 'staggered',
-        'label' => __( 'Staggered', 'foundationpress' ),
-    )
-);
+    register_block_style(
+        'core/media-text',
+        array(
+            'name'  => 'staggered',
+            'label' => __('Staggered', 'foundationpress'),
+        )
+    );
 
-register_block_style(
-    'core/media-text',
-    array(
-        'name'  => 'scaled',
-        'label' => __( 'Scaled', 'foundationpress' ),
-    )
-);
-    
+    register_block_style(
+        'core/media-text',
+        array(
+            'name'  => 'scaled',
+            'label' => __('Scaled', 'foundationpress'),
+        )
+    );
 });
 
 /**
  * Automatically generate unique anchors for ACF blocks
  */
-function set_unique_acf_block_anchor($attributes) {
+function set_unique_acf_block_anchor($attributes)
+{
     if (empty($attributes['anchor'])) {
         $attributes['anchor'] = 'acf-block-' . uniqid();
     }
@@ -100,14 +103,15 @@ add_filter('acf/pre_save_block', 'set_unique_acf_block_anchor');
 
 add_filter('tiny_mce_before_init', 'customise_tinymce');
 
-function customise_tinymce($init) {
+function customise_tinymce($init)
+{
     // Always paste as plain text
     $init['paste_as_text'] = true;
 
     // Load custom colour palette via helper (returns ['#hex' => 'Name', ...])
     $default_colours = [];
 
-    if ( function_exists( 'get_theme_design_choices' ) ) {
+    if (function_exists('get_theme_design_choices')) {
         $choices = get_theme_design_choices([
             'include_colors'    => true,
             'include_gradients' => false,
@@ -150,7 +154,7 @@ function customise_tinymce($init) {
             'selector' => 'a',
             'classes' => 'button',
         ],
-          [
+        [
             'title' => 'Secondary button',
             'selector' => 'a',
             'classes' => 'button secondary',
@@ -173,7 +177,8 @@ function customise_tinymce($init) {
 /**
  * Add 'styleselect' dropdown to TinyMCE toolbar
  */
-function my_mce_buttons_2($buttons) {
+function my_mce_buttons_2($buttons)
+{
     array_unshift($buttons, 'styleselect');
     return $buttons;
 }
@@ -186,7 +191,8 @@ add_filter('mce_buttons_2', 'my_mce_buttons_2');
 /**
  * Wrap oEmbed content in a responsive container
  */
-function wrap_embed_html($html) {
+function wrap_embed_html($html)
+{
     return '<div class="responsive-embed">' . $html . '</div>';
 }
 add_filter('embed_oembed_html', 'wrap_embed_html', 10, 3);
@@ -195,7 +201,8 @@ add_filter('video_embed_html', 'wrap_embed_html');
 /**
  * Add YouTube oEmbed parameters for cleaner display
  */
-function modify_oembed_youtube($html, $url, $attr, $post_id) {
+function modify_oembed_youtube($html, $url, $attr, $post_id)
+{
     if (strpos($html, 'feature=oembed') !== false) {
         return str_replace(
             'feature=oembed',
@@ -223,7 +230,8 @@ if (class_exists('acf_revisions')) {
  * Set ACF Google Maps API key
  * Replace with an environment variable or ACF options field for safety
  */
-function my_acf_google_map_api($api) {
+function my_acf_google_map_api($api)
+{
     $api['key'] = getenv('GOOGLE_MAPS_API_KEY'); // Use env var or ACF option
     return $api;
 }
@@ -235,14 +243,14 @@ add_filter('acf/fields/google_map/api', 'my_acf_google_map_api');
 /**
  * Enable dark mode
  */
-add_filter( 'body_class', function( $classes ) {
-	$dark_mode = get_theme_mod( 'dark_mode', 'off' );
+add_filter('body_class', function ($classes) {
+    $dark_mode = get_theme_mod('dark_mode', 'off');
 
-	if ( $dark_mode === '1' || $dark_mode === 1 || $dark_mode === true ) {
-		$classes[] = 'dark-enabled';
-	}
+    if ($dark_mode === '1' || $dark_mode === 1 || $dark_mode === true) {
+        $classes[] = 'dark-enabled';
+    }
 
-	return $classes;
+    return $classes;
 });
 /**
  * Enable excerpts on pages
@@ -252,13 +260,15 @@ add_post_type_support('page', 'excerpt');
 /**
  * Remove Comments from Admin Menu
  */
-function my_remove_admin_menus() {
+function my_remove_admin_menus()
+{
     remove_menu_page('edit-comments.php');
 }
 add_action('admin_menu', 'my_remove_admin_menus');
 
 
-function avidd_social_links_inline_shortcode($atts) {
+function avidd_social_links_inline_shortcode($atts)
+{
     $atts = shortcode_atts([
         'class' => '', // allow user to pass a class
     ], $atts, 'social_links');
@@ -268,9 +278,9 @@ function avidd_social_links_inline_shortcode($atts) {
     $social_sites = [
         'facebook' => 'fa-brands fa-facebook-f',
         'twitter'  => 'fa-brands fa-x-twitter',
-        'instagram'=> 'fa-brands fa-instagram',
+        'instagram' => 'fa-brands fa-instagram',
         'linkedin' => 'fa-brands fa-linkedin-in',
-        'pinterest'=> 'fa-brands fa-pinterest',
+        'pinterest' => 'fa-brands fa-pinterest',
         'tiktok'   => 'fa-brands fa-tiktok',
     ];
 
@@ -286,66 +296,67 @@ function avidd_social_links_inline_shortcode($atts) {
 add_shortcode('social_links', 'avidd_social_links_inline_shortcode');
 
 
-add_filter( 'nav_menu_link_attributes', function( $atts, $item, $args, $depth ) {
+add_filter('nav_menu_link_attributes', function ($atts, $item, $args, $depth) {
 
     // Only target your top-bar menu
-    if ( 'top-bar-r' !== $args->theme_location ) {
+    if ('top-bar-r' !== $args->theme_location) {
         return $atts;
     }
 
     // Only process items with a hash
-    if ( strpos( $item->url, '#' ) === false ) {
+    if (strpos($item->url, '#') === false) {
         return $atts;
     }
 
     // Get current page path (trailing slash normalized)
-    $current_path = trailingslashit( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) );
+    $current_path = trailingslashit(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
     // Parse menu item URL
-    $item_parts = parse_url( $item->url );
-    $item_path = isset( $item_parts['path'] ) ? trailingslashit( $item_parts['path'] ) : '/';
-    $item_hash = isset( $item_parts['fragment'] ) ? $item_parts['fragment'] : '';
+    $item_parts = parse_url($item->url);
+    $item_path = isset($item_parts['path']) ? trailingslashit($item_parts['path']) : '/';
+    $item_hash = isset($item_parts['fragment']) ? $item_parts['fragment'] : '';
 
     // If menu item points to the same page, convert href to just #hash
-    if ( $item_path === $current_path && $item_hash ) {
+    if ($item_path === $current_path && $item_hash) {
         $atts['href'] = '#' . $item_hash;
     }
 
     return $atts;
-
-}, 10, 4 );
+}, 10, 4);
 
 
 // ------------------------------------------------------------
 // Branded email wrapper — ALL WordPress emails
 // ------------------------------------------------------------
 
-function my_get_email_logo_url() {
-    $logo = get_theme_mod( 'email_logo' );
+function my_get_email_logo_url()
+{
+    $logo = get_theme_mod('email_logo');
 
-    if ( ! empty( $logo ) ) {
-        return esc_url_raw( $logo );
+    if (! empty($logo)) {
+        return esc_url_raw($logo);
     }
 
-    $site_icon_id = get_option( 'site_icon' );
-    if ( $site_icon_id ) {
-        return wp_get_attachment_image_url( $site_icon_id, 'full' );
+    $site_icon_id = get_option('site_icon');
+    if ($site_icon_id) {
+        return wp_get_attachment_image_url($site_icon_id, 'full');
     }
 
     return '';
 }
 
-function my_brand_email_html( $body ) {
+function my_brand_email_html($body)
+{
     $logo_url  = my_get_email_logo_url();
-    $site_name = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
-    $site_url  = home_url( '/' );
+    $site_name = wp_specialchars_decode(get_bloginfo('name'), ENT_QUOTES);
+    $site_url  = home_url('/');
 
-    $is_html      = preg_match( '/<[a-z][\s\S]*>/i', $body );
-    $message_html = $is_html ? $body : wpautop( $body );
+    $is_html      = preg_match('/<[a-z][\s\S]*>/i', $body);
+    $message_html = $is_html ? $body : wpautop($body);
 
-    $logo_html = ! empty( $logo_url )
-        ? '<a href="' . esc_url( $site_url ) . '"><img src="' . esc_url( $logo_url ) . '" alt="' . esc_attr( $site_name ) . '" style="max-height:46px; height:auto; display:block;"></a>'
-        : '<div style="font-weight:700; font-size:18px;">' . esc_html( $site_name ) . '</div>';
+    $logo_html = ! empty($logo_url)
+        ? '<a href="' . esc_url($site_url) . '"><img src="' . esc_url($logo_url) . '" alt="' . esc_attr($site_name) . '" style="max-height:46px; height:auto; display:block;"></a>'
+        : '<div style="font-weight:700; font-size:18px;">' . esc_html($site_name) . '</div>';
 
     return '<!DOCTYPE html>
 <html>
@@ -375,25 +386,25 @@ function my_brand_email_html( $body ) {
  * Strip WooCommerce's own email header (logo/banner) before it gets added.
  * This prevents WC's logo appearing inside our wrapper.
  */
-add_filter( 'woocommerce_email_header', '__return_empty_string', 99 );
-add_filter( 'woocommerce_email_footer', '__return_empty_string', 99 );
+add_filter('woocommerce_email_header', '__return_empty_string', 99);
+add_filter('woocommerce_email_footer', '__return_empty_string', 99);
 
 /**
  * Single wp_mail filter handles everything.
  * Already-wrapped emails are skipped.
  */
-add_filter( 'wp_mail', function( $args ) {
-    if ( str_contains( $args['message'], '<!-- my-brand-wrapper -->' ) ) {
+add_filter('wp_mail', function ($args) {
+    if (str_contains($args['message'], '<!-- my-brand-wrapper -->')) {
         return $args;
     }
 
     // Force HTML content type
-    $headers = is_array( $args['headers'] ) ? $args['headers'] : explode( "\n", str_replace( "\r\n", "\n", $args['headers'] ) );
-    $headers = array_filter( $headers, fn( $h ) => stripos( trim( $h ), 'content-type' ) === false );
+    $headers = is_array($args['headers']) ? $args['headers'] : explode("\n", str_replace("\r\n", "\n", $args['headers']));
+    $headers = array_filter($headers, fn($h) => stripos(trim($h), 'content-type') === false);
     $headers[] = 'Content-Type: text/html; charset=UTF-8';
-    $args['headers'] = array_values( $headers );
+    $args['headers'] = array_values($headers);
 
-    $args['message'] = my_brand_email_html( $args['message'] );
+    $args['message'] = my_brand_email_html($args['message']);
 
     return $args;
-} );
+});

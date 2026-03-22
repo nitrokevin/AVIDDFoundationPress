@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Global Content Selector Block Template
  *
@@ -19,7 +20,8 @@ if (!function_exists('get_field')) {
  * @param int $level The nesting level for indentation.
  */
 if (!function_exists('render_repeater_rows')) {
-    function render_repeater_rows($field_name, $context, $level = 0) {
+    function render_repeater_rows($field_name, $context, $level = 0)
+    {
         if (!have_rows($field_name, $context)) {
             return;
         }
@@ -40,7 +42,7 @@ if (!function_exists('render_repeater_rows')) {
                 } elseif ($sub_key === 'image' && is_array($sub_value) && isset($sub_value['url'])) {
                     echo '<p><img src="' . esc_url($sub_value['url']) . '" alt="' . esc_attr($sub_value['alt'] ?? '') . '" style="max-width: 200px;" /></p>';
                 } elseif ($sub_key === 'categories' && is_array($sub_value)) {
-                    $terms = array_map(function($term) {
+                    $terms = array_map(function ($term) {
                         return esc_html($term->name);
                     }, $sub_value);
                     echo '<p>' . implode(', ', $terms) . '</p>';
@@ -96,7 +98,7 @@ $options_page = get_field('options_page_selector') ?: '';
 $layout = get_field('layout_style') ?: 'list'; // Default to 'list' if not set
 $options_context = 'options'; // Use 'options' context since post_id => options
 $map = defined('AVIDD_OPTIONS_REPEATER_MAP') ? AVIDD_OPTIONS_REPEATER_MAP : [];
-$repeater_field = $map[ $options_page ] ?? '';
+$repeater_field = $map[$options_page] ?? '';
 
 
 ?>
@@ -131,7 +133,7 @@ $repeater_field = $map[ $options_page ] ?? '';
                             if ($sub_key === 'image' && is_array($sub_value) && isset($sub_value['url'])) {
                                 echo '<p><img src="' . esc_url($sub_value['url']) . '" alt="' . esc_attr($sub_value['alt'] ?? '') . '" style="max-width: 200px;" /></p>';
                             } elseif ($sub_key === 'categories' && is_array($sub_value)) {
-                                $terms = array_map(function($term) {
+                                $terms = array_map(function ($term) {
                                     return esc_html($term->name);
                                 }, $sub_value);
                                 echo '<p>' . implode(', ', $terms) . '</p>';
@@ -165,7 +167,7 @@ $repeater_field = $map[ $options_page ] ?? '';
                                 if ($sub_key === 'image' && is_array($sub_value) && isset($sub_value['url'])) {
                                     echo '<img src="' . esc_url($sub_value['url']) . '" alt="' . esc_attr($sub_value['alt'] ?? '') . '" style="max-width: 200px;" />';
                                 } elseif ($sub_key === 'categories' && is_array($sub_value)) {
-                                    $terms = array_map(function($term) {
+                                    $terms = array_map(function ($term) {
                                         return esc_html($term->name);
                                     }, $sub_value);
                                     echo implode(', ', $terms);
@@ -181,21 +183,21 @@ $repeater_field = $map[ $options_page ] ?? '';
                         echo '</li>';
                     }
                     echo '</ul>';
-                     } elseif ($layout === 'columns') {
-                  
+                } elseif ($layout === 'columns') {
+
                     while (have_rows($repeater_field, $options_context)) {
-                          echo '<div class="global-content-columns grid-x grid-padding-x">';
+                        echo '<div class="global-content-columns grid-x grid-padding-x">';
                         the_row();
                         $heading = get_sub_field('header') ?: get_sub_field('name') ?: ucwords(str_replace('_', ' ', $repeater_field));
                         echo '<div class="global-content-column-first cell small-12 medium-4 medium-offset-1" >';
-                       
+
                         echo '<p>' . esc_html('LOCAL COMMUNITY FEEDBACK') . '</p>';
                         echo '<p>' . esc_html($heading) . '</p>';
                         echo '<hr class="bottom-line">';
                         echo '</div>';
                         echo '<div class="global-content-column-last cell small-12 medium-7">';
                         echo '<p>' . esc_html('OUR RESPONSE') . '</p>';
-                        
+
                         $subfields = get_row(true);
                         foreach ($subfields as $sub_key => $sub_value) {
                             // Skip header or name as it's used in the accordion title
@@ -205,7 +207,7 @@ $repeater_field = $map[ $options_page ] ?? '';
                             if ($sub_key === 'image' && is_array($sub_value) && isset($sub_value['url'])) {
                                 echo '<p><img src="' . esc_url($sub_value['url']) . '" alt="' . esc_attr($sub_value['alt'] ?? '') . '" style="max-width: 200px;" /></p>';
                             } elseif ($sub_key === 'categories' && is_array($sub_value)) {
-                                $terms = array_map(function($term) {
+                                $terms = array_map(function ($term) {
                                     return esc_html($term->name);
                                 }, $sub_value);
                                 echo '<p>' . implode(', ', $terms) . '</p>';
@@ -219,70 +221,70 @@ $repeater_field = $map[ $options_page ] ?? '';
                         }
 
                         echo '</div>';
-                         echo '</div>'; // 
+                        echo '</div>'; // 
                     }
                     //
-               } elseif ($layout === 'vertical-tab') {
+                } elseif ($layout === 'vertical-tab') {
 
-    echo '<div class="grid-x grid-margin-x vertical-tabs-wrap">';
-        // Tabs list (left column)
-        echo '<div class="cell small-12 medium-3">';
-            echo '<ul class="block-tabs vertical tabs" data-tabs id="' . esc_attr($id) . '">';
-            
-            $counter = 0;
-            while (have_rows($repeater_field, $options_context)) {
-                the_row();
-                $counter++;
-                $heading = get_sub_field('header') ?: get_sub_field('name') ?: 'Tab ' . $counter;
-                echo '<li class="tabs-title' . ($counter === 1 ? ' is-active' : '') . '">';
-                echo '<a href="#tab-' . $counter . '">' . esc_html($heading) . '</a>';
-                echo '</li>';
-            }
+                    echo '<div class="grid-x grid-margin-x vertical-tabs-wrap">';
+                    // Tabs list (left column)
+                    echo '<div class="cell small-12 medium-3">';
+                    echo '<ul class="block-tabs vertical tabs" data-tabs id="' . esc_attr($id) . '">';
 
-            echo '</ul>';
-        echo '</div>';
-
-        // Reset repeater for content
-        $counter = 0;
-        reset_rows();
-
-        // Tabs content (right column)
-        echo '<div class="cell small-12 medium-9">';
-            echo '<div class="tabs-content vertical ' . esc_attr($tab_bar_background_color ?? '') . '" data-tabs-content="' . esc_attr($id) . '">';
-            
-            while (have_rows($repeater_field, $options_context)) {
-                the_row();
-                $counter++;
-                $subfields = get_row(true);
-
-                echo '<div class="tabs-panel' . ($counter === 1 ? ' is-active' : '') . '" id="tab-' . $counter . '">';
-
-                foreach ($subfields as $sub_key => $sub_value) {
-                    if (in_array($sub_key, ['header', 'name'], true)) {
-                        continue;
+                    $counter = 0;
+                    while (have_rows($repeater_field, $options_context)) {
+                        the_row();
+                        $counter++;
+                        $heading = get_sub_field('header') ?: get_sub_field('name') ?: 'Tab ' . $counter;
+                        echo '<li class="tabs-title' . ($counter === 1 ? ' is-active' : '') . '">';
+                        echo '<a href="#tab-' . $counter . '">' . esc_html($heading) . '</a>';
+                        echo '</li>';
                     }
 
-                    echo '<p>';
-                    if ($sub_key === 'image' && is_array($sub_value) && isset($sub_value['url'])) {
-                        echo '<img src="' . esc_url($sub_value['url']) . '" alt="' . esc_attr($sub_value['alt'] ?? '') . '" style="max-width:200px;" />';
-                    } elseif ($sub_key === 'categories' && is_array($sub_value)) {
-                        $terms = array_map(fn($term) => esc_html($term->name), $sub_value);
-                        echo implode(', ', $terms);
-                    } elseif (is_array($sub_value)) {
-                        echo esc_html(json_encode($sub_value));
-                    } else {
-                        echo wp_kses_post($sub_value);
+                    echo '</ul>';
+                    echo '</div>';
+
+                    // Reset repeater for content
+                    $counter = 0;
+                    reset_rows();
+
+                    // Tabs content (right column)
+                    echo '<div class="cell small-12 medium-9">';
+                    echo '<div class="tabs-content vertical ' . esc_attr($tab_bar_background_color ?? '') . '" data-tabs-content="' . esc_attr($id) . '">';
+
+                    while (have_rows($repeater_field, $options_context)) {
+                        the_row();
+                        $counter++;
+                        $subfields = get_row(true);
+
+                        echo '<div class="tabs-panel' . ($counter === 1 ? ' is-active' : '') . '" id="tab-' . $counter . '">';
+
+                        foreach ($subfields as $sub_key => $sub_value) {
+                            if (in_array($sub_key, ['header', 'name'], true)) {
+                                continue;
+                            }
+
+                            echo '<p>';
+                            if ($sub_key === 'image' && is_array($sub_value) && isset($sub_value['url'])) {
+                                echo '<img src="' . esc_url($sub_value['url']) . '" alt="' . esc_attr($sub_value['alt'] ?? '') . '" style="max-width:200px;" />';
+                            } elseif ($sub_key === 'categories' && is_array($sub_value)) {
+                                $terms = array_map(fn($term) => esc_html($term->name), $sub_value);
+                                echo implode(', ', $terms);
+                            } elseif (is_array($sub_value)) {
+                                echo esc_html(json_encode($sub_value));
+                            } else {
+                                echo wp_kses_post($sub_value);
+                            }
+                            echo '</p>';
+                        }
+
+                        echo '</div>'; // .tabs-panel
                     }
-                    echo '</p>';
+
+                    echo '</div>'; // .tabs-content
+                    echo '</div>'; // .cell medium-9
+                    echo '</div>'; // .grid-x
                 }
-
-                echo '</div>'; // .tabs-panel
-            }
-
-            echo '</div>'; // .tabs-content
-        echo '</div>'; // .cell medium-9
-    echo '</div>'; // .grid-x
-}
             }
             ?>
         </div>

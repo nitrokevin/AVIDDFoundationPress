@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Basic WooCommerce support
  * For an alternative integration method see WC docs
@@ -15,7 +16,7 @@ get_header(); ?>
 		<main class="main-content">
 			<?php woocommerce_content(); ?>
 		</main>
-	<?php get_sidebar(); ?>
+		<?php get_sidebar(); ?>
 	</div>
 </div>
 <?php get_footer();

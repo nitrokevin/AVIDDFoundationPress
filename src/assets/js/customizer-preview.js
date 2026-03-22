@@ -49,27 +49,24 @@
    * @param {jQuery} $el    Target element(s).
    * @param {string} value  Resolved CSS value.
    */
-function aviddApplyBackground($el, value) {
-  if (!value) return;
+  function aviddApplyBackground($el, value) {
+    if (!value) return;
 
-  if (value.indexOf("gradient(") !== -1) {
-    $el.css("background-color", "");
-    $el.css("background-image", value);
-  } else {
-    $el.css("background-image", "");
-    $el.css("background-color", value);
+    if (value.indexOf("gradient(") !== -1) {
+      $el.css("background-color", "");
+      $el.css("background-image", value);
+    } else {
+      $el.css("background-image", "");
+      $el.css("background-color", value);
+    }
   }
-}
 
   // ----------------------------------------
   // Nav background — hex or gradient slug
   // ----------------------------------------
   wp.customize("color_palette_setting_0", function (value) {
     value.bind(function (newval) {
-      aviddApplyBackground(
-        $(".top-bar, .title-bar"),
-        aviddResolveSlug(newval),
-      );
+      aviddApplyBackground($(".top-bar, .title-bar"), aviddResolveSlug(newval));
     });
   });
 

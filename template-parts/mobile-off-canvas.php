@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Template part for off canvas menu
  *
@@ -8,10 +9,10 @@
 
 ?>
 
-<nav class="mobile-off-canvas-menu off-canvas position-right" id="<?php foundationpress_mobile_menu_id(); ?>" data-off-canvas  data-transition="overlap" data-auto-focus="false" role="navigation">
-<button class="close-button" aria-label="Close menu" type="button" data-close>
-  <span aria-hidden="true">&times;</span>
-</button>
+<nav class="mobile-off-canvas-menu off-canvas position-right" id="<?php foundationpress_mobile_menu_id(); ?>" data-off-canvas data-transition="overlap" data-auto-focus="false" role="navigation">
+	<button class="close-button" aria-label="Close menu" type="button" data-close>
+		<span aria-hidden="true">&times;</span>
+	</button>
 	<?php foundationpress_mobile_nav(); ?>
 </nav>
 

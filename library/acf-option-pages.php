@@ -1,129 +1,129 @@
 <?php if (function_exists('acf_add_options_page')) {
-    acf_add_options_page([
-        'page_title' => 'FAQs',
-        'menu_title' => 'FAQs',
-        'menu_slug' => 'faqs',
-        'capability' => 'manage_options',
-        'redirect' => false,
-    ]);
-    acf_add_options_page([
-        'page_title' => 'People',
-        'menu_title' => 'People',
-        'menu_slug' => 'people',
-        'capability' => 'manage_options',
-        'redirect' => false,
-    ]);
+	acf_add_options_page([
+		'page_title' => 'FAQs',
+		'menu_title' => 'FAQs',
+		'menu_slug' => 'faqs',
+		'capability' => 'manage_options',
+		'redirect' => false,
+	]);
+	acf_add_options_page([
+		'page_title' => 'People',
+		'menu_title' => 'People',
+		'menu_slug' => 'people',
+		'capability' => 'manage_options',
+		'redirect' => false,
+	]);
 }
 define('AVIDD_OPTIONS_REPEATER_MAP', [
-    'faqs'   => 'faq_repeater',
-    'people' => 'people_repeater',
+	'faqs'   => 'faq_repeater',
+	'people' => 'people_repeater',
 ]);
 
 
 
 if (function_exists('acf_add_local_field_group')) {
 
-//FAQ OPTIONS PAGE
-acf_add_local_field_group(array(
-	'key' => 'group_options_page_faq',
-	'title' => 'FAQ Options Page',
-	'fields' => array(
-		
-		array(
-			'key' => 'field_faq_repeater',
-			'label' => 'FAQ',
-			'name' => 'faq_repeater',
-			'type' => 'repeater',
-			'instructions' => '',
-			'required' => 0,
-			'conditional_logic' => 0,
-			'wrapper' => array(
-				'width' => '',
-				'class' => '',
-				'id' => '',
-			),
-			'collapsed' => '',
-			'min' => 0,
-			'max' => 0,
-			'layout' => 'block',
-			'button_label' => 'Add Accordion',
-			'sub_fields' => array(
-				array(
-					'key' => 'field_faq_header',
-					'label' => 'Header',
-					'name' => 'header',
-					'type' => 'text',
-					'instructions' => '',
-					'required' => 0,
-					'conditional_logic' => 0,
-					'wrapper' => array(
-						'width' => '100',
-						'class' => '',
-						'id' => '',
-					),
-					'default_value' => '',
-					'placeholder' => '',
-					'prepend' => '',
-					'append' => '',
-					'maxlength' => '',
-				),
+	//FAQ OPTIONS PAGE
+	acf_add_local_field_group(array(
+		'key' => 'group_options_page_faq',
+		'title' => 'FAQ Options Page',
+		'fields' => array(
 
-				array(
-					'key' => 'field_faq_categories',
-					'label' => 'Categories',
-					'name' => 'categories',
-					'type' => 'taxonomy',
-					'instructions' => '',
-					'required' => 0,
-					'conditional_logic' => 0,
-					'wrapper' => array(
-						'width' => '50',
-						'class' => '',
-						'id' => '',
-					),
-					'taxonomy' => 'category',
-					'field_type' => 'checkbox',
-					'add_term' => 0,
-					'save_terms' => 0,
-					'load_terms' => 0,
-					'return_format' => 'object',
-					'multiple' => 0,
-					'allow_null' => 0,
-				),
-				array(
-					'key' => 'field_faq_content',
-					'label' => 'Content',
-					'name' => 'content',
-					'type' => 'wysiwyg',
-					'instructions' => '',
-					'required' => 0,
-					'conditional_logic' => 0,
-					'wrapper' => array(
-						'width' => '',
-						'class' => '',
-						'id' => '',
-					),
-					'default_value' => '',
-					'tabs' => 'all',
-					'toolbar' => 'full',
-					'media_upload' => 1,
-					'delay' => 0,
-				),
-			),
-		),
-	
-
-	),
-
-	'location' => array(
-		array(
 			array(
-				'param' => 'options_page',
-				'operator' => '==',
-				'value' => 'faqs',
+				'key' => 'field_faq_repeater',
+				'label' => 'FAQ',
+				'name' => 'faq_repeater',
+				'type' => 'repeater',
+				'instructions' => '',
+				'required' => 0,
+				'conditional_logic' => 0,
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'collapsed' => '',
+				'min' => 0,
+				'max' => 0,
+				'layout' => 'block',
+				'button_label' => 'Add Accordion',
+				'sub_fields' => array(
+					array(
+						'key' => 'field_faq_header',
+						'label' => 'Header',
+						'name' => 'header',
+						'type' => 'text',
+						'instructions' => '',
+						'required' => 0,
+						'conditional_logic' => 0,
+						'wrapper' => array(
+							'width' => '100',
+							'class' => '',
+							'id' => '',
+						),
+						'default_value' => '',
+						'placeholder' => '',
+						'prepend' => '',
+						'append' => '',
+						'maxlength' => '',
+					),
+
+					array(
+						'key' => 'field_faq_categories',
+						'label' => 'Categories',
+						'name' => 'categories',
+						'type' => 'taxonomy',
+						'instructions' => '',
+						'required' => 0,
+						'conditional_logic' => 0,
+						'wrapper' => array(
+							'width' => '50',
+							'class' => '',
+							'id' => '',
+						),
+						'taxonomy' => 'category',
+						'field_type' => 'checkbox',
+						'add_term' => 0,
+						'save_terms' => 0,
+						'load_terms' => 0,
+						'return_format' => 'object',
+						'multiple' => 0,
+						'allow_null' => 0,
+					),
+					array(
+						'key' => 'field_faq_content',
+						'label' => 'Content',
+						'name' => 'content',
+						'type' => 'wysiwyg',
+						'instructions' => '',
+						'required' => 0,
+						'conditional_logic' => 0,
+						'wrapper' => array(
+							'width' => '',
+							'class' => '',
+							'id' => '',
+						),
+						'default_value' => '',
+						'tabs' => 'all',
+						'toolbar' => 'full',
+						'media_upload' => 1,
+						'delay' => 0,
+					),
+				),
+			),
+
+
+		),
+
+		'location' => array(
+			array(
+				array(
+					'param' => 'options_page',
+					'operator' => '==',
+					'value' => 'faqs',
+				),
 			),
 		),
-	),
 		'menu_order' => 0,
 		'position' => 'normal',
 		'style' => 'default',
@@ -132,14 +132,14 @@ acf_add_local_field_group(array(
 		'hide_on_screen' => '',
 		'active' => true,
 		'description' => '',
-));
+	));
 
-acf_add_local_field_group(array(
+	acf_add_local_field_group(array(
 		'key' => 'group_options_page_people',
 		'title' => 'People',
 		'fields' => array(
-		
-	
+
+
 			array(
 				'key' => 'field_people_repeater',
 				'label' => 'People',
@@ -159,7 +159,7 @@ acf_add_local_field_group(array(
 				'layout' => 'block',
 				'button_label' => 'Add Person',
 				'sub_fields' => array(
-				
+
 					array(
 						'key' => 'field_people_image',
 						'label' => 'Image',
@@ -176,9 +176,9 @@ acf_add_local_field_group(array(
 						'return_format' => 'array',
 						'preview_size' => 'thumbnail',
 						'library' => 'all',
-	
+
 					),
-					
+
 					array(
 						'key' => 'field_people_name',
 						'label' => 'Name',
@@ -191,7 +191,7 @@ acf_add_local_field_group(array(
 							'class' => '',
 							'id' => '',
 						),
-					
+
 					),
 					array(
 						'key' => 'field_people_job',
@@ -205,9 +205,9 @@ acf_add_local_field_group(array(
 							'class' => '',
 							'id' => '',
 						),
-					
+
 					),
-				
+
 					array(
 						'key' => 'field_people_email',
 						'label' => 'Email',
@@ -220,10 +220,10 @@ acf_add_local_field_group(array(
 							'class' => '',
 							'id' => '',
 						),
-					
+
 					),
-				
-				
+
+
 					array(
 						'key' => 'field_people_biography',
 						'label' => 'Biography',
@@ -264,6 +264,4 @@ acf_add_local_field_group(array(
 		'active' => true,
 		'description' => '',
 	));
-
-
 } //END ACF 

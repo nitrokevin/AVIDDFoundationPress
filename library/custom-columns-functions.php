@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Column Background + XY Grid Integration
  * Add this code to your theme's functions.php file
@@ -7,7 +8,8 @@
 /**
  * Enqueue Foundation XY Grid CSS and custom styles
  */
-function foundationpress_column_bg_enqueue_assets() {
+function foundationpress_column_bg_enqueue_assets()
+{
     // Custom inline styles for column backgrounds and XY grid
     wp_add_inline_style('wp-block-library', '
         /* Fixed-width Foundation columns (1–12) */
@@ -42,7 +44,8 @@ add_action('enqueue_block_assets', 'foundationpress_column_bg_enqueue_assets');
 /**
  * Render column background + XY-grid classes
  */
-function foundationpress_render_column_background($block_content, $block) {
+function foundationpress_render_column_background($block_content, $block)
+{
     if (empty($block['blockName']) || 'core/column' !== $block['blockName']) {
         return $block_content;
     }
@@ -54,9 +57,9 @@ function foundationpress_render_column_background($block_content, $block) {
     // Find parent columns block for stacked on mobile logic
     $parent_block = null;
     $post_id = get_the_ID();
-if ( !$post_id && is_admin() && isset( $_POST['post_id'] ) ) {
-    $post_id = absint( $_POST['post_id'] );
-}
+    if (!$post_id && is_admin() && isset($_POST['post_id'])) {
+        $post_id = absint($_POST['post_id']);
+    }
 
 
     if ($post_id) {
@@ -125,7 +128,7 @@ if ( !$post_id && is_admin() && isset( $_POST['post_id'] ) ) {
 
     // Inject classes and styles
     $pattern = '/(<\s*\w+[^>]*class=["\'])([^"\']*wp-block-column[^"\']*)(["\'][^>]*)(>)/i';
-    $block_content = preg_replace_callback($pattern, function($matches) use ($classes, $style) {
+    $block_content = preg_replace_callback($pattern, function ($matches) use ($classes, $style) {
         $before = $matches[1];
         $blockClasses = $matches[2] . $classes;
         $after = $matches[3];
@@ -156,7 +159,8 @@ add_filter('render_block', 'foundationpress_render_column_background', 10, 2);
 /**
  * Add Foundation grid classes to columns wrapper
  */
-function foundationpress_columns_add_xy_grid($block_content, $block) {
+function foundationpress_columns_add_xy_grid($block_content, $block)
+{
     if (empty($block['blockName']) || 'core/columns' !== $block['blockName']) {
         return $block_content;
     }
@@ -170,7 +174,7 @@ function foundationpress_columns_add_xy_grid($block_content, $block) {
     }
 
     $pattern = '/(<\s*\w+[^>]*class=["\'])([^"\']*)(["\'][^>]*)(>)/i';
-    $block_content = preg_replace_callback($pattern, function($matches) use ($collapse) {
+    $block_content = preg_replace_callback($pattern, function ($matches) use ($collapse) {
         $before = $matches[1];
         $classes = $matches[2];
         $after = $matches[3];
@@ -179,7 +183,7 @@ function foundationpress_columns_add_xy_grid($block_content, $block) {
         // Remove existing foundation classes to avoid duplication
         $classes = preg_replace('/\s*grid-x\s*/', ' ', $classes);
         $classes = preg_replace('/\s*grid-margin-x\s*/', ' ', $classes);
-        
+
         // Add foundation classes
         $classes .= ' grid-x';
         if (!$collapse) {
@@ -196,7 +200,8 @@ add_filter('render_block', 'foundationpress_columns_add_xy_grid', 10, 2);
 /**
  * Find parent columns block
  */
-function foundationpress_find_parent_columns_block($blocks, $client_id) {
+function foundationpress_find_parent_columns_block($blocks, $client_id)
+{
     foreach ($blocks as $block) {
         if ($block['blockName'] === 'core/columns' && !empty($block['innerBlocks'])) {
             foreach ($block['innerBlocks'] as $inner_block) {

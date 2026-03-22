@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The template for displaying comments
  *
@@ -8,9 +9,9 @@
  * @package FoundationPress
  * @since FoundationPress 1.0.0
  */
-defined( 'ABSPATH' ) || die( __( 'Please do not load this page directly. Thanks!', 'foundationpress' ) );
+defined('ABSPATH') || die(__('Please do not load this page directly. Thanks!', 'foundationpress'));
 
-if ( have_comments() ) :
+if (have_comments()) :
 ?>
 	<section id="comments">
 		<?php
@@ -23,7 +24,7 @@ if ( have_comments() ) :
 				'callback'          => null,
 				'end-callback'      => null,
 				'type'              => 'all',
-				'reply_text'        => __( 'Reply', 'foundationpress' ),
+				'reply_text'        => __('Reply', 'foundationpress'),
 				'page'              => '',
 				'per_page'          => '',
 				'avatar_size'       => 48,
@@ -32,14 +33,14 @@ if ( have_comments() ) :
 				'format'            => 'html5',
 				'short_ping'        => false,
 				'echo'              => true,
-				'moderation'        => __( 'Your comment is awaiting moderation.', 'foundationpress' ),
+				'moderation'        => __('Your comment is awaiting moderation.', 'foundationpress'),
 			)
 		);
 
 		?>
 		<?php
-			foundationpress_the_comments_pagination();
-	 	?>
+		foundationpress_the_comments_pagination();
+		?>
 	</section>
 <?php
 endif;
@@ -47,34 +48,34 @@ endif;
 
 <?php
 
-	/*
+/*
 	Do not delete these lines.
 	Prevent access to this file directly
 	*/
 
-	
-	if ( post_password_required() ) { ?>
+
+if (post_password_required()) { ?>
 	<section id="comments">
 		<div class="notice">
-			<p class="bottom"><?php _e( 'This post is password protected. Enter the password to view comments.', 'foundationpress' ); ?></p>
+			<p class="bottom"><?php _e('This post is password protected. Enter the password to view comments.', 'foundationpress'); ?></p>
 		</div>
 	</section>
-	<?php
+<?php
 	return;
 }
 ?>
 
 <?php
-if ( comments_open() ) :
+if (comments_open()) :
 ?>
-<section id="respond">
-	<?php
+	<section id="respond">
+		<?php
 		comment_form(
 			array(
 				'class_submit' => 'button'
 			)
 		);
-	?>
-</section>
+		?>
+	</section>
 <?php
-	endif; // If you delete this the sky will fall on your head.
+endif; // If you delete this the sky will fall on your head.

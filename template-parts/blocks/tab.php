@@ -12,16 +12,16 @@
 
 // Create id attribute allowing for custom "anchor" value.
 $id = 'tab-' . $block['id'];
-if( !empty($block['anchor']) ) {
+if (!empty($block['anchor'])) {
     $id = $block['anchor'];
 }
 
 // Create class attribute allowing for custom "className" and "align" values.
 $className = 'block-tab';
-if( !empty($block['className']) ) {
+if (!empty($block['className'])) {
     $className .= ' ' . $block['className'];
 }
-if( !empty($block['align']) ) {
+if (!empty($block['align'])) {
     $className .= ' align' . $block['align'];
 }
 // Color + gradient support.
@@ -49,10 +49,10 @@ if (!empty($block['textColor'])) {
 $className .= ' ' . implode(' ', $classes);
 ?>
 <section id="<?php echo esc_attr($id); ?>" class="wp-block <?php echo esc_attr(trim($className)); ?>">
-    <div class="block-tab-container"> 
+    <div class="block-tab-container">
         <div class="block-tab-grid">
             <div class="block-tab-content">
-                <?php get_template_part( 'template-parts/content', 'tab' ); ?>
+                <?php get_template_part('template-parts/content', 'tab'); ?>
             </div>
         </div>
     </div>

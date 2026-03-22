@@ -11,27 +11,27 @@
 
 // Create id attribute allowing for custom "anchor" value.
 $id = 'full-width-50-50-' . $block['id'];
-if( !empty($block['anchor']) ) {
-    $id = $block['anchor'];
+if (!empty($block['anchor'])) {
+	$id = $block['anchor'];
 }
 
 // Create class attribute allowing for custom "className" and "align" values.
 $className = 'full-width-50-50';
-if( !empty($block['className']) ) {
-    $className .= ' ' . $block['className'];
+if (!empty($block['className'])) {
+	$className .= ' ' . $block['className'];
 }
-if( !empty($block['align']) ) {
-    $className .= ' align' . $block['align'];
+if (!empty($block['align'])) {
+	$className .= ' align' . $block['align'];
 }
 
-$counter=0;
+$counter = 0;
 $section_background = get_field('section_background');
 $section_background_image = get_field('section_background_image');
 
-if ( $section_background_image ) {
-  $small  = esc_url( $section_background_image['sizes']['featured-small'] );
-  $medium = esc_url( $section_background_image['sizes']['featured-medium'] );
-  $large  = esc_url( $section_background_image['sizes']['featured-large'] );
+if ($section_background_image) {
+	$small  = esc_url($section_background_image['sizes']['featured-small']);
+	$medium = esc_url($section_background_image['sizes']['featured-medium']);
+	$large  = esc_url($section_background_image['sizes']['featured-large']);
 };
 $left_content = get_field('left_content');
 $left_background = get_field('left_background');
@@ -39,9 +39,9 @@ $left_overlay = get_field('left_overlay');
 $left_background_image = get_field('left_background_image');
 $slider_control_left = get_field('slider_control_left');
 if ($left_background_image) {;
-$left_small = $left_background_image['sizes']['fp-small'];
-$left_medium = $left_background_image['sizes']['fp-medium'];
-$left_large = $left_background_image['sizes']['fp-large'];
+	$left_small = $left_background_image['sizes']['fp-small'];
+	$left_medium = $left_background_image['sizes']['fp-medium'];
+	$left_large = $left_background_image['sizes']['fp-large'];
 };
 $right_content = get_field('right_content');
 $right_background = get_field('right_background');
@@ -49,48 +49,48 @@ $right_overlay = get_field('right_overlay');
 $right_background_image = get_field('right_background_image');
 $slider_control_right = get_field('slider_control_right');
 if ($right_background_image) {;
-$right_small = $right_background_image['sizes']['fp-small'];
-$right_medium = $right_background_image['sizes']['fp-medium'];
-$right_large = $right_background_image['sizes']['fp-large'];
+	$right_small = $right_background_image['sizes']['fp-small'];
+	$right_medium = $right_background_image['sizes']['fp-medium'];
+	$right_large = $right_background_image['sizes']['fp-large'];
 };
 $counter++;
 
 ?>
-<section id="<?php echo esc_attr($id); ?>" class="<?php echo esc_attr($className); ?> full-width-50-50-outer-container <?php echo esc_attr( $section_background ); ?>  <?php if ($section_background_image) { ?> section-background-image<?php } ?>" <?php if ($section_background_image) { ?> data-interchange="[<?php echo esc_url( $small ); ?>, small], [<?php echo esc_url( $medium ); ?>, medium], [<?php echo esc_url( $large );?>, large]" data-type="background" <?php } ?>>
-    <div class="full-width-50-50-container"> 
-		<div class="full-width-50-50-grid" >
-				
-			<article class="<?php echo esc_attr( sanitize_html_class( $left_background ) ); ?> <?php if($left_overlay == 1){?>overlay<?php }?>" <?php if ($left_background_image) { ?> data-interchange="[<?php echo esc_url( $left_small ); ?>, small], [<?php echo esc_url( $left_medium ); ?>, medium], [<?php echo esc_url( $left_large );?>, large]" data-type="background" <?php } ?>>	
+<section id="<?php echo esc_attr($id); ?>" class="<?php echo esc_attr($className); ?> full-width-50-50-outer-container <?php echo esc_attr($section_background); ?>  <?php if ($section_background_image) { ?> section-background-image<?php } ?>" <?php if ($section_background_image) { ?> data-interchange="[<?php echo esc_url($small); ?>, small], [<?php echo esc_url($medium); ?>, medium], [<?php echo esc_url($large); ?>, large]" data-type="background" <?php } ?>>
+	<div class="full-width-50-50-container">
+		<div class="full-width-50-50-grid">
+
+			<article class="<?php echo esc_attr(sanitize_html_class($left_background)); ?> <?php if ($left_overlay == 1) { ?>overlay<?php } ?>" <?php if ($left_background_image) { ?> data-interchange="[<?php echo esc_url($left_small); ?>, small], [<?php echo esc_url($left_medium); ?>, medium], [<?php echo esc_url($left_large); ?>, large]" data-type="background" <?php } ?>>
 				<div class="article-padding ">
-			    	<div class="article-grid ">
-				    <div class="entry-content">
-					    <?php echo wp_kses_post( $left_content ); ?>
-						
+					<div class="article-grid ">
+						<div class="entry-content">
+							<?php echo wp_kses_post($left_content); ?>
+
 							<?php if ($slider_control_left) {
 								echo '<div class="slide-carousel-container">';
-						 get_template_part( 'template-parts/content', 'slide-carousel' ); 
-						 echo '</div>';
+								get_template_part('template-parts/content', 'slide-carousel');
+								echo '</div>';
 							} ?>
-						
-				    </div>
-				</div>
+
+						</div>
+					</div>
 				</div>
 			</article>
-			<article class="<?php echo esc_attr( sanitize_html_class( $right_background ) ); ?> <?php if($right_overlay == 1){?>overlay<?php }?>" <?php if ($right_background_image) { ?> data-interchange="[<?php echo esc_url( $right_small); ?>, small], [<?php echo esc_url( $right_medium); ?>, medium], [<?php echo esc_url( $right_large); ?>, large]" data-type="background" <?php } ?>>	
+			<article class="<?php echo esc_attr(sanitize_html_class($right_background)); ?> <?php if ($right_overlay == 1) { ?>overlay<?php } ?>" <?php if ($right_background_image) { ?> data-interchange="[<?php echo esc_url($right_small); ?>, small], [<?php echo esc_url($right_medium); ?>, medium], [<?php echo esc_url($right_large); ?>, large]" data-type="background" <?php } ?>>
 				<div class="article-padding ">
-			    	<div class="article-grid ">
-				    <div class="entry-content">
-					    <?php echo wp_kses_post( $right_content ); ?>
-								<?php if ($slider_control_right) {
-										echo '<div class="slide-carousel">';
-						 get_template_part( 'template-parts/content', 'slide-carousel' ); 
-						  echo '</div>';
+					<div class="article-grid ">
+						<div class="entry-content">
+							<?php echo wp_kses_post($right_content); ?>
+							<?php if ($slider_control_right) {
+								echo '<div class="slide-carousel">';
+								get_template_part('template-parts/content', 'slide-carousel');
+								echo '</div>';
 							} ?>
-				    </div>
-				</div>
+						</div>
+					</div>
 				</div>
 			</article>
-		
+
 		</div>
 	</div>
 </section>

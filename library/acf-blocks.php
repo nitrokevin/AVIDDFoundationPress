@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ACF Block Registration & Field Groups
  *
@@ -9,14 +10,15 @@
 // BLOCK CATEGORY
 // =============================================================================
 
-add_filter( 'block_categories_all', 'avidd_block_categories', 99 );
+add_filter('block_categories_all', 'avidd_block_categories', 99);
 /**
  * Prepend a custom AVIDD block category to the editor block inserter.
  *
  * @param  array $categories Existing block categories.
  * @return array
  */
-function avidd_block_categories( $categories ) {
+function avidd_block_categories($categories)
+{
 	return array_merge(
 		array(
 			array(
@@ -32,12 +34,13 @@ function avidd_block_categories( $categories ) {
 // BLOCK TYPE REGISTRATION
 // =============================================================================
 
-add_action( 'init', 'avidd_register_blocks' );
+add_action('init', 'avidd_register_blocks');
 /**
  * Register ACF block types from block.json files.
  */
-function avidd_register_blocks() {
-	if ( ! function_exists( 'register_block_type' ) ) {
+function avidd_register_blocks()
+{
+	if (! function_exists('register_block_type')) {
 		return;
 	}
 
@@ -48,10 +51,10 @@ function avidd_register_blocks() {
 		'acf-global-content-selector',
 	);
 
-	foreach ( $blocks as $block ) {
+	foreach ($blocks as $block) {
 		$path = __DIR__ . '/' . $block . '/block.json';
-		if ( file_exists( $path ) ) {
-			register_block_type( $path );
+		if (file_exists($path)) {
+			register_block_type($path);
 		}
 	}
 }
@@ -60,12 +63,13 @@ function avidd_register_blocks() {
 // ACF FIELD GROUPS
 // =============================================================================
 
-add_action( 'acf/init', 'avidd_register_field_groups' );
+add_action('acf/init', 'avidd_register_field_groups');
 /**
  * Register all ACF local field groups.
  */
-function avidd_register_field_groups() {
-	if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+function avidd_register_field_groups()
+{
+	if (! function_exists('acf_add_local_field_group')) {
 		return;
 	}
 
@@ -79,8 +83,9 @@ function avidd_register_field_groups() {
 // Accordion
 // -----------------------------------------------------------------------------
 
-function avidd_field_group_accordion() {
-	acf_add_local_field_group( array(
+function avidd_field_group_accordion()
+{
+	acf_add_local_field_group(array(
 		'key'                   => 'group_622b3632877721',
 		'title'                 => 'Block: Accordion',
 		'fields'                => array(
@@ -92,7 +97,7 @@ function avidd_field_group_accordion() {
 				'instructions'      => '',
 				'required'          => 0,
 				'conditional_logic' => 0,
-				'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+				'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 				'choices'           => array(
 					'custom' => 'Custom',
 					'faq'    => 'FAQs',
@@ -121,7 +126,7 @@ function avidd_field_group_accordion() {
 						),
 					),
 				),
-				'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+				'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 				'collapsed'         => 'field_626db2f7738cc',
 				'min'               => 1,
 				'max'               => 0,
@@ -136,7 +141,7 @@ function avidd_field_group_accordion() {
 						'instructions'      => '',
 						'required'          => 0,
 						'conditional_logic' => 0,
-						'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+						'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 						'default_value'     => '',
 						'placeholder'       => '',
 						'prepend'           => '',
@@ -165,7 +170,7 @@ function avidd_field_group_accordion() {
 						'instructions'      => '',
 						'required'          => 0,
 						'conditional_logic' => 0,
-						'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+						'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 						'default_value'     => '',
 						'tabs'              => 'all',
 						'toolbar'           => 'full',
@@ -193,15 +198,16 @@ function avidd_field_group_accordion() {
 		'active'                => true,
 		'description'           => '',
 		'show_in_rest'          => 0,
-	) );
+	));
 }
 
 // -----------------------------------------------------------------------------
 // Tab
 // -----------------------------------------------------------------------------
 
-function avidd_field_group_tab() {
-	acf_add_local_field_group( array(
+function avidd_field_group_tab()
+{
+	acf_add_local_field_group(array(
 		'key'                   => 'group_622b3632877723',
 		'title'                 => 'Block: Tab',
 		'fields'                => array(
@@ -227,7 +233,7 @@ function avidd_field_group_tab() {
 				'instructions'      => '',
 				'required'          => 0,
 				'conditional_logic' => 0,
-				'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+				'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 				'collapsed'         => 'field_626dcf6a205db',
 				'min'               => 1,
 				'max'               => 0,
@@ -242,7 +248,7 @@ function avidd_field_group_tab() {
 						'instructions'      => '',
 						'required'          => 0,
 						'conditional_logic' => 0,
-						'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+						'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 						'default_value'     => '',
 						'placeholder'       => '',
 						'prepend'           => '',
@@ -271,7 +277,7 @@ function avidd_field_group_tab() {
 						'instructions'      => '',
 						'required'          => 0,
 						'conditional_logic' => 0,
-						'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+						'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 						'default_value'     => '',
 						'tabs'              => 'all',
 						'toolbar'           => 'full',
@@ -299,15 +305,16 @@ function avidd_field_group_tab() {
 		'active'                => true,
 		'description'           => '',
 		'show_in_rest'          => 0,
-	) );
+	));
 }
 
 // -----------------------------------------------------------------------------
 // Carousel
 // -----------------------------------------------------------------------------
 
-function avidd_field_group_carousel() {
-	acf_add_local_field_group( array(
+function avidd_field_group_carousel()
+{
+	acf_add_local_field_group(array(
 		'key'                   => 'group_622b36328777a24',
 		'title'                 => 'Block: Carousel',
 		'fields'                => array(
@@ -319,7 +326,7 @@ function avidd_field_group_carousel() {
 				'instructions'      => '',
 				'required'          => 0,
 				'conditional_logic' => 0,
-				'wrapper'           => array( 'width' => '100', 'class' => '', 'id' => '' ),
+				'wrapper'           => array('width' => '100', 'class' => '', 'id' => ''),
 				'choices'           => array(
 					'people-carousel' => 'People Carousel',
 					'slide-carousel'  => 'Slide Carousel',
@@ -349,7 +356,7 @@ function avidd_field_group_carousel() {
 						),
 					),
 				),
-				'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+				'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 				'choices'           => array(
 					'team'  => 'Team',
 					'board' => 'Board',
@@ -378,7 +385,7 @@ function avidd_field_group_carousel() {
 						),
 					),
 				),
-				'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+				'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 				'return_format'     => 'array',
 				'preview_size'      => 'thumbnail',
 				'insert'            => 'append',
@@ -400,7 +407,7 @@ function avidd_field_group_carousel() {
 						),
 					),
 				),
-				'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+				'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 				'collapsed'         => 'field_626dd3503e216',
 				'min'               => 1,
 				'max'               => 0,
@@ -415,7 +422,7 @@ function avidd_field_group_carousel() {
 						'instructions'      => '',
 						'required'          => 0,
 						'conditional_logic' => 0,
-						'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+						'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 						'return_format'     => 'array',
 						'preview_size'      => 'thumbnail',
 						'library'           => 'all',
@@ -435,7 +442,7 @@ function avidd_field_group_carousel() {
 						'instructions'      => '',
 						'required'          => 0,
 						'conditional_logic' => 0,
-						'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+						'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 						'message'           => '',
 						'ui'                => 1,
 						'ui_on_text'        => '',
@@ -449,7 +456,7 @@ function avidd_field_group_carousel() {
 						'instructions'      => '',
 						'required'          => 0,
 						'conditional_logic' => 0,
-						'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+						'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 						'default_value'     => '',
 						'placeholder'       => '',
 						'prepend'           => '',
@@ -478,7 +485,7 @@ function avidd_field_group_carousel() {
 						'instructions'      => '',
 						'required'          => 0,
 						'conditional_logic' => 0,
-						'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+						'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 						'default_value'     => '',
 						'tabs'              => 'all',
 						'toolbar'           => 'full',
@@ -506,15 +513,16 @@ function avidd_field_group_carousel() {
 		'active'                => true,
 		'description'           => '',
 		'show_in_rest'          => 0,
-	) );
+	));
 }
 
 // -----------------------------------------------------------------------------
 // Global Content Selector
 // -----------------------------------------------------------------------------
 
-function avidd_field_group_global_content_selector() {
-	acf_add_local_field_group( array(
+function avidd_field_group_global_content_selector()
+{
+	acf_add_local_field_group(array(
 		'key'                   => 'group_global_content_selector',
 		'title'                 => 'Block: Global Content Selector',
 		'fields'                => array(
@@ -526,7 +534,7 @@ function avidd_field_group_global_content_selector() {
 				'instructions'      => 'Select which global options page to pull data from.',
 				'required'          => 0,
 				'conditional_logic' => 0,
-				'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+				'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 				'choices'           => array(),
 				'allow_null'        => 0,
 				'multiple'          => 0,
@@ -543,7 +551,7 @@ function avidd_field_group_global_content_selector() {
 				'instructions'      => 'Choose how the content should be displayed.',
 				'required'          => 0,
 				'conditional_logic' => 0,
-				'wrapper'           => array( 'width' => '', 'class' => '', 'id' => '' ),
+				'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
 				'choices'           => array(
 					'accordion'    => 'Accordion',
 					'list'         => 'List',
@@ -576,5 +584,5 @@ function avidd_field_group_global_content_selector() {
 		'active'                => true,
 		'description'           => '',
 		'show_in_rest'          => 0,
-	) );
+	));
 }

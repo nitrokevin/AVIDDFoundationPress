@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Clean up WordPress defaults
  *
@@ -6,25 +7,27 @@
  * @since FoundationPress 1.0.0
  */
 
-if ( ! function_exists( 'foundationpress_start_cleanup' ) ) :
+if (! function_exists('foundationpress_start_cleanup')) :
     /**
      * Setup all cleanup actions
      */
-    function foundationpress_start_cleanup() {
+    function foundationpress_start_cleanup()
+    {
         foundationpress_cleanup_head();
 
-        add_filter( 'the_generator', 'foundationpress_remove_rss_version' );
-        add_action( 'wp_head', 'foundationpress_remove_wp_widget_recent_comments_style', 1 );
-        add_action( 'wp_head', 'foundationpress_remove_recent_comments_style', 1 );
+        add_filter('the_generator', 'foundationpress_remove_rss_version');
+        add_action('wp_head', 'foundationpress_remove_wp_widget_recent_comments_style', 1);
+        add_action('wp_head', 'foundationpress_remove_recent_comments_style', 1);
     }
-    add_action( 'after_setup_theme', 'foundationpress_start_cleanup' );
+    add_action('after_setup_theme', 'foundationpress_start_cleanup');
 endif;
 
 /**
  * Clean up wp_head by removing unnecessary tags
  */
-if ( ! function_exists( 'foundationpress_cleanup_head' ) ) :
-    function foundationpress_cleanup_head() {
+if (! function_exists('foundationpress_cleanup_head')) :
+    function foundationpress_cleanup_head()
+    {
         $actions = [
             'rsd_link',
             'feed_links_extra',
@@ -40,19 +43,20 @@ if ( ! function_exists( 'foundationpress_cleanup_head' ) ) :
             'print_emoji_detection_script',
         ];
 
-        foreach ( $actions as $action ) {
-            remove_action( 'wp_head', $action );
+        foreach ($actions as $action) {
+            remove_action('wp_head', $action);
         }
 
-        remove_action( 'wp_print_styles', 'print_emoji_styles' );
+        remove_action('wp_print_styles', 'print_emoji_styles');
     }
 endif;
 
 /**
  * Remove WordPress version from RSS feeds for security
  */
-if ( ! function_exists( 'foundationpress_remove_rss_version' ) ) :
-    function foundationpress_remove_rss_version() {
+if (! function_exists('foundationpress_remove_rss_version')) :
+    function foundationpress_remove_rss_version()
+    {
         return '';
     }
 endif;
@@ -60,10 +64,11 @@ endif;
 /**
  * Remove injected CSS for recent comments widget in the head
  */
-if ( ! function_exists( 'foundationpress_remove_wp_widget_recent_comments_style' ) ) :
-    function foundationpress_remove_wp_widget_recent_comments_style() {
-        if ( has_filter( 'wp_head', 'wp_widget_recent_comments_style' ) ) {
-            remove_filter( 'wp_head', 'wp_widget_recent_comments_style' );
+if (! function_exists('foundationpress_remove_wp_widget_recent_comments_style')) :
+    function foundationpress_remove_wp_widget_recent_comments_style()
+    {
+        if (has_filter('wp_head', 'wp_widget_recent_comments_style')) {
+            remove_filter('wp_head', 'wp_widget_recent_comments_style');
         }
     }
 endif;
@@ -71,11 +76,12 @@ endif;
 /**
  * Remove injected CSS from recent comments widget styles in the head
  */
-if ( ! function_exists( 'foundationpress_remove_recent_comments_style' ) ) :
-    function foundationpress_remove_recent_comments_style() {
+if (! function_exists('foundationpress_remove_recent_comments_style')) :
+    function foundationpress_remove_recent_comments_style()
+    {
         global $wp_widget_factory;
-        if ( isset( $wp_widget_factory->widgets['WP_Widget_Recent_Comments'] ) ) {
-            remove_action( 'wp_head', [ $wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style' ] );
+        if (isset($wp_widget_factory->widgets['WP_Widget_Recent_Comments'])) {
+            remove_action('wp_head', [$wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style']);
         }
     }
 endif;

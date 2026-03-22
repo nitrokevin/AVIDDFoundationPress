@@ -17,7 +17,7 @@ $locked-text-colors: (
   black: "white",
   light-gray: "secondary",
   medium-gray: "black",
-  dark-gray: "black"
+  dark-gray: "black",
 );
 
 $locked-link-colors: (
@@ -48,11 +48,12 @@ $locked-gradient-text-colors: (
   theme-color-4: "white",
   primary-secondary: "white",
   secondary-theme-color-1: "white",
-  primary-theme-color-1: "white"
+  primary-theme-color-1: "white",
 );
 
-$locked-gradient-link-colors: (primary-to-secondary: secondary);
-
+$locked-gradient-link-colors: (
+  primary-to-secondary: secondary,
+);
 
 // =============================================================================
 // MIXINS
@@ -116,11 +117,10 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
   @include bleed-pseudo-base;
   right: 0;
   margin-right: calc(50% - 50vw);
-  
 
   @include breakpoint(medium) {
     margin-right: calc(100% - 100vw);
-  
+
     width: 50vw;
   }
 }
@@ -132,7 +132,7 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
 
   @include breakpoint(medium) {
     margin-right: calc(100% - 100vw);
-      margin-left:unset;
+    margin-left: unset;
     width: 50vw;
   }
 }
@@ -209,13 +209,11 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
   }
 }
 
-
 // =============================================================================
 // SOLID COLORS
 // =============================================================================
 
 @each $color, $code in $foundation-palette {
-
   // Background + text pairing
   .has-#{$color}-background-color {
     background-color: $code;
@@ -224,19 +222,28 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
       $locked-color: map-get($locked-text-colors, $color);
       color: map-get($foundation-palette, $locked-color);
     } @else {
-      color: color-pick-contrast($code,
+      color: color-pick-contrast(
+        $code,
         $colors: ($white, $black, $primary-color, $secondary-color),
-        $tolerance: $global-color-pick-contrast-tolerance);
+        $tolerance: $global-color-pick-contrast-tolerance
+      );
     }
 
-    a:not(.button, .wp-block-button__link), h1, h2, h3, h4, h5 {
+    a:not(.button, .wp-block-button__link),
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
       @if map-has-key($locked-link-colors, $color) {
         $locked-color: map-get($locked-link-colors, $color);
         color: map-get($foundation-palette, $locked-color);
       } @else {
-        color: color-pick-contrast($code,
+        color: color-pick-contrast(
+          $code,
           $colors: ($primary-color, $secondary-color),
-          $tolerance: $global-color-pick-contrast-tolerance);
+          $tolerance: $global-color-pick-contrast-tolerance
+        );
       }
     }
   }
@@ -253,16 +260,23 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
     @if map-has-key($locked-text-colors, $color) {
       color: brand-color(map-get($locked-text-colors, $color));
     } @else {
-      color: color-pick-contrast($code,
+      color: color-pick-contrast(
+        $code,
         $colors: ($white, $black, $primary-color, $secondary-color),
-        $tolerance: $global-color-pick-contrast-tolerance);
+        $tolerance: $global-color-pick-contrast-tolerance
+      );
     }
 
-    transition: $button-transition, color .25s ease-out;
+    transition:
+      $button-transition,
+      color 0.25s ease-out;
 
     &:hover,
     &:focus {
-      background-color: scale-color($code, $lightness: $button-background-hover-lightness) !important;
+      background-color: scale-color(
+        $code,
+        $lightness: $button-background-hover-lightness
+      ) !important;
 
       @if map-has-key($locked-text-colors, $color) {
         color: brand-color(map-get($locked-text-colors, $color));
@@ -270,7 +284,8 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
         color: color-pick-contrast(
           scale-color($code, $lightness: $button-background-hover-lightness),
           $colors: ($white, $black, $primary-color, $secondary-color),
-          $tolerance: $global-color-pick-contrast-tolerance);
+          $tolerance: $global-color-pick-contrast-tolerance
+        );
       }
     }
   }
@@ -278,10 +293,8 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
   // Button text color
   .wp-block-button__link.has-#{$color}-color {
     color: $code;
-  
   }
 }
-
 
 // =============================================================================
 // GRADIENTS
@@ -292,30 +305,35 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
     background: $settings;
 
     @if map-has-key($locked-gradient-text-colors, $gradient) {
-      color: map-get($foundation-palette, map-get($locked-gradient-text-colors, $gradient));
+      color: map-get(
+        $foundation-palette,
+        map-get($locked-gradient-text-colors, $gradient)
+      );
     } @else {
       color: $white;
     }
 
     a:not(.button, .wp-block-button__link) {
-      color: map-get($foundation-palette, map-get($locked-gradient-link-colors, $gradient));
+      color: map-get(
+        $foundation-palette,
+        map-get($locked-gradient-link-colors, $gradient)
+      );
     }
   }
 }
-
 
 // =============================================================================
 // BUTTON
 // =============================================================================
 .wp-block-buttons.is-style-full-bleed {
   position: relative;
-    padding: $global-padding * 2 0;
-    @include bleed-color-rules;
+  padding: $global-padding * 2 0;
+  @include bleed-color-rules;
 }
-.wp-block-buttons.is-nowrap{
+.wp-block-buttons.is-nowrap {
   flex-wrap: wrap;
   @include breakpoint(medium) {
-  flex-wrap: nowrap;
+    flex-wrap: nowrap;
   }
 }
 .wp-block-button {
@@ -327,33 +345,26 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
     border-radius: 0;
   }
   &.is-style-fill {
-  .wp-block-button__link {
+    .wp-block-button__link {
       border-radius: $global-radius;
 
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  position: relative;
-
-
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      position: relative;
+    }
   }
-}
-
 
   &.is-style-outline .wp-block-button__link {
     @extend .hollow;
     background: transparent;
-      border-radius: 0;
+    border-radius: 0;
   }
 
-
-.wp-block-button__link span,
-.wp-block-button__link {
-  z-index: 1; /* keeps text above the expanding circle */
-}
-
-
-
+  .wp-block-button__link span,
+  .wp-block-button__link {
+    z-index: 1; /* keeps text above the expanding circle */
+  }
 }
 // =============================================================================
 // FILE
@@ -362,7 +373,6 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
 .wp-block-file .wp-block-file__button {
   @include button();
 }
-
 
 // =============================================================================
 // ALIGNFULL BLOCKS
@@ -383,7 +393,6 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
   @include alignfull-bleed;
 }
 
-
 // =============================================================================
 // TABLE
 // =============================================================================
@@ -395,7 +404,12 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
     font-size: rem-calc(16);
   }
 
-  thead, tbody, tfoot, tbody tr, td, th {
+  thead,
+  tbody,
+  tfoot,
+  tbody tr,
+  td,
+  th {
     border: 2px solid $white;
 
     @include breakpoint(medium) {
@@ -415,12 +429,12 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
   }
 }
 
-
 // =============================================================================
 // INNER CONTENT — FOUNDATION GUTTERS
 // =============================================================================
 
-.is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+.is-layout-constrained
+  > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
   padding-inline: var(--wp--custom--foundation-gutter-mobile);
 
   @include breakpoint(medium) {
@@ -428,17 +442,19 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
   }
 }
 
-
 // =============================================================================
 // COLUMNS
 // =============================================================================
 @include breakpoint(medium) {
-  .wp-block-columns { flex-wrap: nowrap; }  // remove !important if possible
+  .wp-block-columns {
+    flex-wrap: nowrap;
+  } // remove !important if possible
 }
 @include breakpoint(small only) {
-  .wp-block-columns { flex-wrap: wrap; }
+  .wp-block-columns {
+    flex-wrap: wrap;
+  }
 }
-
 
 .wp-block-columns {
   &.alignfull {
@@ -516,71 +532,66 @@ $locked-gradient-link-colors: (primary-to-secondary: secondary);
   }
 
   @include bleed-column-color-rules;
-   
 }
 // =============================================================================
 // Group
 // =============================================================================
-.wp-block-group{ &.alignfull {
+.wp-block-group {
+  &.alignfull {
     @include alignfull-bleed;
   }
   &.is-style-full-bleed {
-  position: relative;
-  padding: $global-padding * 2 0;
-  
+    position: relative;
+    padding: $global-padding * 2 0;
   }
 }
 
 // =============================================================================
 // MEDIA & TEXT
 // =============================================================================
-.wp-block-media-text{ &.alignfull {
+.wp-block-media-text {
+  &.alignfull {
     @include alignfull-bleed;
   }
 }
-.wp-block-media-text{
-   .wp-block-media-text__media{
-     margin-bottom: $global-margin;
+.wp-block-media-text {
+  .wp-block-media-text__media {
+    margin-bottom: $global-margin;
     @include breakpoint(medium) {
-    margin-bottom: 0;
+      margin-bottom: 0;
     }
-   }}
-.wp-block-media-text{
- .wp-block-media-text__content{
-  @include breakpoint(medium) {
-     @include xy-cell-offset(2);
-    
   }
-
-  padding: 0;
- }
 }
-.wp-block-media-text.has-media-on-the-right{
- .wp-block-media-text__content{
-   @include breakpoint(medium) {
-     @include xy-cell-offset(0);
-    @include xy-cell(10);
+.wp-block-media-text {
+  .wp-block-media-text__content {
+    @include breakpoint(medium) {
+      @include xy-cell-offset(2);
+    }
+
+    padding: 0;
   }
- }
+}
+.wp-block-media-text.has-media-on-the-right {
+  .wp-block-media-text__content {
+    @include breakpoint(medium) {
+      @include xy-cell-offset(0);
+      @include xy-cell(10);
+    }
+  }
 }
 .wp-block-media-text.is-style-full-bleed {
   position: relative;
   gap: 0;
-    padding: $global-padding 0;
-    @include breakpoint(medium){
-    padding: $global-padding*2 0;
-    }
+  padding: $global-padding 0;
+  @include breakpoint(medium) {
+    padding: $global-padding * 2 0;
+  }
 
   .wp-block-media-text__media,
   .wp-block-media-text__content {
     position: relative;
   }
-
-
 }
-
-
-
 
 .wp-block-columns.is-style-full-bleed,
 .wp-block-group.is-style-full-bleed,
