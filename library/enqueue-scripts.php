@@ -48,15 +48,11 @@ if (! function_exists('foundationpress_scripts')) :
 		);
 
 
-		// Enqueue jQuery migrate. Uncomment the line below to enable.
-		// wp_enqueue_script( 'jquery-migrate' );
-
 		// Enqueue Foundation scripts
 		wp_enqueue_script('foundation', get_stylesheet_directory_uri() . '/dist/assets/js/' . foundationpress_asset_path('app.js'), array('jquery'), '2.10.4', true);
 
 		// Enqueue FontAwesome from CDN. Uncomment the line below if you need FontAwesome.
-		//wp_enqueue_script( 'fontawesome', 'https://use.fontawesome.com/5016a31c8c.js', array(), '4.7.0', true );
-		wp_enqueue_script('FontAwesome', 'https://kit.fontawesome.com/79a95a0ad8.js', array(), null, false);
+		wp_enqueue_script('FontAwesome', defined('AVIDD_FA_KIT_URL') ? AVIDD_FA_KIT_URL : '', [], null, true);
 
 
 		// Add the comment-reply library on pages where it is necessary

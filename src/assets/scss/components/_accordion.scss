@@ -1,20 +1,19 @@
-.block-accordion{
-	  &.alignfull, &.has-background {
+.block-accordion {
+	&.has-background, &.alignfull  {
 		@include alignfull-bleed;
-	  }
-	padding-left: 0;
-	padding-right: 0;
-	
-	.block-accordion-container {
-		@include xy-grid-container;
-		.block-accordion-content{
-			@include xy-cell(12);
-			@include breakpoint(medium){
-				@include xy-cell(12);
-			}
+	}
+	&.is-style-full-bleed {
+		.block-accordion-container {
+			@include xy-grid-container;
 		}
 	}
 
+	.block-accordion-content {
+		@include xy-cell(12);
+		@include breakpoint(medium){
+			@include xy-cell(12);
+		}
+	}
 }
 .accordion{
 	.accordion-item{

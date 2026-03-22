@@ -8,9 +8,9 @@
 	<ul class="accordion" data-accordion data-allow-all-closed="true">
 		<?php if (have_rows('repeater_content_accordion', 'option')) :
 			while (have_rows('repeater_content_accordion', 'option')) : the_row();
-				$header = get_sub_field('header');
-				$content = get_sub_field('content');
-				$category = get_sub_field('category');
+				$header = get_sub_field('accordion_heading');
+				$content = get_sub_field('accordion_content');
+			
 		?>
 
 				<li data-filter="category-<?php echo esc_attr($category); ?>" class="accordion-item category-<?php echo esc_attr($category); ?> filter-simple-item" data-accordion-item>

@@ -1,23 +1,19 @@
-
-.block-tab{
-	  &.alignfull, &.has-background {
-	     @include alignfull-bleed;
-	  }
-	padding-left: 0;
-	padding-right: 0;
-	.block-tab-container {
-		@include xy-grid-container;
-			.block-tab-grid {
-			  @include xy-grid;
-		.block-tab-content{
-			@include xy-cell(12);
-			@include breakpoint(medium){
-				@include xy-cell(12);
-			}
-		}
+.block-tab {
+	&.has-background, &.alignfull  {
+		@include alignfull-bleed;
+	}
+	&.is-style-full-bleed{
+		.block-tab-container {
+			@include xy-grid-container;
 		}
 	}
 
+	.block-tab-content {
+		@include xy-cell(12);
+		@include breakpoint(medium){
+			@include xy-cell(12);
+		}
+	}
 }
 .tabs,
 .tabs-content{

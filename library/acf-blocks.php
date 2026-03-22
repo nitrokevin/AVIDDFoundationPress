@@ -86,11 +86,11 @@ function avidd_register_field_groups()
 function avidd_field_group_accordion()
 {
 	acf_add_local_field_group(array(
-		'key'                   => 'group_622b3632877721',
+		'key'                   => 'group_accordion',
 		'title'                 => 'Block: Accordion',
 		'fields'                => array(
 			array(
-				'key'               => 'field_626db345738d5',
+				'key'               => 'field_accordion_type',
 				'label'             => 'Accordion type',
 				'name'              => 'accordion_type',
 				'type'              => 'select',
@@ -111,7 +111,7 @@ function avidd_field_group_accordion()
 				'placeholder'       => '',
 			),
 			array(
-				'key'               => 'field_626db2f7738c7',
+				'key'               => 'field_repeater_content_accordion',
 				'label'             => 'Accordion Content',
 				'name'              => 'repeater_content_accordion',
 				'type'              => 'repeater',
@@ -120,21 +120,21 @@ function avidd_field_group_accordion()
 				'conditional_logic' => array(
 					array(
 						array(
-							'field'    => 'field_626db345738d5',
+							'field'    => 'field_accordion_type',
 							'operator' => '==',
 							'value'    => 'custom',
 						),
 					),
 				),
 				'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
-				'collapsed'         => 'field_626db2f7738cc',
+				'collapsed'         => 'field_accordion_heading',
 				'min'               => 1,
 				'max'               => 0,
 				'layout'            => 'block',
 				'button_label'      => 'Add Accordion Row',
 				'sub_fields'        => array(
 					array(
-						'key'               => 'field_626db2f7738cc',
+						'key'               => 'field_accordion_heading',
 						'label'             => 'Accordion Heading',
 						'name'              => 'accordion_heading',
 						'type'              => 'text',
@@ -149,7 +149,7 @@ function avidd_field_group_accordion()
 						'maxlength'         => '',
 					),
 					array(
-						'key'               => 'field_626db2f7738ca',
+						'key'               => 'field_accordion_heading_background_color',
 						'label'             => 'Accordion Heading Background Colour',
 						'name'              => 'accordion_heading_background_color',
 						'type'              => 'theme_swatch',
@@ -163,7 +163,7 @@ function avidd_field_group_accordion()
 						'save_other_choice' => 0,
 					),
 					array(
-						'key'               => 'field_626db2f7738cd',
+						'key'               => 'field_accordion_content',
 						'label'             => 'Accordion Content',
 						'name'              => 'accordion_content',
 						'type'              => 'wysiwyg',
@@ -208,11 +208,11 @@ function avidd_field_group_accordion()
 function avidd_field_group_tab()
 {
 	acf_add_local_field_group(array(
-		'key'                   => 'group_622b3632877723',
+		'key'                   => 'group_tab',
 		'title'                 => 'Block: Tab',
 		'fields'                => array(
 			array(
-				'key'               => 'field_626da7410655fg',
+				'key'               => 'field_tab_bar_background_color',
 				'label'             => 'Tab Bar Background Colour',
 				'name'              => 'tab_bar_background_color',
 				'type'              => 'theme_swatch',
@@ -226,7 +226,7 @@ function avidd_field_group_tab()
 				'save_other_choice' => 0,
 			),
 			array(
-				'key'               => 'field_626dcf6a205da',
+				'key'               => 'field_repeater_content_tab',
 				'label'             => 'Tab Content',
 				'name'              => 'repeater_content_tab',
 				'type'              => 'repeater',
@@ -234,14 +234,14 @@ function avidd_field_group_tab()
 				'required'          => 0,
 				'conditional_logic' => 0,
 				'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
-				'collapsed'         => 'field_626dcf6a205db',
+				'collapsed'         => 'field_tab_heading',
 				'min'               => 1,
 				'max'               => 0,
 				'layout'            => 'block',
 				'button_label'      => 'Add Tab',
 				'sub_fields'        => array(
 					array(
-						'key'               => 'field_626dcf6a205db',
+						'key'               => 'field_tab_heading',
 						'label'             => 'Tab Heading',
 						'name'              => 'tab_heading',
 						'type'              => 'text',
@@ -256,7 +256,7 @@ function avidd_field_group_tab()
 						'maxlength'         => '',
 					),
 					array(
-						'key'               => 'field_626dcf6a205dc',
+						'key'               => 'field_tab_background_color',
 						'label'             => 'Tab Background Colour',
 						'name'              => 'tab_background_color',
 						'type'              => 'theme_swatch',
@@ -270,7 +270,7 @@ function avidd_field_group_tab()
 						'save_other_choice' => 0,
 					),
 					array(
-						'key'               => 'field_626dd11e205e3',
+						'key'               => 'field_tab_content',
 						'label'             => 'Tab Content',
 						'name'              => 'tab_content',
 						'type'              => 'wysiwyg',
@@ -315,11 +315,11 @@ function avidd_field_group_tab()
 function avidd_field_group_carousel()
 {
 	acf_add_local_field_group(array(
-		'key'                   => 'group_622b36328777a24',
+		'key'                   => 'group_carosel',
 		'title'                 => 'Block: Carousel',
 		'fields'                => array(
 			array(
-				'key'               => 'field_5c3812a7a819bf1',
+				'key'               => 'field_carousel_type',
 				'label'             => 'Carousel Type',
 				'name'              => 'carousel_type',
 				'type'              => 'select',
@@ -328,11 +328,10 @@ function avidd_field_group_carousel()
 				'conditional_logic' => 0,
 				'wrapper'           => array('width' => '100', 'class' => '', 'id' => ''),
 				'choices'           => array(
-					'people-carousel' => 'People Carousel',
 					'slide-carousel'  => 'Slide Carousel',
 					'gallery-carousel' => 'Gallery Carousel',
 				),
-				'default_value'     => 'gallery-carousel',
+				'default_value'     => 'slide-carousel',
 				'allow_null'        => 0,
 				'multiple'          => 0,
 				'ui'                => 1,
@@ -340,37 +339,9 @@ function avidd_field_group_carousel()
 				'return_format'     => 'value',
 				'placeholder'       => '',
 			),
+		
 			array(
-				'key'               => 'field_5c812a7a8hgh19bf',
-				'label'             => 'People Group',
-				'name'              => 'person_group_select',
-				'type'              => 'select',
-				'instructions'      => '',
-				'required'          => 0,
-				'conditional_logic' => array(
-					array(
-						array(
-							'field'    => 'field_5c3812a7a819bf1',
-							'operator' => '==',
-							'value'    => 'people-carousel',
-						),
-					),
-				),
-				'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
-				'choices'           => array(
-					'team'  => 'Team',
-					'board' => 'Board',
-					'other' => 'Other',
-				),
-				'allow_null'        => 0,
-				'multiple'          => 0,
-				'ui'                => 1,
-				'ajax'              => 0,
-				'return_format'     => 'value',
-				'placeholder'       => '',
-			),
-			array(
-				'key'               => 'field_625407c6661c0f',
+				'key'               => 'field_carousel_gallery',
 				'label'             => 'Gallery Carousel',
 				'name'              => 'carousel_gallery',
 				'type'              => 'gallery',
@@ -379,7 +350,7 @@ function avidd_field_group_carousel()
 				'conditional_logic' => array(
 					array(
 						array(
-							'field'    => 'field_5c3812a7a819bf1',
+							'field'    => 'field_carousel_type',
 							'operator' => '==',
 							'value'    => 'gallery-carousel',
 						),
@@ -392,7 +363,7 @@ function avidd_field_group_carousel()
 				'library'           => 'all',
 			),
 			array(
-				'key'               => 'field_626dd3503e215h',
+				'key'               => 'field_repeater_content_carousel',
 				'label'             => 'Carousel Content',
 				'name'              => 'repeater_content_carousel',
 				'type'              => 'repeater',
@@ -401,21 +372,21 @@ function avidd_field_group_carousel()
 				'conditional_logic' => array(
 					array(
 						array(
-							'field'    => 'field_5c3812a7a819bf1',
+							'field'    => 'field_carousel_type',
 							'operator' => '==',
 							'value'    => 'slide-carousel',
 						),
 					),
 				),
 				'wrapper'           => array('width' => '', 'class' => '', 'id' => ''),
-				'collapsed'         => 'field_626dd3503e216',
+				'collapsed'         => 'field_carousel_heading',
 				'min'               => 1,
 				'max'               => 0,
 				'layout'            => 'block',
 				'button_label'      => 'Add Slide',
 				'sub_fields'        => array(
 					array(
-						'key'               => 'field_626ddp4413e2k19',
+						'key'               => 'field_carousel_image',
 						'label'             => 'Carousel Image',
 						'name'              => 'carousel_image',
 						'type'              => 'image',
@@ -449,7 +420,7 @@ function avidd_field_group_carousel()
 						'ui_off_text'       => '',
 					),
 					array(
-						'key'               => 'field_626dd35jf03e216',
+						'key'               => 'field_carousel_heading',
 						'label'             => 'Carousel Heading',
 						'name'              => 'carousel_heading',
 						'type'              => 'text',
@@ -464,7 +435,7 @@ function avidd_field_group_carousel()
 						'maxlength'         => '',
 					),
 					array(
-						'key'               => 'field_626dd3503ell217',
+						'key'               => 'field_carousel_background_color',
 						'label'             => 'Carousel Background Colour',
 						'name'              => 'carousel_background_color',
 						'type'              => 'theme_swatch',
@@ -478,7 +449,7 @@ function avidd_field_group_carousel()
 						'save_other_choice' => 0,
 					),
 					array(
-						'key'               => 'field_626hedd3503e218',
+						'key'               => 'field_carousel_content',
 						'label'             => 'Carousel Content',
 						'name'              => 'carousel_content',
 						'type'              => 'wysiwyg',

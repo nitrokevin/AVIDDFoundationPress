@@ -455,7 +455,17 @@ if (class_exists('WP_Customize_Control')) {
 						mediaUploader.on('select', function() {
 							var attachment = mediaUploader.state().get('selection').first().toJSON();
 							input.val(attachment.id);
-							preview.html('<img src="' + attachment.url + '" />');
+							var safeSrc = attachment.url.replace(/[&<>"']/g, function(m) {
+								return {
+									'&': '&amp;',
+									'<': '&lt;',
+									'>': '&gt;',
+									'"': '&quot;',
+									"'": '&#x27;'
+								} [m];
+							});
+							preview.html('<img src="' + safeSrc + '" />');
+
 							updateRepeaterValue();
 						});
 
@@ -548,7 +558,7 @@ if (class_exists('WP_Customize_Control')) {
 					</div>
 				<?php endforeach; ?>
 			</div>
-	<?php
+<?php
 			return ob_get_clean();
 		}
 	}
@@ -1258,80 +1268,107 @@ function avidd_sanitize_repeater($input)
 // ============================================
 // CSS OUTPUT
 // ============================================
+/**
+ * Validate that a resolved CSS value is safe for output in a <style> block.
+ *
+ * Accepts:
+ *  - Hex colours:           #rgb or #rrggbb
+ *  - Linear/radial gradients: linear-gradient(...) / radial-gradient(...)
+ *
+ * Returns the value if safe, empty string if not.
+ *
+ * @param  string $value Resolved CSS value from avidd_resolve_slug_to_css().
+ * @return string
+ */
+function avidd_validate_css_value(string $value): string
+{
+	if (empty($value)) {
+		return '';
+	}
+
+	// Allow hex colours
+	if (preg_match('/^#([a-f0-9]{3}){1,2}$/i', $value)) {
+		return $value;
+	}
+
+	// Allow gradient strings — must start with linear-gradient( or radial-gradient(
+	// and contain only characters valid in a CSS gradient value.
+	// This intentionally excludes url(), expression(), semicolons, and braces.
+	if (preg_match('/^(linear|radial)-gradient\([^;{}()<>]+\)$/i', $value)) {
+		return $value;
+	}
+
+	// Anything else is rejected
+	return '';
+}
 
 /**
- * Output customizer values as inline CSS.
+ * Build a single CSS rule safely.
  *
- * Background settings may store either a hex value or a gradient slug.
- * avidd_resolve_slug_to_css() handles both, returning the CSS-ready value.
- * The correct property (background-color vs background) is chosen based on
- * whether the resolved value contains 'gradient('.
+ * Uses esc_html() — correct for content inside a <style> block —
+ * rather than esc_attr() which is designed for HTML attribute context.
+ *
+ * @param  string $selector  CSS selector, hardcoded in this file so trusted.
+ * @param  string $property  CSS property name (background / background-color / color).
+ * @param  string $raw_value Raw resolved value — validated before output.
  */
-function avidd_customizer_css()
+function avidd_safe_css_rule(string $selector, string $property, string $raw_value): void
 {
-	?>
-	<style type="text/css" id="avidd-customizer-styles">
-		<?php
+	$value = avidd_validate_css_value($raw_value);
+	if (! $value) {
+		return;
+	}
+	// esc_html() is the correct escaping function for content inside <style> tags.
+	// It encodes < > & " ' which are the characters that could break out of the
+	// style block into HTML. esc_attr() would also encode these but is semantically
+	// wrong (it's for attribute values) and could double-encode in edge cases.
+	printf(
+		'%s { %s: %s; }' . "\n",
+		$selector,                   // trusted: hardcoded below
+		esc_html($property),       // trusted: hardcoded below, but escaped for safety
+		esc_html($value)           // validated above, then escaped for style context
+	);
+}
 
-		// --- Nav background ---
-		$nav_bg = avidd_resolve_slug_to_css(get_theme_mod('color_palette_setting_0'));
-		if ($nav_bg) {
-			$prop = strpos($nav_bg, 'gradient(') !== false ? 'background' : 'background-color';
-			echo '.top-bar, .title-bar { ' . $prop . ': ' . esc_attr($nav_bg) . '; }';
+function avidd_customizer_css(): void
+{
+	$rules = [
+		// [ setting key, selector, supports_gradients ]
+		['color_palette_setting_0',  '.top-bar, .title-bar',                                       true],
+		['color_palette_setting_3',  '.footer',                                                    true],
+		['color_palette_setting_10', 'body',                                                       true],
+		['hero_trust_signals_bg',    '.front-hero--no-overlay + .hero_overlay--below',             true],
+		['inner_hero_trust_signals_bg', '.featured-hero--no-overlay + .hero_overlay--below',       true],
+	];
+
+	$color_rules = [
+		// [ setting key, selector, property ]
+		['color_palette_setting_1', '.top-bar, .top-bar .desktop-menu a:not(.button), .title-bar .mobile-menu a:not(.button)', 'color'],
+		['color_palette_setting_4', '.footer, .footer li',                                                                      'color'],
+		['color_palette_setting_5', '.footer a',                                                                                'color'],
+	];
+
+	echo '<style type="text/css" id="avidd-customizer-styles">' . "\n";
+
+	// Background rules — value may be hex or gradient slug
+	foreach ($rules as [$mod_key, $selector, $supports_gradients]) {
+		$raw = avidd_resolve_slug_to_css(get_theme_mod($mod_key));
+		if (! $raw) {
+			continue;
 		}
+		$property = (strpos($raw, 'gradient(') !== false) ? 'background' : 'background-color';
+		avidd_safe_css_rule($selector, $property, $raw);
+	}
 
-		// --- Nav menu item colour (text — hex only, no gradient resolution needed) ---
-		$nav_color = get_theme_mod('color_palette_setting_1');
-		if ($nav_color) {
-			echo '.top-bar, .top-bar .desktop-menu a:not(.button), .title-bar .mobile-menu a:not(.button) { color: ' . esc_attr($nav_color) . '; }';
+	// Colour-only rules — value is always hex, stored via sanitize_hex_color
+	foreach ($color_rules as [$mod_key, $selector, $property]) {
+		$raw = get_theme_mod($mod_key);
+		if (! $raw) {
+			continue;
 		}
+		avidd_safe_css_rule($selector, $property, $raw);
+	}
 
-		// --- Footer background ---
-		$footer_bg = avidd_resolve_slug_to_css(get_theme_mod('color_palette_setting_3'));
-		if ($footer_bg) {
-			$prop = strpos($footer_bg, 'gradient(') !== false ? 'background' : 'background-color';
-			echo '.footer { ' . $prop . ': ' . esc_attr($footer_bg) . '; }';
-		}
-
-		// --- Footer text colour (text — hex only) ---
-		$footer_text = get_theme_mod('color_palette_setting_4');
-		if ($footer_text) {
-			echo '.footer, .footer li { color: ' . esc_attr($footer_text) . '; }';
-		}
-
-		// --- Footer link colour (text — hex only) ---
-		$footer_link = get_theme_mod('color_palette_setting_5');
-		if ($footer_link) {
-			echo '.footer a { color: ' . esc_attr($footer_link) . '; }';
-		}
-
-		// --- Page background ---
-		$page_bg = avidd_resolve_slug_to_css(get_theme_mod('color_palette_setting_10'));
-		if ($page_bg) {
-			$prop = strpos($page_bg, 'gradient(') !== false ? 'background' : 'background-color';
-			echo 'body { ' . $prop . ': ' . esc_attr($page_bg) . '; }';
-		}
-
-		// --- Front page trust signals background ---
-		$front_trust_bg = avidd_resolve_slug_to_css(get_theme_mod('hero_trust_signals_bg'));
-		if ($front_trust_bg) {
-			$prop = strpos($front_trust_bg, 'gradient(') !== false ? 'background' : 'background-color';
-			echo '.front-hero--no-overlay + .hero_overlay--below { ' . $prop . ': ' . esc_attr($front_trust_bg) . '; }';
-		}
-
-		// --- Inner page trust signals background ---
-		$inner_trust_bg = avidd_resolve_slug_to_css(get_theme_mod('inner_hero_trust_signals_bg'));
-		if ($inner_trust_bg) {
-			$prop = strpos($inner_trust_bg, 'gradient(') !== false ? 'background' : 'background-color';
-			echo '.featured-hero--no-overlay + .hero_overlay--below { ' . $prop . ': ' . esc_attr($inner_trust_bg) . '; }';
-		}
-
-		?>
-	</style>
-<?php
+	echo '</style>' . "\n";
 }
 add_action('wp_head', 'avidd_customizer_css');
-
-// ============================================
-// CUSTOMIZER PREVIEW JAVASCRIPT
-// ============================================

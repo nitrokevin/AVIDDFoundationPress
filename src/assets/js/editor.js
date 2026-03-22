@@ -4,5 +4,6 @@
 // Import column background functionality
 import "./editor/extend-core-columns";
 
+
 // Add other editor scripts here in the future
 // import './editor/another-block.js';

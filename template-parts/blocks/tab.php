@@ -52,6 +52,7 @@ $className .= ' ' . implode(' ', $classes);
     <div class="block-tab-container">
         <div class="block-tab-grid">
             <div class="block-tab-content">
+                <?php set_query_var('block_id', $id); ?>
                 <?php get_template_part('template-parts/content', 'tab'); ?>
             </div>
         </div>

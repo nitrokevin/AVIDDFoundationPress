@@ -20,5 +20,16 @@
      
     },
      "anchor": true
-  }
+  },
+       "styles": [{
+      "name": "default",
+      "label": "Default"
+     
+    },
+    {
+      "name": "full-bleed",
+      "label": "Full bleed background",
+       "isDefault": true
+    }
+  ]
 }

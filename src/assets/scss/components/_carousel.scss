@@ -1,27 +1,19 @@
-
 .block-carousel {
+	&.has-background, &.alignfull  {
+		@include alignfull-bleed;
+	}
+	&.is-style-full-bleed{
+		.block-carousel-container {
+			@include xy-grid-container;
+		}
+	}
 
-  padding-left: 0;
-  padding-right: 0;
-
-  &.alignfull {
-     @include alignfull-bleed;
-  }
-
-  .block-carousel-container {
-    @include xy-grid-container;
- .block-carousel-grid {
-	@include xy-grid;
-    .block-carousel-content {
-      @include xy-cell(12);
-      		@include breakpoint(medium){
-				@include xy-cell(12);
-			}
-    }
-}
-
-  }
-
+	.block-carousel-content {
+		@include xy-cell(12);
+		@include breakpoint(medium){
+			@include xy-cell(12);
+		}
+	}
 }
 
 .gallery-carousel {

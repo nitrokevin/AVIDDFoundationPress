@@ -62,7 +62,7 @@ if (!function_exists('render_repeater_rows')) {
 }
 
 // Unique block ID
-// $id = !empty($block['anchor']) ? $block['anchor'] : 'global-content-' . ($block['id'] ?? wp_rand());
+$id = !empty($block['anchor']) ? esc_attr($block['anchor']) : 'global-content-' . uniqid();
 
 // Block class & alignment
 $className = 'block-global-content-selector';
@@ -190,13 +190,10 @@ $repeater_field = $map[$options_page] ?? '';
                         the_row();
                         $heading = get_sub_field('header') ?: get_sub_field('name') ?: ucwords(str_replace('_', ' ', $repeater_field));
                         echo '<div class="global-content-column-first cell small-12 medium-4 medium-offset-1" >';
-
-                        echo '<p>' . esc_html('LOCAL COMMUNITY FEEDBACK') . '</p>';
                         echo '<p>' . esc_html($heading) . '</p>';
                         echo '<hr class="bottom-line">';
                         echo '</div>';
                         echo '<div class="global-content-column-last cell small-12 medium-7">';
-                        echo '<p>' . esc_html('OUR RESPONSE') . '</p>';
 
                         $subfields = get_row(true);
                         foreach ($subfields as $sub_key => $sub_value) {

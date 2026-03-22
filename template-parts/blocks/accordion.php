@@ -53,7 +53,7 @@ $className .= ' ' . implode(' ', $classes);
         <div class="block-accordion-grid">
             <div class="block-accordion-content ">
                 <?php get_template_part('template-parts/content', 'accordion'); ?>
-
             </div>
         </div>
+    </div>
 </section>

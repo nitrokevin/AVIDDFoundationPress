@@ -9,8 +9,8 @@
  * @since FoundationPress 1.0.0
  */
 $site_name     = get_bloginfo('name', 'display');
-$home_url      = esc_url(home_url('/'));
-$header_logo   = esc_url(get_theme_mod('header_logo'));
+$home_url      = (home_url('/'));
+$header_logo   = (get_theme_mod('header_logo'));
 $sticky_header = get_theme_mod('sticky_header', true);
 $fixed_header  = get_theme_mod('fixed_header', true);
 $contained     = get_theme_mod('contained_header', true);
@@ -41,9 +41,9 @@ $contained     = get_theme_mod('contained_header', true);
 				<div class="site-title-bar title-bar" <?php foundationpress_title_bar_responsive_toggle(); ?>>
 					<div class="title-bar-center">
 						<span class="site-mobile-title title-bar-title">
-							<a href="<?php echo $home_url; ?>" title="<?php echo esc_attr($site_name); ?>" rel="home">
+							<a href="<?php echo esc_url($home_url); ?>" title="<?php echo esc_attr($site_name); ?>" rel="home">
 								<?php if ($header_logo) : ?>
-									<img src="<?php echo $header_logo; ?>" alt="<?php echo esc_attr($site_name); ?>">
+									<img src="<?php echo esc_url($header_logo); ?>" alt="<?php echo esc_attr($site_name); ?>">
 								<?php else : ?>
 									<?php echo esc_html($site_name); ?>
 								<?php endif; ?>
@@ -59,9 +59,9 @@ $contained     = get_theme_mod('contained_header', true);
 					<div class="top-bar-inner-container <?php if ($contained) { ?>contained<?php } ?>">
 						<div class="top-bar-left">
 							<div class="site-desktop-title top-bar-title">
-								<a href="<?php echo $home_url; ?>" title="<?php echo esc_attr($site_name); ?>" rel="home">
+								<a href="<?php echo esc_url($home_url); ?>" title="<?php echo esc_attr($site_name); ?>" rel="home">
 									<?php if ($header_logo) : ?>
-										<img src="<?php echo $header_logo; ?>" alt="<?php echo esc_attr($site_name); ?>">
+										<img src="<?php echo esc_url($header_logo); ?>" alt="<?php echo esc_attr($site_name); ?>">
 									<?php else : ?>
 										<?php echo esc_html($site_name); ?>
 									<?php endif; ?>

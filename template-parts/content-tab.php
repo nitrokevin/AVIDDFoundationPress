@@ -3,6 +3,7 @@
 /**
 
  */
+$id = get_query_var('block_id', 'tabs-' . wp_rand());
 ?>
 <?php if (have_rows('repeater_content_tab')) {
 	$counter = 0;

@@ -286,7 +286,9 @@ function avidd_social_links_inline_shortcode($atts)
 
     foreach ($social_sites as $key => $icon_class) {
         if (get_theme_mod('social-' . $key)) {
-            $url = esc_url(get_theme_mod('social-' . $key . '-url'));
+            $url = esc_url(get_theme_mod('social-' . $key . '-url', ''));
+            if (empty($url)) continue; // skip if no valid URL
+
             $links[] = '<a href="' . $url . '" target="_blank" rel="noreferrer" aria-label="' . ucfirst($key) . '" class="social-inline ' . esc_attr($atts['class']) . '"><i class="' . $icon_class . '"></i></a>';
         }
     }

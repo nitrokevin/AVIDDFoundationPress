@@ -69,4 +69,5 @@ $carousel_type = get_field('carousel_type');
                 } ?>
             </div>
         </div>
+    </div>
 </section>
