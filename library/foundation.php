@@ -219,7 +219,7 @@ endif;
 if (! function_exists('foundationpress_active_nav_class')) :
 	function foundationpress_active_nav_class(array $classes, object $item): array
 	{
-		if ($item->current == 1 || $item->current_item_ancestor == true) {
+		if (! empty($item->current) || ! empty($item->current_item_ancestor)) {
 			$classes[] = 'is-active';
 		}
 		return $classes;

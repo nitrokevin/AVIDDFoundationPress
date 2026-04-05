@@ -1,5 +1,5 @@
 .block-tab {
-	&.has-background, &.alignfull  {
+	&.has-background.is-style-full-bleed , &.alignfull  {
 		@include alignfull-bleed;
 	}
 	&.is-style-full-bleed{

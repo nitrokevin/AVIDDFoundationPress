@@ -13,9 +13,9 @@ $locked-text-colors: (
   theme-color-2: "black",
   theme-color-3: "black",
   theme-color-4: "white",
-  white: "secondary",
+  white: secondary,
   black: "white",
-  light-gray: "secondary",
+  light-gray: secondary,
   medium-gray: "black",
   dark-gray: "black",
 );
@@ -107,7 +107,7 @@ $locked-gradient-link-colors: (
   left: 0;
   margin-left: calc(50% - 50vw);
 
-  @include breakpoint(medium) {
+  @include breakpoint(large) {
     margin-left: calc(100% - 50vw);
     width: 50vw;
   }
@@ -130,8 +130,8 @@ $locked-gradient-link-colors: (
   right: 0;
   margin-right: calc(50% - 50vw);
 
-  @include breakpoint(medium) {
-    margin-right: calc(100% - 100vw);
+  @include breakpoint(large) {
+    margin-right: calc(100% - 50vw);
     margin-left: unset;
     width: 50vw;
   }
@@ -181,13 +181,25 @@ $locked-gradient-link-colors: (
 // Generate all color + gradient bleed rules for child .wp-block-column elements
 @mixin bleed-column-color-rules {
   @each $color, $code in $foundation-palette {
-    .wp-block-column.has-#{$color}-background-color {
+
+    // Middle columns — contained (lower specificity, declared first)
+    .wp-block-column:not(:first-child):not(:last-child).has-#{$color}-background-color {
+      background-color: $code !important;
+    }
+
+    // First column — bleed left (overrides middle if needed)
+    .wp-block-column:first-child.has-#{$color}-background-color {
       background: transparent !important;
       &::before {
         @include bleed-left-column;
         background-color: $code;
       }
-      &:last-child::before {
+    }
+
+    // Last column — bleed right (overrides middle if needed)
+    .wp-block-column:last-child.has-#{$color}-background-color {
+      background: transparent !important;
+      &::before {
         @include bleed-right-column;
         background-color: $code;
       }
@@ -195,13 +207,25 @@ $locked-gradient-link-colors: (
   }
 
   @each $slug, $gradient in $all-gradients {
-    .wp-block-column.has-#{$slug}-gradient-background {
+
+    // Middle columns — contained
+    .wp-block-column:not(:first-child):not(:last-child).has-#{$slug}-gradient-background {
+      background: $gradient !important;
+    }
+
+    // First column — bleed left
+    .wp-block-column:first-child.has-#{$slug}-gradient-background {
       background: transparent !important;
       &::before {
         @include bleed-left-column;
         background: $gradient;
       }
-      &:last-child::before {
+    }
+
+    // Last column — bleed right
+    .wp-block-column:last-child.has-#{$slug}-gradient-background {
+      background: transparent !important;
+      &::before {
         @include bleed-right-column;
         background: $gradient;
       }
@@ -258,7 +282,7 @@ $locked-gradient-link-colors: (
     background-color: $code;
 
     @if map-has-key($locked-text-colors, $color) {
-      color: brand-color(map-get($locked-text-colors, $color));
+      color: map-get($locked-text-colors, $color);
     } @else {
       color: color-pick-contrast(
         $code,
@@ -279,7 +303,7 @@ $locked-gradient-link-colors: (
       ) !important;
 
       @if map-has-key($locked-text-colors, $color) {
-        color: brand-color(map-get($locked-text-colors, $color));
+        color: map-get($locked-text-colors, $color);
       } @else {
         color: color-pick-contrast(
           scale-color($code, $lightness: $button-background-hover-lightness),
