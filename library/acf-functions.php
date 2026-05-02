@@ -1,6 +1,8 @@
 <?php add_action('acf/init', function () {
-	
-	if (!function_exists('acf_add_local_field_group') && (!is_admin()) && (wp_is_json_request())) return;
+	// Bail if ACF not present
+	if (!function_exists('acf_add_local_field_group')) return;
+	// Only register in contexts that need it
+	if (!is_admin() && !wp_is_json_request()) return;
 
 
 	//Page Options
@@ -126,7 +128,7 @@
 						'return_format' => 'url',
 						'library' => 'all',
 						'min_size' => '',
-						'max_size' => '',
+						'max_size' => '80',
 						'mime_types' => 'mp4, webm, ogg',
 					),
 					array(
@@ -151,7 +153,7 @@
 						'return_format' => 'url',
 						'library' => 'all',
 						'min_size' => '',
-						'max_size' => '',
+						'max_size' => '100',
 						'mime_types' => 'mp4, webm, ogg',
 					),
 					array(
@@ -204,8 +206,8 @@
 	));
 }); //END ACF 
 
-add_action('acf/input/admin_head', 'my_acf_admin_head5');
-function my_acf_admin_head5()
+add_action('acf/input/admin_head', 'avidd_acfadmin');
+function avidd_acfadmin()
 {
 
 ?>

@@ -709,10 +709,10 @@ function avidd_customizer_css(): void
 
 	// Hero overlay opacities
 	$front_opacity = get_theme_mod('hero_overlay_opacity', 40) / 100;
-	printf('.front-hero .hero__bg-overlay { opacity: %s; }' . "\n", esc_attr($front_opacity));
+	printf('.front-hero .hero__bg-overlay { opacity: %.2f; }' . "\n", (float) $front_opacity);
 
 	$inner_opacity = get_theme_mod('inner_hero_overlay_opacity', 40) / 100;
-	printf('.featured-hero .hero__bg-overlay { opacity: %s; }' . "\n", esc_attr($inner_opacity));
+	printf('.featured-hero .hero__bg-overlay { opacity: %.2f; }' . "\n", (float) $inner_opacity);
 
 	echo '</style>' . "\n";
 }

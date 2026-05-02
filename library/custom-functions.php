@@ -236,10 +236,12 @@ add_filter('acf/fields/google_map/api', 'avidd_acf_google_map_api');
 /**
  * Enable dark mode
  */
-$dark_mode = function_exists('avidd_get_setting') ? avidd_get_setting('dark_mode', false) : false;
-if ($dark_mode) {
-    $classes[] = 'dark-enabled';
-}
+add_filter('body_class', function (array $classes): array {
+    if (function_exists('avidd_get_setting') && avidd_get_setting('dark_mode', false)) {
+        $classes[] = 'dark-enabled';
+    }
+    return $classes;
+});
 /**
  * Enable excerpts on pages
  */
@@ -255,35 +257,35 @@ function avidd_remove_admin_menus()
 add_action('admin_menu', 'avidd_remove_admin_menus');
 
 
-function avidd_social_links_inline_shortcode($atts)
+function avidd_social_links_inline_shortcode(array $atts): string
 {
-    $atts = shortcode_atts([
-        'class' => '', // allow user to pass a class
-    ], $atts, 'social_links');
+    $atts = shortcode_atts(['class' => ''], $atts, 'social_links');
+    if (!function_exists('avidd_get_social_networks')) return '';
 
+    $social_icons = [
+        'facebook'  => 'fa-brands fa-facebook-f fa-fw',
+        'x'         => 'fa-brands fa-x-twitter fa-fw',
+        'instagram' => 'fa-brands fa-instagram fa-fw',
+        'linkedin'  => 'fa-brands fa-linkedin-in fa-fw',
+        'pinterest' => 'fa-brands fa-pinterest fa-fw',
+        'youtube'   => 'fa-brands fa-youtube fa-fw',
+        'tiktok'    => 'fa-brands fa-tiktok fa-fw',];
     $links = [];
 
-    $social_sites = [
-        'facebook' => 'fa-brands fa-facebook-f',
-        'twitter'  => 'fa-brands fa-x-twitter',
-        'instagram' => 'fa-brands fa-instagram',
-        'linkedin' => 'fa-brands fa-linkedin-in',
-        'pinterest' => 'fa-brands fa-pinterest',
-        'tiktok'   => 'fa-brands fa-tiktok',
-    ];
-
-    foreach ($social_sites as $key => $icon_class) {
-        if (get_theme_mod('social-' . $key)) {
-            $url = esc_url(get_theme_mod('social-' . $key . '-url', ''));
-            if (empty($url)) continue; // skip if no valid URL
-
-            $links[] = '<a href="' . $url . '" target="_blank" rel="noreferrer" aria-label="' . ucfirst($key) . '" class="social-inline ' . esc_attr($atts['class']) . '"><i class="' . $icon_class . '"></i></a>';
-        }
+    foreach (avidd_get_social_networks() as $row) {
+        $network = $row['network'] ?? '';
+        $url     = $row['url'] ?? '';
+        if (!$network || !$url || !isset($social_icons[$network])) continue;
+        $links[] = sprintf(
+            '<a href="%s" target="_blank" rel="noreferrer" aria-label="%s" class="social-inline %s"><i class="%s"></i></a>',
+            esc_url($url),
+            esc_attr(ucfirst($network)),
+            esc_attr($atts['class']),
+            esc_attr($social_icons[$network])
+        );
     }
-
     return implode(' ', $links);
 }
-add_shortcode('social_links', 'avidd_social_links_inline_shortcode');
 
 
 add_filter('nav_menu_link_attributes', function ($atts, $item, $args, $depth) {

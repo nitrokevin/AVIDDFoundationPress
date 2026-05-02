@@ -10,10 +10,18 @@
 			while (have_rows('repeater_content_accordion', 'option')) : the_row();
 				$header = get_sub_field('accordion_heading');
 				$content = get_sub_field('accordion_content');
+			$categories = get_sub_field('categories'); // returns array of term objects
+			$cat_classes = '';
+			if (!empty($categories)) {
+				$cat_classes = implode(' ', array_map(
+					fn($term) => 'category-' . esc_attr($term->slug),
+					$categories
+				));
+			}
 			
 		?>
 
-				<li data-filter="category-<?php echo esc_attr($category); ?>" class="accordion-item category-<?php echo esc_attr($category); ?> filter-simple-item" data-accordion-item>
+				<li data-filter="<?php echo esc_attr($cat_classes); ?>" class="accordion-item <?php echo esc_attr($cat_classes); ?> filter-simple-item" data-accordion-item>
 					<!-- Accordion tab title -->
 					<a href="#" class="accordion-title"><?php echo esc_html($header); ?></a>
 

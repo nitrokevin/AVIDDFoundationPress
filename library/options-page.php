@@ -111,7 +111,10 @@ function avidd_register_options_field_groups()
 
 
 {
-	if (!function_exists('acf_add_local_field_group') && (!is_admin()) && (wp_is_json_request())) return;
+	// Bail if ACF not present
+	if (!function_exists('acf_add_local_field_group')) return;
+	// Only register in contexts that need it
+	if (!is_admin() && !wp_is_json_request()) return;
 
 	// ----------------------------------------
 	// HEADER & BRANDING
