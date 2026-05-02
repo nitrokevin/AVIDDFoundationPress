@@ -64,7 +64,8 @@ const colors = match[1]
       name: slug.charAt(0).toUpperCase() + slug.slice(1),
       color,
     };
-  });
+  })
+  .filter((c) => c.color.toLowerCase() !== "transparent");
 
 // Exclude unwanted colors from palette and gradients
 const excludedSlugs = new Set(["success", "warning", "alert"]);
