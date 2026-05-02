@@ -108,7 +108,10 @@ acf_add_options_page([
 add_action('acf/init', 'avidd_register_options_field_groups');
 
 function avidd_register_options_field_groups()
+
+
 {
+	if (!function_exists('acf_add_local_field_group') && (!is_admin()) && (wp_is_json_request())) return;
 
 	// ----------------------------------------
 	// HEADER & BRANDING
@@ -925,7 +928,7 @@ function avidd_register_options_field_groups()
 							'key' => 'field_people_email',
 							'label' => 'Email',
 							'name' => 'email',
-							'type' => 'text',
+							'type' => 'email',
 							'required' => 0,
 							'conditional_logic' => 0,
 							'wrapper' => array(
@@ -1028,7 +1031,7 @@ if (! function_exists('avidd_get_copyright')) {
 	function avidd_get_copyright(): string
 	{
 		$text = avidd_get_setting('footer_copyright', '');
-		return str_replace('{year}', date('Y'), $text);
+		return esc_html(str_replace('{year}', date('Y'), $text));
 	}
 }
 

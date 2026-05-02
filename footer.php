@@ -21,15 +21,7 @@ $contact_address_6 = function_exists('avidd_get_setting') ? avidd_get_setting('c
 
 $site_name = get_bloginfo('name', 'display');
 
-// Only show social icons if at least one is enabled
-$has_social = false;
-$social_networks = ['facebook', 'x', 'instagram', 'linkedin', 'pinterest', 'youtube', 'tiktok'];
-foreach ($social_networks as $network) {
-    if (get_theme_mod("social-{$network}", '') === '1') {
-        $has_social = true;
-        break;
-    }
-}
+
 
 ?>
 
@@ -95,38 +87,40 @@ foreach ($social_networks as $network) {
             <section>
                 <?php
 
-                if ($has_social) :
-                    $social_icons = [
-                        'facebook'  => 'fa-brands fa-facebook-f fa-fw',
-                        'x'         => 'fa-brands fa-x-twitter fa-fw',
-                        'instagram' => 'fa-brands fa-instagram fa-fw',
-                        'linkedin'  => 'fa-brands fa-linkedin-in fa-fw',
-                        'pinterest' => 'fa-brands fa-pinterest fa-fw',
-                        'youtube'   => 'fa-brands fa-youtube fa-fw',
-                        'tiktok'    => 'fa-brands fa-tiktok fa-fw',
-                    ];
+                $social_networks = function_exists('avidd_get_social_networks') ? avidd_get_social_networks() : [];
+                $has_social      = ! empty($social_networks);
+
+                $social_icons = [
+                    'facebook'  => 'fa-brands fa-facebook-f fa-fw',
+                    'x'         => 'fa-brands fa-x-twitter fa-fw',
+                    'instagram' => 'fa-brands fa-instagram fa-fw',
+                    'linkedin'  => 'fa-brands fa-linkedin-in fa-fw',
+                    'pinterest' => 'fa-brands fa-pinterest fa-fw',
+                    'youtube'   => 'fa-brands fa-youtube fa-fw',
+                    'tiktok'    => 'fa-brands fa-tiktok fa-fw',
+                ];
                 ?>
-                    <ul class="social-links menu  footer-menu align-left">
-                      
-                        <?php
-                        $social_networks = function_exists('avidd_get_social_networks') ? avidd_get_social_networks() : [];
-                        if (!empty($social_networks)) :
-                            foreach ($social_networks as $row) :
-                                $network = $row['network'] ?? '';
-                                $url = $row['url'] ?? '';
-                                if (!$network || !$url || !isset($social_icons[$network])) continue;
-                                $icon_class = $social_icons[$network];
+
+                <?php if ($has_social) : ?>
+                    <ul class="social-links menu footer-menu align-left">
+                        <?php foreach ($social_networks as $row) :
+                            $network = $row['network'] ?? '';
+                            $url     = $row['url'] ?? '';
+                            if (! $network || ! $url || ! isset($social_icons[$network])) {
+                                continue;
+                            }
                         ?>
-                                <li>
-                                    <a href="<?php echo esc_url($url); ?>" rel="noreferrer" target="_blank" aria-label="<?php echo ucfirst($network); ?>">
-                                        <i class="<?php echo esc_attr($icon_class); ?>"></i>
-                                    </a>
-                                </li>
-                        <?php
-                            endforeach;
-                        endif;
-                        ?>
-                    <?php endif; ?>
+                            <li>
+                                <a href="<?php echo esc_url($url); ?>"
+                                    rel="noreferrer noopener"
+                                    target="_blank"
+                                    aria-label="<?php echo esc_attr(ucfirst($network)); ?>">
+                                    <i class="<?php echo esc_attr($social_icons[$network]); ?>"></i>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
             </section>
             <section>
                 <?php foundationpress_footer_nav_r(); ?>

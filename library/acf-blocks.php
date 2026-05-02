@@ -69,9 +69,8 @@ add_action('acf/init', 'avidd_register_field_groups');
  */
 function avidd_register_field_groups()
 {
-	if (! function_exists('acf_add_local_field_group')) {
-		return;
-	}
+	if (!function_exists('acf_add_local_field_group') && (!is_admin()) && (wp_is_json_request())) return;
+
 
 	avidd_field_group_accordion();
 	avidd_field_group_tab();
@@ -403,7 +402,7 @@ function avidd_field_group_carousel()
 						'max_width'         => '',
 						'max_height'        => '',
 						'max_size'          => '',
-						'mime_types'        => '',
+						'mime_types' => 'jpg, webp, avif',
 					),
 					array(
 						'key'               => 'field_background_image',

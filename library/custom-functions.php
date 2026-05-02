@@ -90,7 +90,7 @@ add_action('init', function () {
 function set_unique_acf_block_anchor($attributes)
 {
     if (empty($attributes['anchor'])) {
-        $attributes['anchor'] = 'acf-block-' . uniqid();
+        $attributes['anchor'] = 'acf-block-' . substr(md5(serialize($attributes)), 0, 8);
     }
     return $attributes;
 }
@@ -177,12 +177,12 @@ function customise_tinymce($init)
 /**
  * Add 'styleselect' dropdown to TinyMCE toolbar
  */
-function my_mce_buttons_2($buttons)
+function avidd_mce_buttons_2($buttons)
 {
     array_unshift($buttons, 'styleselect');
     return $buttons;
 }
-add_filter('mce_buttons_2', 'my_mce_buttons_2');
+add_filter('mce_buttons_2', 'avidd_mce_buttons_2');
 
 // ------------------------------------------------------------
 // EMBED AND VIDEO RESPONSIVENESS
@@ -215,27 +215,20 @@ function modify_oembed_youtube($html, $url, $attr, $post_id)
 add_filter('embed_oembed_html', 'modify_oembed_youtube', 10, 4);
 
 // ------------------------------------------------------------
-// ACF FIXES & GOOGLE MAP KEY
+// GOOGLE MAP KEY
 // ------------------------------------------------------------
 
-/**
- * Fix issue with ACF fields missing in preview
- */
-if (class_exists('acf_revisions')) {
-    $acf_revs_cls = acf()->revisions;
-    remove_filter('acf/validate_post_id', [$acf_revs_cls, 'acf_validate_post_id'], 10);
-}
 
 /**
  * Set ACF Google Maps API key
  * Replace with an environment variable or ACF options field for safety
  */
-function my_acf_google_map_api($api)
+function avidd_acf_google_map_api($api)
 {
     $api['key'] = getenv('GOOGLE_MAPS_API_KEY'); // Use env var or ACF option
     return $api;
 }
-add_filter('acf/fields/google_map/api', 'my_acf_google_map_api');
+add_filter('acf/fields/google_map/api', 'avidd_acf_google_map_api');
 
 // ------------------------------------------------------------
 // MISC
@@ -243,15 +236,10 @@ add_filter('acf/fields/google_map/api', 'my_acf_google_map_api');
 /**
  * Enable dark mode
  */
-add_filter('body_class', function ($classes) {
-    $dark_mode = get_theme_mod('dark_mode', 'off');
-
-    if ($dark_mode === '1' || $dark_mode === 1 || $dark_mode === true) {
-        $classes[] = 'dark-enabled';
-    }
-
-    return $classes;
-});
+$dark_mode = function_exists('avidd_get_setting') ? avidd_get_setting('dark_mode', false) : false;
+if ($dark_mode) {
+    $classes[] = 'dark-enabled';
+}
 /**
  * Enable excerpts on pages
  */
@@ -260,11 +248,11 @@ add_post_type_support('page', 'excerpt');
 /**
  * Remove Comments from Admin Menu
  */
-function my_remove_admin_menus()
+function avidd_remove_admin_menus()
 {
     remove_menu_page('edit-comments.php');
 }
-add_action('admin_menu', 'my_remove_admin_menus');
+add_action('admin_menu', 'avidd_remove_admin_menus');
 
 
 function avidd_social_links_inline_shortcode($atts)
@@ -325,4 +313,3 @@ add_filter('nav_menu_link_attributes', function ($atts, $item, $args, $depth) {
 
     return $atts;
 }, 10, 4);
-

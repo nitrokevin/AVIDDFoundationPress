@@ -36,7 +36,6 @@ if (! function_exists('foundationpress_cleanup_head')) :
             'index_rel_link',
             'parent_post_rel_link',
             'start_post_rel_link',
-            'rel_canonical',
             'wp_shortlink_wp_head',
             'adjacent_posts_rel_link_wp_head',
             'wp_generator',

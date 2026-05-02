@@ -4,67 +4,57 @@
    COLUMN: BACKGROUND IMAGE
 ========================= */
 
-function cbg_render_column($block_content, $block)
-{
-    if ($block['blockName'] !== 'core/column') {
+
+function avidd_render_column_background( string $block_content, array $block ): string {
+    if ( $block['blockName'] !== 'core/column' ) {
         return $block_content;
     }
 
-    $attrs = $block['attrs'] ?? [];
-
-    if (empty($attrs['backgroundImage'])) {
+    $bg_url = $block['attrs']['backgroundImage'] ?? '';
+    if ( ! $bg_url ) {
         return $block_content;
     }
 
-    $style = 'background-image:url(' . esc_url($attrs['backgroundImage']) . ');';
+    $processor = new WP_HTML_Tag_Processor( $block_content );
 
-    $block_content = preg_replace(
-        '/(<div[^>]*class="[^"]*wp-block-column[^"]*"[^>]*)(>)/i',
-        '$1 style="' . esc_attr($style) . '"$2',
-        $block_content,
-        1
-    );
+    if ( $processor->next_tag( [ 'tag_name' => 'div', 'class_name' => 'wp-block-column' ] ) ) {
+        $existing_style = $processor->get_attribute( 'style' ) ?? '';
+        $bg_style       = 'background-image:url(' . esc_url( $bg_url ) . ');';
+        $processor->set_attribute( 'style', trim( $existing_style . ' ' . $bg_style ) );
+    }
 
-    return $block_content;
+    return $processor->get_updated_html();
 }
-add_filter('render_block', 'cbg_render_column', 10, 2);
+add_filter( 'render_block', 'avidd_render_column_background', 10, 2 );
 
 
-/* =========================
-   COLUMNS: DATA ATTRIBUTES
-========================= */
-
-function cbg_render_columns($block_content, $block)
-{
-    if ($block['blockName'] !== 'core/columns') {
+/**
+ * Inject responsive-stack data attributes on core/columns blocks.
+ */
+function avidd_render_columns_data_attrs( string $block_content, array $block ): string {
+    if ( $block['blockName'] !== 'core/columns' ) {
         return $block_content;
     }
 
-    $attrs = $block['attrs'] ?? [];
+    $attrs      = $block['attrs'] ?? [];
+    $data_attrs = [];
 
-    $data = '';
+    if ( ! empty( $attrs['stackSmallTwo'] ) )  $data_attrs['data-sm-2']  = 'true';
+    if ( ! empty( $attrs['stackMediumTwo'] ) ) $data_attrs['data-md-2']  = 'true';
+    if ( ! empty( $attrs['stackMediumOne'] ) ) $data_attrs['data-md-1']  = 'true';
 
-    if (!empty($attrs['stackSmallTwo'])) {
-        $data .= ' data-sm-2="true"';
+    if ( empty( $data_attrs ) ) {
+        return $block_content;
     }
 
-    if (!empty($attrs['stackMediumTwo'])) {
-        $data .= ' data-md-2="true"';
+    $processor = new WP_HTML_Tag_Processor( $block_content );
+
+    if ( $processor->next_tag( [ 'tag_name' => 'div', 'class_name' => 'wp-block-columns' ] ) ) {
+        foreach ( $data_attrs as $attr => $value ) {
+            $processor->set_attribute( $attr, $value );
+        }
     }
 
-    if (!empty($attrs['stackMediumOne'])) {
-        $data .= ' data-md-1="true"';
-    }
-
-    if ($data) {
-        $block_content = preg_replace(
-            '/(<div[^>]*class="[^"]*wp-block-columns[^"]*"[^>]*?)>/i',
-            '$1' . $data . '>',
-            $block_content,
-            1
-        );
-    }
-
-    return $block_content;
+    return $processor->get_updated_html();
 }
-add_filter('render_block', 'cbg_render_columns', 10, 2);
+add_filter( 'render_block', 'avidd_render_columns_data_attrs', 10, 2 );

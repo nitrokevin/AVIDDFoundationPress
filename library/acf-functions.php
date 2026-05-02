@@ -1,10 +1,11 @@
 <?php add_action('acf/init', function () {
-	if (!function_exists('acf_add_local_field_group')) return;
+	
+	if (!function_exists('acf_add_local_field_group') && (!is_admin()) && (wp_is_json_request())) return;
 
 
 	//Page Options
 	acf_add_local_field_group(array(
-		'key' => 'group_5c756aae12c9d',
+		'key' => 'group_page_options',
 		'title' => 'Page Options',
 		'fields' => array(
 
@@ -30,7 +31,7 @@
 
 
 			array(
-				'key' => 'field_62540c6661c0f',
+				'key' => 'field_page_options_repeater_featured_slider',
 				'label' => 'Featured Slider',
 				'name' => 'repeater_featured_slider',
 				'type' => 'repeater',
@@ -126,7 +127,7 @@
 						'library' => 'all',
 						'min_size' => '',
 						'max_size' => '',
-						'mime_types' => '',
+						'mime_types' => 'mp4, webm, ogg',
 					),
 					array(
 						'key' => 'field_slider_video_full',
@@ -151,7 +152,7 @@
 						'library' => 'all',
 						'min_size' => '',
 						'max_size' => '',
-						'mime_types' => '',
+						'mime_types' => 'mp4, webm, ogg',
 					),
 					array(
 						'key' => 'field_slider_content',
