@@ -28,10 +28,8 @@ get_header(); ?>
 						<li>
 							<?php
 							/* translators: %s: home page url */
-							printf(
-								__('Return to the <a href="%s">home page</a>', 'foundationpress'),
-								home_url()
-							);
+							// ✅
+							printf(esc_html__('Return to the <a href="%s">home page</a>', 'foundationpress'), esc_url(home_url()));
 							?>
 						</li>
 						<li>

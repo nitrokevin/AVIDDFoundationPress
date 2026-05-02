@@ -10,10 +10,11 @@
  */
 $site_name     = get_bloginfo('name', 'display');
 $home_url      = (home_url('/'));
-$header_logo   = (get_theme_mod('header_logo'));
-$sticky_header = get_theme_mod('sticky_header', true);
-$fixed_header  = get_theme_mod('fixed_header', true);
-$contained     = get_theme_mod('contained_header', true);
+$header_logo_field = avidd_get_setting('header_logo');
+$header_logo       = $header_logo_field['url'] ?? '';
+$sticky_header = avidd_get_setting('sticky_header', true);
+$fixed_header  = avidd_get_setting('fixed_header', true);
+$contained     = avidd_get_setting('contained_header', true);
 
 ?>
 <!doctype html>

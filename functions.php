@@ -57,6 +57,7 @@ require_once('library/colors.php');
 
 /** Custom functions */
 require_once('library/custom-functions.php');
+require_once('library/branded-email-notifications.php');
 /** Custom column functions */
 require_once('library/custom-columns-functions.php');
 
@@ -65,12 +66,16 @@ require_once('library/customizer-native.php');
 
 /** ACF functions */
 require_once('library/acf-functions.php');
-require_once('library/acf-option-pages.php');
+
 /** ACF blocks */
 require_once('library/acf-blocks.php');
 
 /** CPT */
 require_once('library/post-types.php');
+
+
+/** Options Page */
+require_once('library/options-page.php');
 
 /** If your site requires protocol relative url's for theme assets, uncomment the line below */
 // require_once( 'library/class-foundationpress-protocol-relative-theme-assets.php' );

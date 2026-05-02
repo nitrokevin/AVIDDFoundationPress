@@ -8,17 +8,17 @@
  * @package FoundationPress
  * @since FoundationPress 1.0.0
  */
-$contact_phone = get_theme_mod('contact_phone_number');
-$contact_email = get_theme_mod('contact_email');
-$footer_company_number = get_theme_mod('footer_company_number');
-$footer_copyright = get_theme_mod('footer_copyright');
-$contact_address_1 = get_theme_mod('contact_address_1');
-$contact_address_2 = get_theme_mod('contact_address_2');
-$contact_address_3 = get_theme_mod('contact_address_3');
-$contact_address_4 = get_theme_mod('contact_address_4');
-$contact_address_5 = get_theme_mod('contact_address_5');
-$contact_address_6 = get_theme_mod('contact_address_6');
-$footer_background_image = get_theme_mod('footer_background_image');
+$contact_phone = function_exists('avidd_get_setting') ? avidd_get_setting('contact_phone_number') : '';
+$contact_email = function_exists('avidd_get_setting') ? avidd_get_setting('contact_email') : '';
+$footer_company_number = function_exists('avidd_get_setting') ? avidd_get_setting('footer_company_number') : '';
+$footer_copyright = function_exists('avidd_get_setting') ? avidd_get_setting('footer_copyright') : '';
+$contact_address_1 = function_exists('avidd_get_setting') ? avidd_get_setting('contact_address_1') : '';
+$contact_address_2 = function_exists('avidd_get_setting') ? avidd_get_setting('contact_address_2') : '';
+$contact_address_3 = function_exists('avidd_get_setting') ? avidd_get_setting('contact_address_3') : '';
+$contact_address_4 = function_exists('avidd_get_setting') ? avidd_get_setting('contact_address_4') : '';
+$contact_address_5 = function_exists('avidd_get_setting') ? avidd_get_setting('contact_address_5') : '';
+$contact_address_6 = function_exists('avidd_get_setting') ? avidd_get_setting('contact_address_6') : '';
+
 $site_name = get_bloginfo('name', 'display');
 
 // Only show social icons if at least one is enabled
@@ -31,18 +31,9 @@ foreach ($social_networks as $network) {
     }
 }
 
-$sizes = [];
-if ($footer_background_image) {
-    $sizes = [
-        'small'  => wp_get_attachment_image_url($footer_background_image, 'fp-small'),
-        'medium' => wp_get_attachment_image_url($footer_background_image, 'fp-medium'),
-        'large' => wp_get_attachment_image_url($footer_background_image, 'fp-large'),
-        'xlarge' => wp_get_attachment_image_url($footer_background_image, 'fp-xlarge'),
-    ];
-}
 ?>
 
-<footer class="footer" <?php if ($footer_background_image) { ?> data-interchange="[<?php echo esc_url($sizes['small']); ?>, small], [<?php echo esc_url($sizes['medium']); ?>, medium], [<?php echo esc_url($sizes['large']); ?>, large], [<?php echo esc_url($sizes['xlarge']); ?>, xlarge]" data-type="background" <?php } ?>>
+<footer class="footer">
     <div class="footer-container">
         <div class="footer-grid">
             <?php dynamic_sidebar('footer-widgets'); ?>
@@ -83,7 +74,7 @@ if ($footer_background_image) {
 
 
                 <?php
-                $opening_times = avidd_get_repeater_data('opening_times');
+                $opening_times = get_field('opening_times', 'option');
 
                 if (!empty($opening_times)) {
                     foreach ($opening_times as $time) {
@@ -92,6 +83,7 @@ if ($footer_background_image) {
                             if (!empty($time['opening_time'])) echo esc_html($time['opening_time']);
                             if (!empty($time['opening_time']) && !empty($time['closing_time'])) echo ' - ';
                             if (!empty($time['closing_time'])) echo esc_html($time['closing_time']);
+                            if (!empty($time['note'])) echo ' <em>(' . esc_html($time['note']) . ')</em>';
                             echo '<br>';
                         }
                     }
@@ -114,39 +106,40 @@ if ($footer_background_image) {
                         'tiktok'    => 'fa-brands fa-tiktok fa-fw',
                     ];
                 ?>
-                    <ul class="social-links menu footer-menu align-center">
-                        <?php foreach ($social_icons as $network => $icon_class) : ?>
-                            <?php
-                            // Check if this social network is enabled (checkbox is checked)
-                            $is_enabled = get_theme_mod("social-{$network}", '') === '1';
-                            $url = get_theme_mod("social-{$network}-url", '');
-
-                            if ($is_enabled && !empty($url)) :
-                            ?>
+                    <ul class="social-links menu  footer-menu align-left">
+                      
+                        <?php
+                        $social_networks = function_exists('avidd_get_social_networks') ? avidd_get_social_networks() : [];
+                        if (!empty($social_networks)) :
+                            foreach ($social_networks as $row) :
+                                $network = $row['network'] ?? '';
+                                $url = $row['url'] ?? '';
+                                if (!$network || !$url || !isset($social_icons[$network])) continue;
+                                $icon_class = $social_icons[$network];
+                        ?>
                                 <li>
-                                    <a href="<?php echo esc_url($url); ?>"
-                                        rel="noreferrer noopener"
-                                        target="_blank"
-                                        aria-label="<?php echo ucfirst($network); ?>">
+                                    <a href="<?php echo esc_url($url); ?>" rel="noreferrer" target="_blank" aria-label="<?php echo ucfirst($network); ?>">
                                         <i class="<?php echo esc_attr($icon_class); ?>"></i>
                                     </a>
                                 </li>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php endif; ?>
+                        <?php
+                            endforeach;
+                        endif;
+                        ?>
+                    <?php endif; ?>
             </section>
             <section>
                 <?php foundationpress_footer_nav_r(); ?>
+
                 <?php
-                $footer_links = avidd_get_repeater_data('footer_links');
+                $footer_links = get_field('footer_links', 'option');
 
                 if (!empty($footer_links)) { ?>
                     <div class="footer-links">
                         <?php foreach ($footer_links as $footer_link) : ?>
                             <?php if (!empty($footer_link['footer_image'])) : ?>
                                 <a href="<?php echo esc_url($footer_link['link_url']); ?>">
-                                    <?php echo wp_get_attachment_image($footer_link['footer_image'], 'thumbnail', false, ["class" => "footer-icon"]); ?>
+                                    <?php echo wp_get_attachment_image($footer_link['footer_image'], 'fp-small', false, ["class" => "footer-icon"]); ?>
                                 </a>
                             <?php endif; ?>
                         <?php endforeach; ?>

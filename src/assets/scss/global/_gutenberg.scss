@@ -107,9 +107,10 @@ $locked-gradient-link-colors: (
   left: 0;
   margin-left: calc(50% - 50vw);
 
-  @include breakpoint(large) {
-    margin-left: calc(100% - 50vw);
-    width: 50vw;
+  @include breakpoint(medium) {
+    
+    left: calc(50% - 50vw);
+    width: 100vw;
   }
 }
 
@@ -127,13 +128,18 @@ $locked-gradient-link-colors: (
 
 @mixin bleed-right-column {
   @include bleed-pseudo-base;
-  right: 0;
-  margin-right: calc(50% - 50vw);
 
-  @include breakpoint(large) {
-    margin-right: calc(100% - 50vw);
-    margin-left: unset;
-    width: 50vw;
+width: 100vw;
+left: 0;
+margin-left: calc(50% - 50vw);
+
+
+
+  @include breakpoint(medium) {
+margin-right: unset;
+margin-left:unset;
+right: calc(100% - 50vw);
+width: 50vw;
   }
 }
 
@@ -465,22 +471,60 @@ $locked-gradient-link-colors: (
     padding-inline: var(--wp--custom--foundation-gutter-desktop);
   }
 }
+// =============================================================================
+// COLUMNS - RESPONSIVE SYSTEM
+// =============================================================================
 
-// =============================================================================
-// COLUMNS
-// =============================================================================
-@include breakpoint(medium) {
+@media (min-width: 640px) {
   .wp-block-columns {
-    flex-wrap: nowrap;
-  } // remove !important if possible
-}
-@include breakpoint(small only) {
-  .wp-block-columns {
-    flex-wrap: wrap;
+    flex-wrap: nowrap !important;
   }
 }
 
+@media (max-width: 639px) {
+  .wp-block-columns {
+    flex-wrap: wrap !important;
+  }
+}
 .wp-block-columns {
+  // Default wrapping behavior
+  @include breakpoint(small only) {
+    flex-wrap: wrap;
+    
+    // Override WordPress default wrap when custom responsive widths are set
+    &[data-has-responsive="true"] {
+      flex-wrap: nowrap !important;
+      
+      // Re-enable wrapping if explicitly requested
+      &[data-allow-wrap="true"] {
+        flex-wrap: wrap !important;
+      }
+    }
+  }
+  
+  @include breakpoint(medium only) {
+    flex-wrap: wrap;
+    
+    // Override WordPress default wrap when custom responsive widths are set
+    &[data-has-responsive="true"] {
+      flex-wrap: nowrap !important;
+      
+      // Re-enable wrapping if explicitly requested
+      &[data-allow-wrap="true"] {
+        flex-wrap: wrap !important;
+      }
+    }
+  }
+  
+  @include breakpoint(large) {
+    flex-wrap: nowrap;
+    
+    // Allow wrapping when explicitly enabled via attribute
+    &[data-allow-wrap="true"] {
+      flex-wrap: wrap !important;
+    }
+  }
+
   &.alignfull {
     @include alignfull-bleed;
 
@@ -504,6 +548,51 @@ $locked-gradient-link-colors: (
   }
 }
 
+// Responsive column widths and offsets
+.wp-block-column {
+  background-size: cover;
+  background-position: center;
+}
+
+/* =========================
+   SMALL (mobile)
+========================= */
+
+@media (max-width: 639px) {
+
+  /* Default = 1 column */
+  .wp-block-columns {
+    display: block;
+  }
+
+  /* 2-column grid */
+  .wp-block-columns[data-sm-2="true"] {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--wp--style--block-gap, 1rem);
+  }
+}
+
+/* =========================
+   MEDIUM (tablet)
+========================= */
+
+@media (min-width: 640px) and (max-width: 1023px) {
+
+  /* Force 1 column */
+  .wp-block-columns[data-md-1="true"] {
+    display: block;
+  }
+
+  /* 2-column grid */
+  .wp-block-columns[data-md-2="true"] {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--wp--style--block-gap, 1rem);
+  }
+}
+
+// Full bleed columns style (existing functionality preserved)
 .wp-block-columns.is-style-full-bleed {
   position: relative;
   gap: 0;
