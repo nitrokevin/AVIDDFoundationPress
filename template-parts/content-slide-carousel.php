@@ -15,17 +15,34 @@
                 // Build slide classes
                 $slide_classes = trim($bg_color . ($has_bg ? ' has_background_image' : ''));
 
-                // Prepare image sizes if needed
-                if ($image) {
-                    $small = $image['sizes']['featured-small'];
-                    $medium = $image['sizes']['featured-medium'];
-                    $large = $image['sizes']['featured-large'];
-                    $xlarge = $image['sizes']['featured-xlarge'];
-                }
             ?>
                 <div class="swiper-slide <?php echo esc_attr($slide_classes); ?>">
                     <?php if ($has_bg && $image): ?>
-                        <div class="swiper-slide-background" data-interchange="[<?php echo esc_url($small); ?>, small], [<?php echo esc_url($medium); ?>, medium], [<?php echo esc_url($large); ?>, large], [<?php echo esc_url($xlarge); ?>, xlarge]" data-type="background"></div>
+                        <picture class="swiper-slide-background">
+                            <source
+                                media="(min-width: 1440px)"
+                                srcset="<?php echo esc_url($image['sizes']['featured-xxlarge']); ?>">
+
+                            <source
+                                media="(min-width: 1200px)"
+                                srcset="<?php echo esc_url($image['sizes']['featured-xlarge']); ?>">
+
+                            <source
+                                media="(min-width: 1024px)"
+                                srcset="<?php echo esc_url($image['sizes']['featured-large']); ?>">
+
+                            <source
+                                media="(min-width: 640px)"
+                                srcset="<?php echo esc_url($image['sizes']['featured-mediuum']); ?>">
+
+                            <!-- Fallback -->
+                            <img
+                                src="<?php echo esc_url($image['sizes']['featured-small']); ?>"
+                                alt="<?php echo $alt; ?>"
+                                class="swiper-slide-bg-img"
+                                loading="eager"
+                                decoding="async">
+                        </picture>
                     <?php endif; ?>
                     <div class="info" data-swiper-parallax="-600">
                         <h3><?php echo esc_html($heading); ?></h3>

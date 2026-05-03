@@ -48,8 +48,8 @@ if (!empty($block['textColor'])) {
 $className .= ' ' . implode(' ', $classes);
 
 ?>
-<section id="<?php echo esc_attr($id); ?>" class="<?php echo esc_attr($className); ?>">
-    <div class="block-accordion-container ">
+<section id="<?php echo esc_attr($id); ?>" class="<?php echo esc_attr($className); ?>" <?php if ($style) : ?>style="<?php echo esc_attr($style); ?>" <?php endif; ?>>
+    <div class="block-accordion-container">
         <div class="block-accordion-grid">
             <div class="block-accordion-content ">
                 <?php get_template_part('template-parts/content', 'accordion'); ?>

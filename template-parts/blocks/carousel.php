@@ -52,8 +52,8 @@ $carousel_type = get_field('carousel_type');
 
 
 ?>
-<section id="<?php echo esc_attr($id); ?>" class="wp-block <?php echo esc_attr($className); ?> <?php echo esc_attr($carousel_type); ?>">
-    <div class="block-carousel-container ">
+<section id="<?php echo esc_attr($id); ?>" class="wp-block <?php echo esc_attr($className); ?> <?php echo esc_attr($carousel_type); ?>" <?php if ($style) : ?>style="<?php echo esc_attr($style); ?>" <?php endif; ?>>
+    <div class="block-carousel-container">
         <div class="block-carousel-grid">
             <div class="block-carousel-content">
 

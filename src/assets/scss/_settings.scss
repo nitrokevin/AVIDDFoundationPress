@@ -69,7 +69,7 @@
 
 
 $global-font-size: 100%;
-$global-width: rem-calc(1260);
+$global-width: rem-calc(1410);
 $global-lineheight: 1.5;
 $foundation-palette: (
   primary: #1779ba,
@@ -178,21 +178,26 @@ $block-grid-max: 8;
 }
 :root {
   /* Body / UI */
-  --font-p: #{fluid(16px, 18px)};
+   /* Type scale — size-agnostic */
+  --text-xs:   #{fluid(13px, 15px)};
+  --text-sm:   #{fluid(14px, 16px)};
+  --text-base: #{fluid(16px, 18px)};
+  --text-md:   #{fluid(18px, 26px)};
+  --text-lg:   #{fluid(20px, 32px)};
+  --text-xl:   #{fluid(24px, 40px)};
+  --text-2xl:  #{fluid(28px, 48px)};
 
-  /* Headings */
-  --font-h1: #{fluid(28px, 48px)};
-  --font-h2: #{fluid(24px, 40px)};
-  --font-h3: #{fluid(20px, 32px)};
-  --font-h4: #{fluid(18px, 26px)};
-  --font-h5: #{fluid(16px, 22px)};
-  --font-h6: rem-calc(16px);
+  /* Component tokens — reference the scale */
+  --font-button:     var(--text-sm);
+  --font-navigation: var(--text-sm);
+  --font-accordion:  var(--text-base);
+  --font-tabs:       var(--text-base);
 
-  /* Components */
-  --font-button: #{fluid(16px, 20px)};
-  --font-accordion: #{fluid(16px, 20px)};
-  --font-tabs: #{fluid(16px, 20px)};
-  --font-navigation: #{fluid(16px, 20px)};
+  /*Gutenberg font sizes */
+--wp--preset--font-size--small: var(--text-sm);
+--wp--preset--font-size--medium: var(--text-md);
+--wp--preset--font-size--large: var(--text-lg);
+--wp--preset--font-size--x-large: var(--text-xl);
 }
 
 $header-font-family: $body-font-family;
@@ -247,9 +252,9 @@ $subheader-color: $black;
 $subheader-font-weight: $global-weight-bold;
 $subheader-margin-top: 0.5rem;
 $subheader-margin-bottom: 0.5rem;
-$stat-font-size: 2.5rem;
+$stat-font-size: var(--text-xl);
 $cite-color: $dark-gray;
-$cite-font-size: rem-calc(13);
+$cite-font-size: var(--text-sm);
 $cite-pseudo-content: '\2014 \0020';
 $code-color: $black;
 $code-font-family: $font-family-monospace;
@@ -268,7 +273,7 @@ $abide-labels: true;
 $input-background-invalid: get-color(alert);
 $form-label-color-invalid: get-color(alert);
 $input-error-color: get-color(alert);
-$input-error-font-size: rem-calc(12);
+$input-error-font-size: var(--text-xs);
 $input-error-font-weight: $global-weight-bold;
 
 // 7. Accordion
@@ -278,7 +283,7 @@ $accordion-background: $white;
 $accordion-plusminus: true;
 $accordion-plus-content: '\002B';
 $accordion-minus-content: '\2013';
-$accordion-title-font-size: rem-calc(16);
+$accordion-title-font-size: var(--font-accordion);
 $accordion-item-color: $primary-color;
 $accordion-item-background-hover: $light-gray;
 $accordion-item-padding: 1.25rem 1rem;
@@ -594,7 +599,7 @@ $orbit-control-zindex: 10;
 // 27. Pagination
 // --------------
 
-$pagination-font-size: rem-calc(14);
+$pagination-font-size: var(--text-sm);
 $pagination-margin-bottom: $global-margin;
 $pagination-item-color: $black;
 $pagination-item-padding: rem-calc(3 10);
@@ -864,7 +869,7 @@ $tab-background: $white;
 $tab-color: $primary-color;
 $tab-background-active: $light-gray;
 $tab-active-color: $primary-color;
-$tab-item-font-size: rem-calc(12);
+$tab-item-font-size: var(--font-accordion);
 $tab-item-background-hover: $white;
 $tab-item-padding: 1.25rem 1.5rem;
 $tab-content-background: $white;

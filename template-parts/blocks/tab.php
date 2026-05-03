@@ -48,7 +48,7 @@ if (!empty($block['textColor'])) {
 
 $className .= ' ' . implode(' ', $classes);
 ?>
-<section id="<?php echo esc_attr($id); ?>" class="wp-block <?php echo esc_attr(trim($className)); ?>">
+<section id="<?php echo esc_attr($id); ?>" class="wp-block <?php echo esc_attr(trim($className)); ?>" <?php if ($style) : ?>style="<?php echo esc_attr($style); ?>" <?php endif; ?>>
     <div class="block-tab-container">
         <div class="block-tab-grid">
             <div class="block-tab-content">

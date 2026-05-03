@@ -42,7 +42,7 @@
 
 			while (have_rows('repeater_content_accordion')) {
 				the_row();
-				$content_type = get_sub_field('content_type');
+				
 				$accordion_heading = get_sub_field('accordion_heading');
 				$accordion_content = get_sub_field('accordion_content');
 				$accordion_heading_background_color = get_sub_field('accordion_heading_background_color');

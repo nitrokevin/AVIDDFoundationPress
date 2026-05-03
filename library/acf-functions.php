@@ -1,10 +1,7 @@
 <?php add_action('acf/init', function () {
 	// Bail if ACF not present
 	if (!function_exists('acf_add_local_field_group')) return;
-	// Only register in contexts that need it
-	if (!is_admin() && !wp_is_json_request()) return;
-
-
+	
 	//Page Options
 	acf_add_local_field_group(array(
 		'key' => 'group_page_options',
@@ -211,7 +208,7 @@ function avidd_acfadmin()
 {
 
 ?>
-	<style type="text/css">
+	<style>
 		.acf-editor-wrap iframe {
 			min-height: 100px;
 			height: 150px !important;

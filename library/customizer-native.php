@@ -269,7 +269,7 @@ if (class_exists('WP_Customize_Control')) {
 							value="<?php echo esc_attr($slug_or_hex); ?>"
 							data-setting-id="<?php echo esc_attr($this->id); ?>"
 							<?php checked($this->value(), $slug_or_hex); ?> />
-						<span class="color-swatch" style="<?php echo $bg_style; ?>"></span>
+						<span class="color-swatch" style="<?php echo esc_attr($bg_style); ?>"></span>
 					</label>
 				<?php endforeach; ?>
 

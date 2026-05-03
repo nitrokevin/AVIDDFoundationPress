@@ -23,10 +23,7 @@ window.addEventListener("load", function () {
           nextEl: container.querySelector(".swiper-button-next"),
           prevEl: container.querySelector(".swiper-button-prev"),
         },
-        autoplay: {
-          delay: 4400,
-          disableOnInteraction: false,
-        },
+      
         speed: 800,
       });
 

@@ -201,18 +201,14 @@ add_filter('video_embed_html', 'wrap_embed_html');
 /**
  * Add YouTube oEmbed parameters for cleaner display
  */
-function modify_oembed_youtube($html, $url, $attr, $post_id)
+function avidd_modify_oembed_youtube(string $html, string $url, array $attr, int $post_id): string
 {
     if (strpos($html, 'feature=oembed') !== false) {
-        return str_replace(
-            'feature=oembed',
-            'feature=oembed&amp;rel=0&modestbranding=1&showinfo=0',
-            $html
-        );
+        return str_replace('feature=oembed', 'feature=oembed&rel=0', $html);
     }
     return $html;
 }
-add_filter('embed_oembed_html', 'modify_oembed_youtube', 10, 4);
+add_filter('embed_oembed_html', 'avidd_modify_oembed_youtube', 10, 4);
 
 // ------------------------------------------------------------
 // GOOGLE MAP KEY
@@ -301,7 +297,10 @@ add_filter('nav_menu_link_attributes', function ($atts, $item, $args, $depth) {
     }
 
     // Get current page path (trailing slash normalized)
-    $current_path = trailingslashit(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+    $current_path = trailingslashit(wp_parse_url(
+        sanitize_url($_SERVER['REQUEST_URI']),
+        PHP_URL_PATH
+    ));
 
     // Parse menu item URL
     $item_parts = parse_url($item->url);

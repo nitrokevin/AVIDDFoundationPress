@@ -1,0 +1,26 @@
+/// Applies responsive background images from CSS custom properties
+/// set via inline style="--bg-sm: url(...); --bg-md: ...; --bg-lg: ..."
+///
+/// Falls back gracefully: if --bg-md isn't set, stays on --bg-sm.
+/// If --bg-lg isn't set, stays on --bg-md.
+@mixin responsive-bg {
+    background-image: var(--bg-sm);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    @include breakpoint(medium) {
+        background-image: var(--bg-md, var(--bg-sm));
+    }
+
+    @include breakpoint(large) {
+        background-image: var(--bg-lg, var(--bg-md, var(--bg-sm)));
+    }
+
+    @include breakpoint(xlarge) {
+        background-image: var(--bg-xl, var(--bg-lg, var(--bg-md, var(--bg-sm))));
+    }
+	  @include breakpoint(xxlarge) {
+        background-image: var(--bg-xxl, var(--bg-xl, var(--bg-lg, var(--bg-md, var(--bg-sm)))));
+    }
+}

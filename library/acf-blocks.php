@@ -71,9 +71,6 @@ function avidd_register_field_groups()
 {
 	// Bail if ACF not present
 	if (!function_exists('acf_add_local_field_group')) return;
-	// Only register in contexts that need it
-	
-
 
 	avidd_field_group_accordion();
 	avidd_field_group_tab();

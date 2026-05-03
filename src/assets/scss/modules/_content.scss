@@ -1,3 +1,6 @@
+html {
+  scroll-behavior: smooth;
+}
 .main-container {
   @include xy-grid-container;
 }
@@ -65,39 +68,39 @@
 }
 h1,
 .h1 {
-  font-size: var(--font-h1);
+  font-size: var(--text-2xl);
   line-height: 1.1;
 }
 
 h2,
 .h2 {
-  font-size: var(--font-h2);
+  font-size: var(--text-xl);
   line-height: 1.2;
 }
 
 h3,
 .h3 {
-  font-size: var(--font-h3);
+  font-size: var(--text-lg);
   line-height: 1.2;
 }
 
 h4,
 .h4 {
-  font-size: var(--font-h4);
+  font-size: var(--text-md);
 
 }
 
 h5,
 .h5 {
-  font-size: var(--font-h5);
+  font-size: var(--text-sm);
 }
 
 h6,
 .h6 {
-  font-size: var(--font-h6);
+  font-size: var(--text-xs);
 }
 
 p {
-  font-size: var(--font-p);
+  font-size: var(--text-base);
   line-height: 1.4;
 }
