@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 add_action('init', 'register_project_cpt');
 add_action('init', 'register_project_taxonomies');
 function register_project_cpt()

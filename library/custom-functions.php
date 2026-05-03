@@ -4,7 +4,7 @@
  * Theme Custom Functions
  * ACF, TinyMCE, Embed, and Admin Tweaks
  */
-
+defined('ABSPATH') || exit; 
 // ------------------------------------------------------------
 // ACF CONTENT FILTERS
 // ------------------------------------------------------------

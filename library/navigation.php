@@ -7,7 +7,7 @@
  * @package FoundationPress
  * @since FoundationPress 1.0.0
  */
-
+defined('ABSPATH') || exit;
 register_nav_menus(
 	array(
 		'top-bar-r'  => esc_html__('Right Top Bar', 'foundationpress'),

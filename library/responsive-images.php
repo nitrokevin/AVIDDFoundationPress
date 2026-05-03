@@ -7,7 +7,7 @@
  * @subpackage FoundationPress
  * @since FoundationPress 2.6.0
  */
-
+defined('ABSPATH') || exit;
 // Add featured image sizes
 //
 // Sizes are optimized and cropped for landscape aspect ratio

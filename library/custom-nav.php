@@ -6,7 +6,7 @@
  * @package FoundationPress
  * @since FoundationPress 1.0.0
  */
-
+defined('ABSPATH') || exit;
 if (! function_exists('wpt_register_theme_customizer')) :
 	function wpt_register_theme_customizer($wp_customize)
 	{

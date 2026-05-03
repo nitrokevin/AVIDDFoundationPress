@@ -11,7 +11,7 @@
  * Non-preview settings (branding, content, company info, etc.)
  * are managed in Appearance > Site Settings (options-page.php).
  */
-
+defined('ABSPATH') || exit;
 require_once get_template_directory() . '/library/colors.php';
 
 // ============================================

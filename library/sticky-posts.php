@@ -6,7 +6,7 @@
  * @package FoundationPress
  * @since FoundationPress 2.2.0
  */
-
+defined('ABSPATH') || exit;
 if (! function_exists('foundationpress_sticky_posts')) :
 	function foundationpress_sticky_posts($classes)
 	{

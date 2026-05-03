@@ -5,7 +5,7 @@
  *
  * @package FoundationPress
  */
-
+defined('ABSPATH') || exit;
 if (! class_exists('Foundationpress_Comments')) :
 
 	class Foundationpress_Comments extends Walker_Comment

@@ -14,21 +14,21 @@
 // 3. $logo_url initialised before use; duplicate fallback removed.
 // 4. strip_tags() replaced with wp_kses() — strip_tags() allows
 // XSS through tag attributes (e.g. <a href="javascript:...">).
-	// 5. $message_html escaped via wp_kses() before injection into
-	// the HTML string.
-	// 6. $site_name unescaped in footer anchor — now esc_html().
-	// 7. HTML template extracted to a dedicated function for testability.
-	// 8. Early-return guard if body is empty.
-	// ------------------------------------------------------------
-
+// 5. $message_html escaped via wp_kses() before injection into
+// the HTML string.
+// 6. $site_name unescaped in footer anchor — now esc_html().
+// 7. HTML template extracted to a dedicated function for testability.
+// 8. Early-return guard if body is empty.
+// ------------------------------------------------------------
+defined('ABSPATH') || exit; 
 
 	// ── Helpers ──────────────────────────────────────────────────────────────────
 
-	/**
-	* Resolve the email logo URL from ACF options, falling back to the site icon.
-	*
-	* @return string Absolute URL, or empty string if none is configured.
-	*/
+/**
+ * Resolve the email logo URL from ACF options, falling back to the site icon.
+ *
+ * @return string Absolute URL, or empty string if none is configured.
+ */
 	function avidd_get_email_logo_url(): string {
 
 	// ACF image field returns an array; a plain attachment ID is also accepted.

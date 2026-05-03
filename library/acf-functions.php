@@ -1,4 +1,13 @@
-<?php add_action('acf/init', function () {
+<?php
+/**
+ * ACF Field Groups
+ *
+ * @package FoundationPress
+ */
+
+defined('ABSPATH') || exit; 
+
+add_action('acf/init', function () {
 	// Bail if ACF not present
 	if (!function_exists('acf_add_local_field_group')) return;
 	

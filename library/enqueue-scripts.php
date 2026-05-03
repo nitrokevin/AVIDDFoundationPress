@@ -10,7 +10,7 @@
  * @since FoundationPress 1.0.0
  */
 
-
+defined('ABSPATH') || exit;
 // Check to see if rev-manifest exists for CSS and JS static asset revisioning
 //https://github.com/sindresorhus/gulp-rev/blob/master/integration.md
 
@@ -52,16 +52,26 @@ if (! function_exists('foundationpress_scripts')) :
 		wp_enqueue_script('foundation', get_stylesheet_directory_uri() . '/dist/assets/js/' . foundationpress_asset_path('app.js'), array('jquery'), '2.10.4', true);
 
 		// Enqueue FontAwesome from CDN. Uncomment the line below if you need FontAwesome.
-	
+
 		if (defined('AVIDD_FA_KIT_URL') && AVIDD_FA_KIT_URL) {
-			wp_enqueue_script('font-awesome-kit', AVIDD_FA_KIT_URL, [], null, true);
-			// Kit scripts must be treated as crossorigin
-			add_filter('script_loader_tag', function (string $tag, string $handle): string {
-				if ($handle === 'font-awesome-kit') {
-					return str_replace('<script ', '<script crossorigin="anonymous" ', $tag);
-				}
-				return $tag;
-			}, 10, 2);
+			$fa_url    = AVIDD_FA_KIT_URL;
+			$fa_parsed = wp_parse_url($fa_url);
+
+			// Only load from FontAwesome's own CDN
+			if (
+				filter_var($fa_url, FILTER_VALIDATE_URL) &&
+				isset($fa_parsed['host']) &&
+				str_ends_with($fa_parsed['host'], '.fontawesome.com')
+			) {
+				wp_enqueue_script('font-awesome-kit', $fa_url, [], null, true);
+
+				add_filter('script_loader_tag', static function (string $tag, string $handle): string {
+					if ($handle === 'font-awesome-kit') {
+						return str_replace('<script ', '<script crossorigin="anonymous" ', $tag);
+					}
+					return $tag;
+				}, 10, 2);
+			}
 		}
 
 		// Add the comment-reply library on pages where it is necessary

@@ -33,7 +33,7 @@
 
                             <source
                                 media="(min-width: 640px)"
-                                srcset="<?php echo esc_url($image['sizes']['featured-mediuum']); ?>">
+                                srcset="<?php echo esc_url($image['sizes']['featured-medium']); ?>">
 
                             <!-- Fallback -->
                             <img

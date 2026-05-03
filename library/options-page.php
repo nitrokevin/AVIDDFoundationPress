@@ -14,7 +14,7 @@
  *  - Product settings
  *  - Notifications
  */
-
+defined('ABSPATH') || exit;
 if (! function_exists('acf_add_options_page')) {
 	return;
 }

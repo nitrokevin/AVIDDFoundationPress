@@ -6,7 +6,7 @@
  * @package FoundationPress
  * @since FoundationPress 1.0.0
  */
-
+defined('ABSPATH') || exit;
 if (! function_exists('foundationpress_start_cleanup')) :
     /**
      * Setup all cleanup actions

@@ -6,7 +6,7 @@
  * @package FoundationPress
  * @since FoundationPress 1.0.0
  */
-
+defined('ABSPATH') || exit;
 /**
  * Big thanks to Brett Mason (https://github.com/brettsmason) for the awesome walker
  */

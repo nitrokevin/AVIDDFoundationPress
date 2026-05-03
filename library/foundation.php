@@ -6,7 +6,7 @@
  * @package FoundationPress
  * @since FoundationPress 1.0.0
  */
-
+defined('ABSPATH') || exit;
 // Pagination.
 if (! function_exists('foundationpress_pagination')) :
 	function foundationpress_pagination(): void

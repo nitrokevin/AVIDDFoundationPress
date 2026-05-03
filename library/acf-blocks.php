@@ -1,11 +1,10 @@
 <?php
-
 /**
  * ACF Block Registration & Field Groups
  *
  * @package FoundationPress
  */
-
+defined('ABSPATH') || exit;
 // =============================================================================
 // BLOCK CATEGORY
 // =============================================================================
