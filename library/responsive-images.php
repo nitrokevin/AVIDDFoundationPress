@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
 // Add featured image sizes
 //
 // Sizes are optimized and cropped for landscape aspect ratio
-// and optimized for HiDPI displays on 'small' and 'medium' screen sizes.
+// and optimized for HiDPI displays medium' and 'medium' screen sizes.
 add_image_size('featured-small', 640, 300, true); // name, width, height, crop
 add_image_size('featured-medium', 1024, 400, true);
 add_image_size('featured-large', 1200, 500, true);
@@ -25,6 +25,9 @@ add_image_size('fp-large', 1200);
 add_image_size('fp-xlarge', 1440);
 add_image_size('fp-xxlarge', 1920);
 add_image_size('small-square', 640, 640, true);
+add_image_size('medium-square', 1024, 1024, true);
+add_image_size('large-square', 1200, 1200, true);
+
 
 
 // Register the new image sizes for use in the add media modal in wp-admin
@@ -37,6 +40,9 @@ function foundationpress_custom_sizes($sizes)
 			'fp-medium' => __('FP Medium'),
 			'fp-large'  => __('FP Large'),
 			'fp-xlarge' => __('FP XLarge'),
+			'small-square' => __('Small Square'),
+			'medium-square' => __('Medium Square'),
+			'large-square' => __('Large Square')
 		)
 	);
 }
