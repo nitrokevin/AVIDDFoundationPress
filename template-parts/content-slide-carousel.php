@@ -11,6 +11,9 @@
                 $has_bg = get_sub_field('background_image'); // true/false toggle
                 $bg_color = get_sub_field('carousel_background_color') ?: '';
                 $content = get_sub_field('carousel_content') ?: '';
+                $alt = !empty($image['alt']) ? $image['alt'] : $heading;
+
+
 
                 // Build slide classes
                 $slide_classes = trim($bg_color . ($has_bg ? ' has_background_image' : ''));
@@ -59,7 +62,7 @@
                                 <img src="<?php echo esc_url($src); ?>"
                                     srcset="<?php echo esc_attr($srcset); ?>"
                                     sizes="(max-width: 100vw) 480px"
-                                    alt="<?php echo esc_attr($image['alt']);  ?>" />
+                                    alt="<?php echo esc_attr($alt); ?>" />
                             </div>
                         <?php endif; ?>
                     </div>

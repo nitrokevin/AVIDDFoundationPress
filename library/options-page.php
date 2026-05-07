@@ -759,7 +759,7 @@ function avidd_register_options_field_groups()
 					'min' => 0,
 					'max' => 0,
 					'layout' => 'block',
-					'button_label' => 'Add Accordion',
+					'button_label' => 'Add FAQ',
 					'sub_fields' => array(
 						array(
 							'key' => 'field_faq_header',
