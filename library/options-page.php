@@ -13,6 +13,7 @@
  *  - Hero Settings
  *  - Product settings
  *  - Notifications
+ *  - Typography
  */
 defined('ABSPATH') || exit;
 if (! function_exists('acf_add_options_page')) {
@@ -81,24 +82,57 @@ acf_add_options_sub_page(array(
 	'capability'  => 'manage_options',
 ));
 
-acf_add_options_page([
+acf_add_options_sub_page(array(
+	'page_title'  => __('Typography', 'avidd'),
+	'menu_title'  => __('Typography', 'avidd'),
+	'menu_slug'   => 'site-settings-typography',
+	'parent_slug' => 'site-settings',
+	'capability'  => 'manage_options',
+));
+
+acf_add_options_page(array(
 	'page_title' => 'FAQs',
 	'menu_title' => 'FAQs',
-	'menu_slug' => 'faqs',
+	'menu_slug'  => 'faqs',
 	'icon_url'   => 'dashicons-info',
 	'capability' => 'manage_options',
 	'position'   => 60,
-	'redirect' => false,
-]);
-acf_add_options_page([
+	'redirect'   => false,
+));
+
+acf_add_options_page(array(
 	'page_title' => 'People',
 	'menu_title' => 'People',
-	'menu_slug' => 'people',
+	'menu_slug'  => 'people',
 	'icon_url'   => 'dashicons-groups',
 	'capability' => 'manage_options',
 	'position'   => 60,
-	'redirect' => false,
-]);
+	'redirect'   => false,
+));
+
+
+// ============================================
+// HELPER: READ THEME.JSON CUSTOM SETTINGS
+// Cached — file is only read once per request.
+// ============================================
+
+if (! function_exists('avidd_get_theme_json_settings')) {
+	function avidd_get_theme_json_settings(): array
+	{
+		static $cache = null;
+		if ($cache !== null) return $cache;
+
+		$path = get_template_directory() . '/theme.json';
+		if (! file_exists($path)) {
+			$cache = array();
+			return $cache;
+		}
+
+		$decoded = json_decode(file_get_contents($path), true);
+		$cache   = $decoded['settings']['custom'] ?? array();
+		return $cache;
+	}
+}
 
 
 // ============================================
@@ -108,11 +142,8 @@ acf_add_options_page([
 add_action('acf/init', 'avidd_register_options_field_groups');
 
 function avidd_register_options_field_groups()
-
-
 {
-	// Bail if ACF not present
-	if (!function_exists('acf_add_local_field_group')) return;
+	if (! function_exists('acf_add_local_field_group')) return;
 
 
 	// ----------------------------------------
@@ -203,6 +234,7 @@ function avidd_register_options_field_groups()
 		),
 	));
 
+
 	// ----------------------------------------
 	// FOOTER CONTENT
 	// ----------------------------------------
@@ -291,6 +323,7 @@ function avidd_register_options_field_groups()
 			),
 		),
 	));
+
 
 	// ----------------------------------------
 	// COMPANY INFORMATION
@@ -543,6 +576,7 @@ function avidd_register_options_field_groups()
 		),
 	));
 
+
 	// ----------------------------------------
 	// HERO SETTINGS
 	// ----------------------------------------
@@ -602,6 +636,7 @@ function avidd_register_options_field_groups()
 		),
 	));
 
+
 	// ----------------------------------------
 	// PRODUCT
 	// ----------------------------------------
@@ -651,6 +686,7 @@ function avidd_register_options_field_groups()
 			),
 		),
 	));
+
 
 	// ----------------------------------------
 	// NOTIFICATIONS
@@ -733,257 +769,230 @@ function avidd_register_options_field_groups()
 	));
 
 
+	// ----------------------------------------
+	// TYPOGRAPHY
+	// Slider ranges and defaults are driven by
+	// theme.json (generated from _settings.scss)
+	// so there is a single source of truth.
+	// ----------------------------------------
+
+	$custom      = avidd_get_theme_json_settings();
+	$type_scale  = $custom['fluidTypeScale'] ?? array();
+
+	$type_labels = array(
+		'text-xs'   => 'Extra Small',
+		'text-sm'   => 'Small',
+		'text-base' => 'Base',
+		'text-md'   => 'Medium',
+		'text-lg'   => 'Large',
+		'text-xl'   => 'Extra Large',
+		'text-2xl'  => '2X Large',
+	);
+
+	$type_fields = array(
+		array(
+			'key'     => 'field_type_intro',
+			'label'   => '',
+			'name'    => '',
+			'type'    => 'message',
+			'message' => __('Adjust the minimum and maximum sizes for each font size. Leave at default to use the theme\'s built-in scale.', 'avidd'),
+		),
+	);
+
+	foreach ($type_scale as $token => $sizes) {
+		// Convert "text-base" → "base", "text-2xl" → "2xl" for use in field keys/names
+		$suffix = str_replace(array('text-', '-'), array('', '_'), $token);
+		$label  = $type_labels[$token] ?? $token;
+
+		$type_fields[] = array(
+			'key'   => 'field_type_' . $suffix . '_tab',
+			'label' => $label . ' (--' . $token . ')',
+			'name'  => '',
+			'type'  => 'tab',
+		);
+
+		$type_fields[] = array(
+			'key'           => 'field_type_' . $suffix . '_min',
+			'label'         => __('Min Size (px)', 'avidd'),
+			'name'          => 'type_' . $suffix . '_min',
+			'type'          => 'range',
+			'default_value' => $sizes['min'],
+			'min'           => 13,
+			'max'           => (int) round($sizes['min'] * 3),
+			'step'          => 1,
+			'append'        => 'px',
+			'instructions'  => sprintf(__('Theme default: %dpx', 'avidd'), $sizes['min']),
+		);
+
+		$type_fields[] = array(
+			'key'           => 'field_type_' . $suffix . '_max',
+			'label'         => __('Max Size (px)', 'avidd'),
+			'name'          => 'type_' . $suffix . '_max',
+			'type'          => 'range',
+			'default_value' => $sizes['max'],
+			'min'           => 13,
+			'max'           => (int) round($sizes['max'] * 3),
+			'step'          => 1,
+			'append'        => 'px',
+			'instructions'  => sprintf(__('Theme default: %dpx', 'avidd'), $sizes['max']),
+		);
+	}
+
+	if (! empty($type_scale)) {
+		acf_add_local_field_group(array(
+			'key'      => 'group_typography_settings',
+			'title'    => __('Typography — Fluid Type Scale', 'avidd'),
+			'fields'   => $type_fields,
+			'location' => array(
+				array(
+					array(
+						'param'    => 'options_page',
+						'operator' => '==',
+						'value'    => 'site-settings-typography',
+					),
+				),
+			),
+		));
+	}
+
 
 	// ----------------------------------------
 	// FAQ
 	// ----------------------------------------
+
 	acf_add_local_field_group(array(
-			'key' => 'group_options_page_faq',
-			'title' => 'FAQ Options Page',
-			'fields' => array(
-
-				array(
-					'key' => 'field_faq_repeater',
-					'label' => 'FAQ',
-					'name' => 'faq_repeater',
-					'type' => 'repeater',
-					'instructions' => '',
-					'required' => 0,
-					'conditional_logic' => 0,
-					'wrapper' => array(
-						'width' => '',
-						'class' => '',
-						'id' => '',
-					),
-					'collapsed' => '',
-					'min' => 0,
-					'max' => 0,
-					'layout' => 'block',
-					'button_label' => 'Add FAQ',
-					'sub_fields' => array(
-						array(
-							'key' => 'field_faq_header',
-							'label' => 'Header',
-							'name' => 'header',
-							'type' => 'text',
-							'instructions' => '',
-							'required' => 0,
-							'conditional_logic' => 0,
-							'wrapper' => array(
-								'width' => '100',
-								'class' => '',
-								'id' => '',
-							),
-							'default_value' => '',
-							'placeholder' => '',
-							'prepend' => '',
-							'append' => '',
-							'maxlength' => '',
-						),
-
-						array(
-							'key' => 'field_faq_categories',
-							'label' => 'Categories',
-							'name' => 'categories',
-							'type' => 'taxonomy',
-							'instructions' => '',
-							'required' => 0,
-							'conditional_logic' => 0,
-							'wrapper' => array(
-								'width' => '50',
-								'class' => '',
-								'id' => '',
-							),
-							'taxonomy' => 'category',
-							'field_type' => 'checkbox',
-							'add_term' => 0,
-							'save_terms' => 0,
-							'load_terms' => 0,
-							'return_format' => 'object',
-							'multiple' => 0,
-							'allow_null' => 0,
-						),
-						array(
-							'key' => 'field_faq_content',
-							'label' => 'Content',
-							'name' => 'content',
-							'type' => 'wysiwyg',
-							'instructions' => '',
-							'required' => 0,
-							'conditional_logic' => 0,
-							'wrapper' => array(
-								'width' => '',
-								'class' => '',
-								'id' => '',
-							),
-							'default_value' => '',
-							'tabs' => 'all',
-							'toolbar' => 'full',
-							'media_upload' => 1,
-							'delay' => 0,
-						),
-					),
-				),
-
-
-			),
-
-			'location' => array(
-				array(
+		'key'    => 'group_options_page_faq',
+		'title'  => 'FAQ Options Page',
+		'fields' => array(
+			array(
+				'key'          => 'field_faq_repeater',
+				'label'        => 'FAQ',
+				'name'         => 'faq_repeater',
+				'type'         => 'repeater',
+				'min'          => 0,
+				'max'          => 0,
+				'layout'       => 'block',
+				'button_label' => 'Add FAQ',
+				'sub_fields'   => array(
 					array(
-						'param' => 'options_page',
-						'operator' => '==',
-						'value' => 'faqs',
+						'key'     => 'field_faq_header',
+						'label'   => 'Header',
+						'name'    => 'header',
+						'type'    => 'text',
+						'wrapper' => array('width' => '100'),
+					),
+					array(
+						'key'           => 'field_faq_categories',
+						'label'         => 'Categories',
+						'name'          => 'categories',
+						'type'          => 'taxonomy',
+						'wrapper'       => array('width' => '50'),
+						'taxonomy'      => 'category',
+						'field_type'    => 'checkbox',
+						'add_term'      => 0,
+						'save_terms'    => 0,
+						'load_terms'    => 0,
+						'return_format' => 'object',
+						'multiple'      => 0,
+						'allow_null'    => 0,
+					),
+					array(
+						'key'          => 'field_faq_content',
+						'label'        => 'Content',
+						'name'         => 'content',
+						'type'         => 'wysiwyg',
+						'toolbar'      => 'full',
+						'media_upload' => 1,
 					),
 				),
 			),
-			'menu_order' => 0,
-			'position' => 'normal',
-			'style' => 'default',
-			'label_placement' => 'top',
-			'instruction_placement' => 'label',
-			'hide_on_screen' => '',
-			'active' => true,
-			'description' => '',
-		));
+		),
+		'location' => array(
+			array(
+				array(
+					'param'    => 'options_page',
+					'operator' => '==',
+					'value'    => 'faqs',
+				),
+			),
+		),
+		'active' => true,
+	));
 
 
 	// ----------------------------------------
-	// People
+	// PEOPLE
 	// ----------------------------------------
 
 	acf_add_local_field_group(array(
-			'key' => 'group_options_page_people',
-			'title' => 'People',
-			'fields' => array(
-
-
-				array(
-					'key' => 'field_people_repeater',
-					'label' => 'People',
-					'name' => 'people_repeater',
-					'type' => 'repeater',
-					'instructions' => '',
-					'required' => 0,
-					'conditional_logic' => 0,
-					'wrapper' => array(
-						'width' => '',
-						'class' => '',
-						'id' => '',
-					),
-					'collapsed' => '',
-					'min' => 0,
-					'max' => 0,
-					'layout' => 'block',
-					'button_label' => 'Add Person',
-					'sub_fields' => array(
-
-						array(
-							'key' => 'field_people_image',
-							'label' => 'Image',
-							'name' => 'image',
-							'type' => 'image',
-							'instructions' => '',
-							'required' => 0,
-							'conditional_logic' => 0,
-							'wrapper' => array(
-								'width' => '50',
-								'class' => '',
-								'id' => '',
-							),
-							'return_format' => 'array',
-							'preview_size' => 'thumbnail',
-							'library' => 'all',
-
-						),
-
-						array(
-							'key' => 'field_people_name',
-							'label' => 'Name',
-							'name' => 'name',
-							'type' => 'text',
-							'required' => 0,
-							'conditional_logic' => 0,
-							'wrapper' => array(
-								'width' => '50',
-								'class' => '',
-								'id' => '',
-							),
-
-						),
-						array(
-							'key' => 'field_people_job',
-							'label' => 'Job Title',
-							'name' => 'job',
-							'type' => 'text',
-							'required' => 0,
-							'conditional_logic' => 0,
-							'wrapper' => array(
-								'width' => '50',
-								'class' => '',
-								'id' => '',
-							),
-
-						),
-
-						array(
-							'key' => 'field_people_email',
-							'label' => 'Email',
-							'name' => 'email',
-							'type' => 'email',
-							'required' => 0,
-							'conditional_logic' => 0,
-							'wrapper' => array(
-								'width' => '50',
-								'class' => '',
-								'id' => '',
-							),
-
-						),
-
-
-						array(
-							'key' => 'field_people_biography',
-							'label' => 'Biography',
-							'name' => 'biography',
-							'type' => 'wysiwyg',
-							'instructions' => '',
-							'required' => 0,
-							'conditional_logic' => 0,
-							'wrapper' => array(
-								'width' => '',
-								'class' => '',
-								'id' => '',
-							),
-							'default_value' => '',
-							'tabs' => 'all',
-							'toolbar' => 'full',
-							'media_upload' => 0,
-							'delay' => 0,
-						),
-					),
-				),
-			),
-			'location' => array(
-				array(
+		'key'    => 'group_options_page_people',
+		'title'  => 'People',
+		'fields' => array(
+			array(
+				'key'          => 'field_people_repeater',
+				'label'        => 'People',
+				'name'         => 'people_repeater',
+				'type'         => 'repeater',
+				'min'          => 0,
+				'max'          => 0,
+				'layout'       => 'block',
+				'button_label' => 'Add Person',
+				'sub_fields'   => array(
 					array(
-						'param' => 'options_page',
-						'operator' => '==',
-						'value' => 'people',
+						'key'           => 'field_people_image',
+						'label'         => 'Image',
+						'name'          => 'image',
+						'type'          => 'image',
+						'wrapper'       => array('width' => '50'),
+						'return_format' => 'array',
+						'preview_size'  => 'thumbnail',
+						'library'       => 'all',
+					),
+					array(
+						'key'     => 'field_people_name',
+						'label'   => 'Name',
+						'name'    => 'name',
+						'type'    => 'text',
+						'wrapper' => array('width' => '50'),
+					),
+					array(
+						'key'     => 'field_people_job',
+						'label'   => 'Job Title',
+						'name'    => 'job',
+						'type'    => 'text',
+						'wrapper' => array('width' => '50'),
+					),
+					array(
+						'key'     => 'field_people_email',
+						'label'   => 'Email',
+						'name'    => 'email',
+						'type'    => 'email',
+						'wrapper' => array('width' => '50'),
+					),
+					array(
+						'key'          => 'field_people_biography',
+						'label'        => 'Biography',
+						'name'         => 'biography',
+						'type'         => 'wysiwyg',
+						'toolbar'      => 'full',
+						'media_upload' => 0,
 					),
 				),
 			),
-			'menu_order' => 0,
-			'position' => 'normal',
-			'style' => 'default',
-			'label_placement' => 'top',
-			'instruction_placement' => 'label',
-			'hide_on_screen' => '',
-			'active' => true,
-			'description' => '',
-		));
-	
+		),
+		'location' => array(
+			array(
+				array(
+					'param'    => 'options_page',
+					'operator' => '==',
+					'value'    => 'people',
+				),
+			),
+		),
+		'active' => true,
+	));
 }
+
 
 // ============================================
 // HELPER FUNCTIONS
@@ -1001,9 +1010,6 @@ function avidd_register_options_field_groups()
  * Without this, get_field() returns false for both cases, causing toggles
  * like sticky_header to always appear on (fallback = true wins every time).
  *
- * get_field() is still used for the actual return value so image arrays,
- * formatted dates, select labels etc. all work correctly.
- *
  * @param  string $key      ACF field name.
  * @param  mixed  $fallback Value to return when field has never been saved.
  * @return mixed
@@ -1011,23 +1017,18 @@ function avidd_register_options_field_groups()
 if (! function_exists('avidd_get_setting')) {
 	function avidd_get_setting(string $key, $fallback = false)
 	{
-		// ACF stores options page fields as options_{field_name} in wp_options.
-		// null = key doesn't exist (never saved). '0'/'1' = explicitly saved value.
 		$raw = get_option('options_' . $key, null);
 
 		if ($raw === null) {
 			return $fallback;
 		}
 
-		// get_field handles formatting: image arrays, time picker strings, etc.
 		return get_field($key, 'option');
 	}
 }
 
 /**
  * Output the copyright text, replacing {year} with the current year.
- *
- * @return string
  */
 if (! function_exists('avidd_get_copyright')) {
 	function avidd_get_copyright(): string
@@ -1038,11 +1039,7 @@ if (! function_exists('avidd_get_copyright')) {
 }
 
 /**
- * Return an array of active social networks in order, each with:
- *   'network' => string  (slug e.g. 'instagram')
- *   'url'     => string
- *
- * @return array
+ * Return an array of active social networks in order.
  */
 if (! function_exists('avidd_get_social_networks')) {
 	function avidd_get_social_networks(): array
@@ -1052,5 +1049,80 @@ if (! function_exists('avidd_get_social_networks')) {
 			return array();
 		}
 		return array_filter($rows, fn($row) => ! empty($row['url']));
+	}
+}
+
+/**
+ * Generate a CSS clamp() value matching the SCSS fluid() function.
+ *
+ * Replicates: clamp(min-rem, slope*100vw + offset-rem, max-rem)
+ * Uses the medium breakpoint as the min viewport (read from theme.json).
+ *
+ * @param  float $min_px  Minimum font size in px.
+ * @param  float $max_px  Maximum font size in px.
+ * @param  float $min_vw  Viewport width at which scaling starts (px). Defaults to theme.json value.
+ * @param  float $max_vw  Viewport width at which scaling ends (px).
+ * @return string         CSS clamp() value.
+ */
+if (! function_exists('avidd_fluid_clamp')) {
+	function avidd_fluid_clamp(float $min_px, float $max_px, float $min_vw = 0, float $max_vw = 1920): string
+	{
+		if ($min_vw === 0) {
+			$custom = avidd_get_theme_json_settings();
+			$min_vw = (float) ($custom['fluidTypeMinVw'] ?? 640);
+		}
+
+		$slope               = ($max_px - $min_px) / ($max_vw - $min_vw);
+		$y_axis_intersection = -$min_vw * $slope + $min_px;
+
+		$min_rem  = round($min_px / 16, 4) . 'rem';
+		$max_rem  = round($max_px / 16, 4) . 'rem';
+		$slope_vw = round($slope * 100, 4) . 'vw';
+		$offset   = round($y_axis_intersection / 16, 4) . 'rem';
+
+		return "clamp({$min_rem}, calc({$slope_vw} + {$offset}), {$max_rem})";
+	}
+}
+
+/**
+ * Output overridden fluid type scale tokens as inline CSS custom properties.
+ * Only fires if the client has changed at least one value from the SCSS default.
+ * Hooked early (priority 5) so it lands before any theme stylesheets.
+ */
+add_action('wp_head', 'avidd_output_fluid_type_scale', 9999);
+
+if (! function_exists('avidd_output_fluid_type_scale')) {
+	function avidd_output_fluid_type_scale(): void
+	{
+		$custom     = avidd_get_theme_json_settings();
+		$type_scale = $custom['fluidTypeScale'] ?? array();
+
+		if (empty($type_scale)) return;
+
+		$overrides = array();
+
+		foreach ($type_scale as $token => $sizes) {
+			$suffix  = str_replace(array('text-', '-'), array('', '_'), $token);
+			$raw_min = get_option('options_type_' . $suffix . '_min', null);
+			$raw_max = get_option('options_type_' . $suffix . '_max', null);
+
+			$min = $raw_min !== null ? (float) $raw_min : (float) $sizes['min'];
+			$max = $raw_max !== null ? (float) $raw_max : (float) $sizes['max'];
+
+			// Skip if unchanged from SCSS defaults
+			if ($min === (float) $sizes['min'] && $max === (float) $sizes['max']) {
+				continue;
+			}
+
+			$overrides['--' . $token] = avidd_fluid_clamp($min, $max);
+		}
+
+		if (empty($overrides)) return;
+
+		echo "<style id=\"avidd-type-scale\">\n:root {\n";
+		foreach ($overrides as $prop => $value) {
+			echo "  {$prop}: {$value};\n";
+		}
+		echo "}\n</style>\n";
 	}
 }

@@ -15,14 +15,43 @@ defined('ABSPATH') || exit;
 require_once get_template_directory() . '/library/colors.php';
 
 // ============================================
+// MIGRATE LEGACY SETTING KEYS (run once)
+// ============================================
+
+function avidd_migrate_customizer_settings(): void
+{
+	if (get_option('avidd_customizer_migrated_v2')) {
+		return;
+	}
+
+	$migrations = array(
+		'color_palette_setting_0'  => 'color_nav_background',
+		'color_palette_setting_1'  => 'color_nav_menu_item',
+		'color_palette_setting_3'  => 'color_footer_background',
+		'color_palette_setting_4'  => 'color_footer_text',
+		'color_palette_setting_5'  => 'color_footer_link',
+		'color_palette_setting_10' => 'color_page_background',
+	);
+
+	$theme_mods = get_theme_mods();
+
+	foreach ($migrations as $old_key => $new_key) {
+		if (isset($theme_mods[$old_key]) && ! isset($theme_mods[$new_key])) {
+			set_theme_mod($new_key, $theme_mods[$old_key]);
+			remove_theme_mod($old_key);
+		}
+	}
+
+	update_option('avidd_customizer_migrated_v2', true);
+}
+add_action('after_setup_theme', 'avidd_migrate_customizer_settings');
+
+
+// ============================================
 // HELPER FUNCTIONS
 // ============================================
 
 if (! function_exists('get_native_palette')) {
-	/**
-	 * Returns an array of hex colour values from the theme palette.
-	 * Used for text/foreground colour controls — no gradients.
-	 */
 	function get_native_palette()
 	{
 		$choices = get_theme_design_choices([
@@ -35,10 +64,6 @@ if (! function_exists('get_native_palette')) {
 }
 
 if (! function_exists('get_native_palette_with_gradients')) {
-	/**
-	 * Returns an array of hex colour values AND gradient slugs from the theme.
-	 * Used for background colour controls.
-	 */
 	function get_native_palette_with_gradients()
 	{
 		$choices = get_theme_design_choices([
@@ -78,16 +103,6 @@ if (! function_exists('avidd_get_palette_hex_default')) {
 }
 
 if (! function_exists('avidd_resolve_slug_to_css')) {
-	/**
-	 * Resolves a stored theme_mod value (hex or gradient slug) to a CSS value.
-	 *
-	 * - Hex values are returned as-is.
-	 * - Gradient slugs are resolved to their full CSS gradient string.
-	 * - Colour slugs are resolved to their hex value (edge case fallback).
-	 *
-	 * @param  string $value Stored theme_mod value.
-	 * @return string CSS value ready for output, or empty string.
-	 */
 	function avidd_resolve_slug_to_css($value)
 	{
 		if (empty($value)) {
@@ -118,19 +133,13 @@ if (! function_exists('avidd_resolve_slug_to_css')) {
 	}
 }
 
+
 // ============================================
 // CUSTOM CONTROLS
 // ============================================
 
 if (class_exists('WP_Customize_Control')) {
 
-	/**
-	 * Options Page Link Control
-	 *
-	 * Renders a button linking to a related options sub-page.
-	 * Used at the bottom of customiser sections that have been partially
-	 * migrated to the ACF options pages.
-	 */
 	class Avidd_Options_Link_Control extends WP_Customize_Control
 	{
 		public $type        = 'options-link';
@@ -148,12 +157,12 @@ if (class_exists('WP_Customize_Control')) {
 ?>
 			<div class="avidd-options-link">
 				<a
-					href="<?php echo esc_url($this->options_url); ?>"
-					class="button button-secondary avidd-options-link__btn"
-					target="_blank"
-					rel="noopener">
-					<?php echo esc_html($label); ?>
-					<span class="dashicons dashicons-external" style="vertical-align: middle; margin-left: 4px;"></span>
+				href="<?php echo esc_url($this->options_url); ?>"
+				class="button button-secondary avidd-options-link__btn"
+				target="_blank"
+				rel="noopener">
+				<?php echo esc_html($label); ?>
+				<span class="dashicons dashicons-external" style="vertical-align: middle; margin-left: 4px;"></span>
 				</a>
 			</div>
 			<style>
@@ -173,29 +182,13 @@ if (class_exists('WP_Customize_Control')) {
 		}
 	}
 
-	/**
-	 * Color Palette Control
-	 *
-	 * Renders a row of colour/gradient swatches as radio inputs.
-	 *
-	 * Props:
-	 *   $palette           array   Explicit list of hex values or gradient slugs.
-	 *                              If empty, auto-populated based on $include_gradients.
-	 *   $style             string  'round' or 'square'. Gradient swatches are always square.
-	 *   $allow_clear       bool    Show a clear/none option.
-	 *   $include_gradients bool    When true and $palette is empty, includes gradient slugs
-	 *                              from theme.json. Use for background controls only.
-	 *
-	 * Stored value: hex string (e.g. '#1a1a2e') for colours,
-	 *               slug string (e.g. 'primary-radial') for gradients.
-	 */
 	class Avidd_Color_Palette_Control extends WP_Customize_Control
 	{
-		public $type               = 'color-palette';
-		public $palette            = array();
-		public $style              = 'round';
-		public $allow_clear        = true;
-		public $include_gradients  = false;
+		public $type              = 'color-palette';
+		public $palette           = array();
+		public $style             = 'round';
+		public $allow_clear       = true;
+		public $include_gradients = false;
 
 		public function render_content()
 		{
@@ -359,6 +352,7 @@ if (class_exists('WP_Customize_Control')) {
 	}
 }
 
+
 // ============================================
 // CUSTOMIZER REGISTRATION
 // ============================================
@@ -367,24 +361,19 @@ function avidd_customize_register($wp_customize)
 {
 	$palette_keys = get_native_palette();
 
-	$default_1 = in_array(avidd_get_palette_hex_default('$primary-color', $palette_keys[0]), $palette_keys)
+	$default_primary = in_array(avidd_get_palette_hex_default('$primary-color', $palette_keys[0]), $palette_keys)
 		? avidd_get_palette_hex_default('$primary-color', $palette_keys[0])
 		: $palette_keys[0];
-	$default_footer = in_array(avidd_get_palette_hex_default('#fefefe', $palette_keys[0]), $palette_keys)
-		? avidd_get_palette_hex_default('#fefefe', $palette_keys[0])
-		: $palette_keys[0];
-	$default_settings = in_array(avidd_get_palette_hex_default('#fefefe', $palette_keys[0]), $palette_keys)
+
+	$default_light = in_array(avidd_get_palette_hex_default('#fefefe', $palette_keys[0]), $palette_keys)
 		? avidd_get_palette_hex_default('#fefefe', $palette_keys[0])
 		: $palette_keys[0];
 
-	// Shared options page URLs — generated here so they're consistent across all link controls
-	$options_base    = admin_url('admin.php?page=');
-	$url_header      = $options_base . 'site-settings-header';
-	$url_footer      = $options_base . 'site-settings-footer';
-	$url_company     = $options_base . 'site-settings-company';
-	$url_hero        = $options_base . 'site-settings-hero';
-	$url_filters     = $options_base . 'site-settings-filters';
-	$url_notifs      = $options_base . 'site-settings-notifications';
+	$options_base = admin_url('admin.php?page=');
+	$url_header   = $options_base . 'site-settings-header';
+	$url_footer   = $options_base . 'site-settings-footer';
+	$url_hero     = $options_base . 'site-settings-hero';
+
 
 	// ============================================
 	// PANELS
@@ -407,6 +396,7 @@ function avidd_customize_register($wp_customize)
 		'description' => __('Customise colours and hero overlay settings.', 'avidd'),
 		'priority'    => 50,
 	));
+
 
 	// ============================================
 	// SECTIONS
@@ -437,37 +427,35 @@ function avidd_customize_register($wp_customize)
 		'panel' => 'design_layout_panel',
 	));
 
+
 	// ============================================
 	// NAVIGATION COLORS
 	// ============================================
 
-	// Nav background colour — supports gradients
-	$wp_customize->add_setting('color_palette_setting_0', array(
+	$wp_customize->add_setting('color_nav_background', array(
 		'default'           => $palette_keys[0],
 		'sanitize_callback' => 'sanitize_text_field',
 		'transport'         => 'postMessage',
 	));
-	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_palette_setting_0', array(
+	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_nav_background', array(
 		'label'             => __('Nav background colour', 'avidd'),
 		'section'           => 'navigation_colors_section',
 		'style'             => 'round',
 		'include_gradients' => true,
 	)));
 
-	// Nav menu item colour
-	$wp_customize->add_setting('color_palette_setting_1', array(
-		'default'           => $default_1,
+	$wp_customize->add_setting('color_nav_menu_item', array(
+		'default'           => $default_primary,
 		'sanitize_callback' => 'sanitize_hex_color',
 		'transport'         => 'postMessage',
 	));
-	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_palette_setting_1', array(
+	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_nav_menu_item', array(
 		'label'   => __('Nav menu item colour', 'avidd'),
 		'section' => 'navigation_colors_section',
 		'palette' => $palette_keys,
 		'style'   => 'round',
 	)));
 
-	// Link to header options page
 	$wp_customize->add_setting('_nav_options_link', array('sanitize_callback' => '__return_empty_string'));
 	$wp_customize->add_control(new Avidd_Options_Link_Control($wp_customize, '_nav_options_link', array(
 		'section'     => 'navigation_colors_section',
@@ -475,50 +463,47 @@ function avidd_customize_register($wp_customize)
 		'options_url' => $url_header,
 	)));
 
+
 	// ============================================
 	// FOOTER COLORS
 	// ============================================
 
-	// Footer background colour
-	$wp_customize->add_setting('color_palette_setting_3', array(
-		'default'           => $default_footer,
-		'sanitize_callback' => 'sanitize_hex_color',
+	$wp_customize->add_setting('color_footer_background', array(
+		'default'           => $default_light,
+		'sanitize_callback' => 'sanitize_text_field',
 		'transport'         => 'postMessage',
 	));
-	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_palette_setting_3', array(
-		'label'   => __('Footer background colour', 'avidd'),
-		'section' => 'footer_colors_section',
-		'palette' => $palette_keys,
-		'style'   => 'round',
+	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_footer_background', array(
+		'label'             => __('Footer background colour', 'avidd'),
+		'section'           => 'footer_colors_section',
+		'style'             => 'round',
+		'include_gradients' => true,
 	)));
 
-	// Footer text colour
-	$wp_customize->add_setting('color_palette_setting_4', array(
-		'default'           => $default_1,
+	$wp_customize->add_setting('color_footer_text', array(
+		'default'           => $default_primary,
 		'sanitize_callback' => 'sanitize_hex_color',
 		'transport'         => 'postMessage',
 	));
-	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_palette_setting_4', array(
+	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_footer_text', array(
 		'label'   => __('Footer text colour', 'avidd'),
 		'section' => 'footer_colors_section',
 		'palette' => $palette_keys,
 		'style'   => 'round',
 	)));
 
-	// Footer link colour
-	$wp_customize->add_setting('color_palette_setting_5', array(
-		'default'           => $default_1,
+	$wp_customize->add_setting('color_footer_link', array(
+		'default'           => $default_primary,
 		'sanitize_callback' => 'sanitize_hex_color',
 		'transport'         => 'postMessage',
 	));
-	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_palette_setting_5', array(
+	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_footer_link', array(
 		'label'   => __('Footer link colour', 'avidd'),
 		'section' => 'footer_colors_section',
 		'palette' => $palette_keys,
 		'style'   => 'round',
 	)));
 
-	// Link to footer options page
 	$wp_customize->add_setting('_footer_options_link', array('sanitize_callback' => '__return_empty_string'));
 	$wp_customize->add_control(new Avidd_Options_Link_Control($wp_customize, '_footer_options_link', array(
 		'section'     => 'footer_colors_section',
@@ -526,24 +511,23 @@ function avidd_customize_register($wp_customize)
 		'options_url' => $url_footer,
 	)));
 
+
 	// ============================================
 	// SITE COLORS
 	// ============================================
 
-	// Page background colour
-	$wp_customize->add_setting('color_palette_setting_10', array(
-		'default'           => $default_settings,
+	$wp_customize->add_setting('color_page_background', array(
+		'default'           => $default_light,
 		'sanitize_callback' => 'sanitize_hex_color',
 		'transport'         => 'postMessage',
 	));
-	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_palette_setting_10', array(
+	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_page_background', array(
 		'label'   => __('Page background colour', 'avidd'),
 		'section' => 'site_colors_section',
 		'palette' => $palette_keys,
 		'style'   => 'round',
 	)));
 
-	// Link to header options page (dark mode lives there now)
 	$wp_customize->add_setting('_site_colors_options_link', array('sanitize_callback' => '__return_empty_string'));
 	$wp_customize->add_control(new Avidd_Options_Link_Control($wp_customize, '_site_colors_options_link', array(
 		'section'     => 'site_colors_section',
@@ -551,9 +535,21 @@ function avidd_customize_register($wp_customize)
 		'options_url' => $url_header,
 	)));
 
+
 	// ============================================
 	// FRONT PAGE HERO
 	// ============================================
+
+	$wp_customize->add_setting('color_front_hero_overlay_background', array(
+		'sanitize_callback' => 'sanitize_text_field',
+		'transport'         => 'postMessage',
+	));
+	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_front_hero_overlay_background', array(
+		'label'             => __('Hero overlay background colour', 'avidd'),
+		'section'           => 'front_hero_section',
+		'style'             => 'round',
+		'include_gradients' => true,
+	)));
 
 	$wp_customize->add_setting('hero_overlay_opacity', array(
 		'default'           => 40,
@@ -561,7 +557,7 @@ function avidd_customize_register($wp_customize)
 		'transport'         => 'postMessage',
 	));
 	$wp_customize->add_control('hero_overlay_opacity', array(
-		'label'       => __('Hero image overlay opacity', 'avidd'),
+		'label'       => __('Hero overlay opacity', 'avidd'),
 		'description' => __('Controls the darkness of the overlay on the hero image (0 = none, 100 = fully dark).', 'avidd'),
 		'section'     => 'front_hero_section',
 		'type'        => 'range',
@@ -572,7 +568,80 @@ function avidd_customize_register($wp_customize)
 		),
 	));
 
-	// Link to hero options page
+	$wp_customize->add_setting('front_hero_blend_mode', array(
+		'default'           => 'normal',
+		'sanitize_callback' => function ($value) {
+			return in_array($value, ['normal', 'multiply'], true) ? $value : 'normal';
+		},
+		'transport'         => 'postMessage',
+	));
+	$wp_customize->add_control('front_hero_blend_mode', array(
+		'label'   => __('Hero overlay blend mode', 'avidd'),
+		'section' => 'front_hero_section',
+		'type'    => 'select',
+		'choices' => array(
+			'normal'   => __('Normal', 'avidd'),
+			'multiply' => __('Multiply', 'avidd'),
+		),
+	));
+
+	$wp_customize->add_setting('color_front_tagline_overlay_background', array(
+		'sanitize_callback' => 'sanitize_text_field',
+		'transport'         => 'postMessage',
+	));
+	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_front_tagline_overlay_background', array(
+		'label'   => __('Tagline overlay background colour', 'avidd'),
+		'section' => 'front_hero_section',
+		'style'   => 'round',
+	)));
+
+	$wp_customize->add_setting('front_tagline_overlay_opacity', array(
+		'default'           => 40,
+		'sanitize_callback' => 'absint',
+		'transport'         => 'postMessage',
+	));
+	$wp_customize->add_control('front_tagline_overlay_opacity', array(
+		'label'       => __('Tagline overlay opacity', 'avidd'),
+		'description' => __('Controls the opacity of the tagline background (0 = none, 100 = fully opaque).', 'avidd'),
+		'section'     => 'front_hero_section',
+		'type'        => 'range',
+		'input_attrs' => array(
+			'min'  => 0,
+			'max'  => 100,
+			'step' => 5,
+		),
+	));
+
+	$wp_customize->add_setting('front_tagline_overlay_blur', array(
+		'default'           => 0,
+		'sanitize_callback' => 'absint',
+		'transport'         => 'postMessage',
+	));
+	$wp_customize->add_control('front_tagline_overlay_blur', array(
+		'label'       => __('Tagline panel blur', 'avidd'),
+		'description' => __('Controls the blur on the tagline panel (0 = none, 40 = very blurred).', 'avidd'),
+		'section'     => 'front_hero_section',
+		'type'        => 'range',
+		'input_attrs' => array(
+			'min'  => 0,
+			'max'  => 40,
+			'step' => 1,
+		),
+	));
+
+
+	$wp_customize->add_setting('color_front_tagline_text', array(
+		'default'           => $default_light,
+		'sanitize_callback' => 'sanitize_hex_color',
+		'transport'         => 'postMessage',
+	));
+	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_front_tagline_text', array(
+		'label'   => __('Tagline text colour', 'avidd'),
+		'section' => 'front_hero_section',
+		'palette' => $palette_keys,
+		'style'   => 'round',
+	)));
+
 	$wp_customize->add_setting('_front_hero_options_link', array('sanitize_callback' => '__return_empty_string'));
 	$wp_customize->add_control(new Avidd_Options_Link_Control($wp_customize, '_front_hero_options_link', array(
 		'section'     => 'front_hero_section',
@@ -580,9 +649,21 @@ function avidd_customize_register($wp_customize)
 		'options_url' => $url_hero,
 	)));
 
+
 	// ============================================
 	// INNER PAGE HERO
 	// ============================================
+
+	$wp_customize->add_setting('color_inner_hero_overlay_background', array(
+		'sanitize_callback' => 'sanitize_text_field',
+		'transport'         => 'postMessage',
+	));
+	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_inner_hero_overlay_background', array(
+		'label'             => __('Hero overlay colour', 'avidd'),
+		'section'           => 'inner_hero_section',
+		'style'             => 'round',
+		'include_gradients' => true,
+	)));
 
 	$wp_customize->add_setting('inner_hero_overlay_opacity', array(
 		'default'           => 40,
@@ -590,7 +671,7 @@ function avidd_customize_register($wp_customize)
 		'transport'         => 'postMessage',
 	));
 	$wp_customize->add_control('inner_hero_overlay_opacity', array(
-		'label'       => __('Hero image overlay opacity', 'avidd'),
+		'label'       => __('Hero overlay opacity', 'avidd'),
 		'description' => __('Controls the darkness of the overlay on the hero image (0 = none, 100 = fully dark).', 'avidd'),
 		'section'     => 'inner_hero_section',
 		'type'        => 'range',
@@ -601,7 +682,67 @@ function avidd_customize_register($wp_customize)
 		),
 	));
 
-	// Link to hero options page
+	$wp_customize->add_setting('inner_hero_blend_mode', array(
+		'default'           => 'normal',
+		'sanitize_callback' => function ($value) {
+			return in_array($value, ['normal', 'multiply'], true) ? $value : 'normal';
+		},
+		'transport'         => 'postMessage',
+	));
+	$wp_customize->add_control('inner_hero_blend_mode', array(
+		'label'   => __('Hero overlay blend mode', 'avidd'),
+		'section' => 'inner_hero_section',
+		'type'    => 'select',
+		'choices' => array(
+			'normal'   => __('Normal', 'avidd'),
+			'multiply' => __('Multiply', 'avidd'),
+		),
+	));
+
+	$wp_customize->add_setting('color_inner_tagline_overlay_background', array(
+		'sanitize_callback' => 'sanitize_text_field',
+		'transport'         => 'postMessage',
+	));
+	$wp_customize->add_control(new Avidd_Color_Palette_Control($wp_customize, 'color_inner_tagline_overlay_background', array(
+		'label'   => __('Tagline overlay background colour', 'avidd'),
+		'section' => 'inner_hero_section',
+		'style'   => 'round',
+	)));
+
+	$wp_customize->add_setting('inner_tagline_overlay_opacity', array(
+		'default'           => 40,
+		'sanitize_callback' => 'absint',
+		'transport'         => 'postMessage',
+	));
+	$wp_customize->add_control('inner_tagline_overlay_opacity', array(
+		'label'       => __('Tagline overlay opacity', 'avidd'),
+		'description' => __('Controls the opacity of the tagline background (0 = none, 100 = fully opaque).', 'avidd'),
+		'section'     => 'inner_hero_section',
+		'type'        => 'range',
+		'input_attrs' => array(
+			'min'  => 0,
+			'max'  => 100,
+			'step' => 5,
+		),
+	));
+
+	$wp_customize->add_setting('inner_tagline_overlay_blur', array(
+		'default'           => 0,
+		'sanitize_callback' => 'absint',
+		'transport'         => 'postMessage',
+	));
+	$wp_customize->add_control('inner_tagline_overlay_blur', array(
+		'label'       => __('Tagline panel blur', 'avidd'),
+		'description' => __('Controls the blur on the tagline panel (0 = none, 40 = very blurred).', 'avidd'),
+		'section'     => 'inner_hero_section',
+		'type'        => 'range',
+		'input_attrs' => array(
+			'min'  => 0,
+			'max'  => 40,
+			'step' => 1,
+		),
+	));
+
 	$wp_customize->add_setting('_inner_hero_options_link', array('sanitize_callback' => '__return_empty_string'));
 	$wp_customize->add_control(new Avidd_Options_Link_Control($wp_customize, '_inner_hero_options_link', array(
 		'section'     => 'inner_hero_section',
@@ -611,108 +752,141 @@ function avidd_customize_register($wp_customize)
 }
 add_action('customize_register', 'avidd_customize_register');
 
+
 // ============================================
 // CSS OUTPUT
 // ============================================
 
-/**
- * Validate that a resolved CSS value is safe for output in a <style> block.
- *
- * Accepts:
- *  - Hex colours:              #rgb or #rrggbb
- *  - Linear/radial gradients:  linear-gradient(...) / radial-gradient(...)
- *
- * @param  string $value Resolved CSS value.
- * @return string Safe value, or empty string if rejected.
- */
 function avidd_validate_css_value(string $value): string
 {
 	if (empty($value)) {
 		return '';
 	}
-
 	if (preg_match('/^#([a-f0-9]{3}){1,2}$/i', $value)) {
 		return $value;
 	}
-
 	if (preg_match('/^(linear|radial)-gradient\([^;{}()<>]+\)$/i', $value)) {
 		return $value;
 	}
-
 	return '';
 }
 
-/**
- * Build a single CSS rule safely.
- *
- * @param string $selector  CSS selector (hardcoded/trusted).
- * @param string $property  CSS property name.
- * @param string $raw_value Raw resolved value — validated before output.
- */
 function avidd_safe_css_rule(string $selector, string $property, string $raw_value): void
 {
 	$value = avidd_validate_css_value($raw_value);
 	if (! $value) {
 		return;
 	}
-	printf(
-		'%s { %s: %s; }' . "\n",
-		$selector,
-		esc_html($property),
-		esc_html($value)
+	printf('%s { %s: %s; }' . "\n", $selector, esc_html($property), esc_html($value));
+}
+
+function avidd_hex_to_rgba(string $hex, float $alpha): string
+{
+	$hex = ltrim($hex, '#');
+	if (strlen($hex) === 3) {
+		$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+	}
+	return sprintf(
+		'rgba(%d, %d, %d, %.2f)',
+		hexdec(substr($hex, 0, 2)),
+		hexdec(substr($hex, 2, 2)),
+		hexdec(substr($hex, 4, 2)),
+		$alpha
 	);
 }
 
 function avidd_customizer_css(): void
 {
-	$bg_rules = [
-		['color_palette_setting_3',     '.footer'],
-		['color_palette_setting_10',    'body'],
-		['hero_trust_signals_bg',       '.front-hero--no-overlay + .hero_overlay--below'],
-		['inner_hero_trust_signals_bg', '.featured-hero--no-overlay + .hero_overlay--below'],
-	];
+	$bg_rules = array(
+		array('color_footer_background',             '.footer'),
+		array('color_page_background',               'body'),
+		array('color_front_hero_overlay_background', '.front-hero .hero__bg-overlay'),
+		array('color_inner_hero_overlay_background', '.featured-hero .hero__bg-overlay'),
+	);
 
-	$color_rules = [
-		['color_palette_setting_1',  '.top-bar, .top-bar .desktop-menu a:not(.button), .title-bar .mobile-menu a:not(.button)', 'color'],
-		['color_palette_setting_4',  '.footer, .footer li',                                                                      'color'],
-		['color_palette_setting_5',  '.footer a',                                                                                'color'],
-	];
+	$color_rules = array(
+		array('color_nav_menu_item', '.top-bar, .top-bar .desktop-menu a:not(.button), .title-bar .mobile-menu a:not(.button)', 'color'),
+		array('color_footer_text',  '.footer, .footer li', 'color'),
+		array('color_footer_link',  '.footer a',           'color'),
+		array('color_front_tagline_text',  '.front-hero .tagline, .front-hero .tagline h1, .front-hero .tagline p',           'color'),
+	);
 
 	echo '<style type="text/css" id="avidd-customizer-styles">' . "\n";
 
-	// Nav background — set directly on the elements, same as preview JS
-	$nav_bg_raw       = avidd_resolve_slug_to_css(get_theme_mod('color_palette_setting_0'));
+	// Nav background
+	$nav_bg_raw       = avidd_resolve_slug_to_css(get_theme_mod('color_nav_background'));
 	$nav_bg_validated = avidd_validate_css_value($nav_bg_raw);
 	if ($nav_bg_validated) {
 		$nav_property = strpos($nav_bg_validated, 'gradient(') !== false ? 'background' : 'background-color';
 		avidd_safe_css_rule('.top-bar, .title-bar', $nav_property, $nav_bg_validated);
 	}
 
-	// Background rules — value may be hex or gradient
+	// Background rules
 	foreach ($bg_rules as [$mod_key, $selector]) {
 		$raw = avidd_resolve_slug_to_css(get_theme_mod($mod_key));
-		if (! $raw) {
-			continue;
-		}
-		$property = (strpos($raw, 'gradient(') !== false) ? 'background' : 'background-color';
+		if (! $raw) continue;
+		$property = strpos($raw, 'gradient(') !== false ? 'background' : 'background-color';
 		avidd_safe_css_rule($selector, $property, $raw);
 	}
 
-	// Colour-only rules
+	// Colour rules
 	foreach ($color_rules as [$mod_key, $selector, $property]) {
 		$raw = get_theme_mod($mod_key);
-		if (! $raw) {
-			continue;
-		}
+		if (! $raw) continue;
 		avidd_safe_css_rule($selector, $property, $raw);
 	}
 
-	// Hero overlay opacities
+	// Front hero overlay — opacity + blend mode
 	$front_opacity = get_theme_mod('hero_overlay_opacity', 40) / 100;
-	printf('.front-hero .hero__bg-overlay { opacity: %.2f; }' . "\n", (float) $front_opacity);
+	$front_blend   = in_array(get_theme_mod('front_hero_blend_mode', 'normal'), ['normal', 'multiply'], true)
+		? get_theme_mod('front_hero_blend_mode', 'normal') : 'normal';
+	printf(
+		'.front-hero .hero__bg-overlay { opacity: %.2f; mix-blend-mode: %s; }' . "\n",
+		(float) $front_opacity,
+		$front_blend
+	);
 
+	// Inner hero overlay — opacity + blend mode
 	$inner_opacity = get_theme_mod('inner_hero_overlay_opacity', 40) / 100;
-	printf('.featured-hero .hero__bg-overlay { opacity: %.2f; }' . "\n", (float) $inner_opacity);
+	$inner_blend   = in_array(get_theme_mod('inner_hero_blend_mode', 'normal'), ['normal', 'multiply'], true)
+		? get_theme_mod('inner_hero_blend_mode', 'normal') : 'normal';
+	printf(
+		'.featured-hero .hero__bg-overlay { opacity: %.2f; mix-blend-mode: %s; }' . "\n",
+		(float) $inner_opacity,
+		$inner_blend
+	);
+
+	// Front tagline overlay — blur on wrapper, rgba colour on child div
+	$front_tagline_color   = avidd_resolve_slug_to_css(get_theme_mod('color_front_tagline_overlay_background'));
+	$front_tagline_opacity = get_theme_mod('front_tagline_overlay_opacity', 40) / 100;
+	$front_tagline_blur    = get_theme_mod('front_tagline_overlay_blur', 0);
+
+	printf(
+		'.front-hero .tagline__bg-overlay { backdrop-filter: blur(%dpx); }' . "\n",
+		(int) $front_tagline_blur
+	);
+	if ($front_tagline_color && preg_match('/^#([a-f0-9]{3}){1,2}$/i', $front_tagline_color)) {
+		printf(
+			'.front-hero .tagline__bg-colour { background-color: %s; }' . "\n",
+			avidd_hex_to_rgba($front_tagline_color, $front_tagline_opacity)
+		);
+	}
+
+	// Inner tagline overlay — blur on wrapper, rgba colour on child div
+	$inner_tagline_color   = avidd_resolve_slug_to_css(get_theme_mod('color_inner_tagline_overlay_background'));
+	$inner_tagline_opacity = get_theme_mod('inner_tagline_overlay_opacity', 40) / 100;
+	$inner_tagline_blur    = get_theme_mod('inner_tagline_overlay_blur', 0);
+
+	printf(
+		'.featured-hero .tagline__bg-overlay { backdrop-filter: blur(%dpx); }' . "\n",
+		(int) $inner_tagline_blur
+	);
+	if ($inner_tagline_color && preg_match('/^#([a-f0-9]{3}){1,2}$/i', $inner_tagline_color)) {
+		printf(
+			'.featured-hero .tagline__bg-colour { background-color: %s; }' . "\n",
+			avidd_hex_to_rgba($inner_tagline_color, $inner_tagline_opacity)
+		);
+	}
 
 	echo '</style>' . "\n";
 }

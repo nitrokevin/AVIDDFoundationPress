@@ -1,74 +1,98 @@
 .featured-hero {
-  background: $white;
-  .header-grid {
-    @include xy-grid;
-    .header-content {
-      @include breakpoint(small) {
-        @include xy-cell(12,$gutters:0);
-      }
-      @include breakpoint(large) {
-        @include xy-cell(6,$gutters:0);
-      }
-      &.left {
-        padding: 0;
-        @include breakpoint(small) {
-         
-          order: 1;
-        }
-    
-      }
-      &.right {
-       
-        color:$white;
-        @include breakpoint(small) {
-          order: 2;
-          padding:$global-padding;
-          height: auto;
-          z-index: 1;
-          position: relative;
-          .entry-title {
-            color: $secondary-color;
-          }
-          @include xy-grid;
-          @include flex-align($x:left, $y:stretch);
-        }
-        @include breakpoint(large) {
-          @include flex-align($x:left, $y:middle);
-          order: 2;
-        
+  position: relative;
 
-        }
- 
-        .right-content {
-          @include xy-cell(12);
-          @include breakpoint(medium) {
-          @include xy-cell(9);
-          }
-          @include breakpoint(large) {
-          @include xy-cell(8);
-          @include xy-cell-offset(1.5);
-          }
-          
-        }
-      }
-      .header-image {
-        width: 100%;
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-        @include breakpoint(small) {
-            aspect-ratio: 5 / 6;
-        }
-        @include breakpoint(medium) {
-          aspect-ratio: 5 / 4; 
-         
-        }
-        @include breakpoint(large) {
-          aspect-ratio: 1 / 1; 
-         
-        }
-      }
+  .marketing {
+    @include xy-grid-container();
+    @include xy-grid;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+  }
+
+  @include breakpoint(small) {
+   
+    height: rem-calc(290);
+    position: relative;
+    text-align: left;
+  }
+
+  @include breakpoint(medium) {
+    height: rem-calc(400);
+  }
+
+  @include breakpoint(large) {
+    height: rem-calc(580);
+  }
+
+  @include breakpoint(xlarge) {
+    height: rem-calc(600);
+  }
+    @include breakpoint(xxlarge) {
+    height: rem-calc(700);
+  }
+
+  .hero__media {
+    position: absolute;
+    inset: 0; 
+    z-index: -1; 
+    width: 100%;
+    height: 100%;
+}
+
+.hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    object-position: center; 
+}
+     .hero__bg-overlay {
+    position: absolute;
+    inset: 0;
+    opacity: 1;
+    background: $black;
+    pointer-events: none;
+    will-change: opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    transition: opacity 0.4s ease;
+    mix-blend-mode: multiply;
+
+  }
+
+  .tagline {
+   
+    position: relative;
+    height: 100%;
+
+    @include breakpoint(small) {
+      @include xy-cell(7);
+      padding-top: 6rem;
     }
+
+    @include breakpoint(medium) {
+      @include xy-cell(4.5);
+      padding-top: 10rem;
+    }
+
+    @include breakpoint(large) {
+      @include xy-cell(4);
+      padding-top: 14rem;
+    }
+.tagline__bg-overlay {
+    position: absolute;
+    inset: 0;
+    // Bleed to left viewport edge, contained on right by .tagline column
+    left: calc(-50vw + 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.tagline__bg-colour {
+    position: absolute;
+    inset: 0;
+    // background-color and opacity set by Customizer via rgba()
+}
+
   }
   .intro-container{
     background-color: $primary-color;

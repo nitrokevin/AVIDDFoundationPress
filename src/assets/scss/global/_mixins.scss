@@ -1,26 +1,293 @@
-/// Applies responsive background images from CSS custom properties
-/// set via inline style="--bg-sm: url(...); --bg-md: ...; --bg-lg: ..."
-///
-/// Falls back gracefully: if --bg-md isn't set, stays on --bg-sm.
-/// If --bg-lg isn't set, stays on --bg-md.
-@mixin responsive-bg {
-    background-image: var(--bg-sm);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+// =============================================================================
+// MIXINS
+// =============================================================================
 
-    @include breakpoint(medium) {
-        background-image: var(--bg-md, var(--bg-sm));
+// ------------------------------------
+// Alignfull
+// ------------------------------------
+
+@mixin alignfull {
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+@mixin alignfull-inner-gutters {
+  @include xy-grid-container;
+  @each $breakpoint, $size in $grid-margin-gutters {
+    @include breakpoint($breakpoint) {
+      padding: $global-padding $size;
+    }
+  }
+}
+
+// ------------------------------------
+// Full bleed pseudo-element base
+// ------------------------------------
+
+@mixin bleed-pseudo-base {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100%;
+  z-index: -1;
+}
+@mixin bleed-pseudo-base-half {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 50vw;
+  height: 100%;
+  z-index: -1;
+}
+
+// ------------------------------------
+// Single-element full bleed (group, buttons, columns wrapper)
+// One ::before spanning the full width — no ::after needed.
+// ------------------------------------
+
+@mixin bleed-solid-color-single($code) {
+  background-color: transparent !important;
+  &::before {
+    @include bleed-pseudo-base;
+    left: 0;
+    margin-left: calc(50% - 50vw);
+    background-color: $code;
+  }
+  &::after {
+    display: none;
+  }
+}
+
+// Full bleed gradient — already single-pseudo, unchanged
+@mixin bleed-gradient($gradient) {
+  background: transparent !important;
+  &::before {
+    @include bleed-pseudo-base;
+    left: 0;
+    margin-left: calc(50% - 50vw);
+    background: $gradient;
+  }
+  &::after {
+    display: none;
+  }
+}
+
+// ------------------------------------
+// Column-level bleed pseudo helpers
+// Parent must have: position: relative; overflow-x: clip;
+// These extend beyond the column bounds and are clipped by the parent.
+// ------------------------------------
+
+// First column: bleed left edge to column's right edge
+@mixin bleed-left-column {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 100%;
+  z-index: -1;
+  left: 0;
+  margin-left: -100vw;
+  width: calc(100% + 100vw);
+}
+
+// Last column: column's left edge to bleed right edge
+@mixin bleed-right-column {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 100%;
+  z-index: -1;
+  left: 0;
+  width: calc(100% + 100vw);
+}
+
+// Only child: bleed both directions
+@mixin bleed-both-column {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 100%;
+  z-index: -1;
+  left: 0;
+  margin-left: -100vw;
+  width: calc(100% + 200vw);
+}
+
+// ------------------------------------
+// Generate color/gradient rules for single-element full bleed
+// Used on: .wp-block-group, .wp-block-buttons, .wp-block-columns (wrapper)
+// ------------------------------------
+
+@mixin bleed-color-rules-single {
+  @each $color, $code in $foundation-palette {
+    &.has-#{$color}-background-color {
+      @include bleed-solid-color-single($code);
+    }
+  }
+
+  @each $slug, $gradient in $all-gradients {
+    &.has-#{$slug}-gradient-background {
+      @include bleed-gradient($gradient);
+    }
+  }
+}
+
+// ------------------------------------
+// Two-pseudo full bleed (legacy — for multi-part blocks with a left/right split,
+// e.g. media-text where media and content are visually separate halves)
+// ------------------------------------
+
+@mixin bleed-solid-color($code) {
+  &::before {
+    @include bleed-pseudo-base-half;
+    left: 0;
+    margin-left: calc(50% - 50vw);
+    background-color: $code;
+  }
+  &::after {
+    @include bleed-pseudo-base-half;
+    right: 0;
+    margin-right: calc(50% - 50vw);
+    background-color: $code;
+  }
+}
+
+@mixin bleed-color-rules {
+  @each $color, $code in $foundation-palette {
+    &.has-#{$color}-background-color {
+      @include bleed-solid-color($code);
+    }
+  }
+
+  @each $slug, $gradient in $all-gradients {
+    &.has-#{$slug}-gradient-background {
+      @include bleed-gradient($gradient);
+    }
+  }
+}
+
+// ------------------------------------
+// Generate per-column bleed rules
+// Applied to .wp-block-columns.is-style-full-bleed
+// Sets overflow-x: clip on the parent to contain extended pseudos.
+// Note: clip (not hidden) avoids creating a new BFC so position: sticky
+// children are unaffected.
+// ------------------------------------
+
+@mixin bleed-column-color-rules {
+
+
+  // Ensure columns are positioned so ::before is relative to each column
+  .wp-block-column {
+    position: relative;
+  }
+
+  @each $color, $code in $foundation-palette {
+
+    // Only child — bleed both directions
+    .wp-block-column:only-child.has-#{$color}-background-color {
+      background-color: transparent !important;
+      &::before {
+        @include bleed-both-column;
+        background-color: $code;
+      }
     }
 
-    @include breakpoint(large) {
-        background-image: var(--bg-lg, var(--bg-md, var(--bg-sm)));
+    // First column (not only) — bleed left
+    .wp-block-column:first-child:not(:only-child).has-#{$color}-background-color {
+      background-color: transparent !important;
+      &::before {
+        @include bleed-left-column;
+        background-color: $code;
+      }
     }
 
-    @include breakpoint(xlarge) {
-        background-image: var(--bg-xl, var(--bg-lg, var(--bg-md, var(--bg-sm))));
+    // Middle columns — plain background, no pseudo bleed
+    .wp-block-column:not(:first-child):not(:last-child).has-#{$color}-background-color {
+      background-color: $code !important;
     }
-	  @include breakpoint(xxlarge) {
-        background-image: var(--bg-xxl, var(--bg-xl, var(--bg-lg, var(--bg-md, var(--bg-sm)))));
+
+    // Last column (not only) — bleed right
+    .wp-block-column:last-child:not(:only-child).has-#{$color}-background-color {
+      background-color: transparent !important;
+      &::before {
+        @include bleed-right-column;
+        background-color: $code;
+      }
     }
+   // Mobile: all columns stack full width — bleed all of them uniformly
+    @include breakpoint(small only) {
+      .wp-block-column.has-#{$color}-background-color {
+        background-color: transparent !important;
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          height: 100%;
+          z-index: -1;
+          left: 0;
+          margin-left: calc(50% - 50vw);
+          width: 100vw;
+          background-color: $code;
+        }
+      }
+    }
+  }
+
+
+
+  @each $slug, $gradient in $all-gradients {
+
+    // Only child — bleed both directions
+    .wp-block-column:only-child.has-#{$slug}-gradient-background {
+      background: transparent !important;
+      &::before {
+        @include bleed-both-column;
+        background: $gradient;
+      }
+    }
+
+    // First column (not only) — bleed left
+    .wp-block-column:first-child:not(:only-child).has-#{$slug}-gradient-background {
+      background-color: transparent !important;
+      &::before {
+        @include bleed-left-column;
+        background: $gradient;
+      }
+    }
+
+    // Middle columns — contained gradient
+    .wp-block-column:not(:first-child):not(:last-child).has-#{$slug}-gradient-background {
+      background: $gradient !important;
+    }
+
+    // Last column (not only) — bleed right
+    .wp-block-column:last-child:not(:only-child).has-#{$slug}-gradient-background {
+      background-color: transparent !important;
+      &::before {
+        @include bleed-right-column;
+        background: $gradient;
+      }
+    }
+   // Mobile: all columns stack full width — bleed all of them uniformly
+    @include breakpoint(small only) {
+      .wp-block-column.has-#{$slug}-gradient-background {
+        background-color: transparent !important;
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          height: 100%;
+          z-index: -1;
+          left: 0;
+          margin-left: calc(50% - 50vw);
+          width: 100vw;
+          background: $gradient;
+        }
+      }
+    }
+  }
 }

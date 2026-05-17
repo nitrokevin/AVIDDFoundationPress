@@ -192,12 +192,43 @@
       "radius": "0.5rem"
     },
     "layout": {
-      "contentSize": "1260px",
-      "wideSize": "1260px"
+      "contentSize": "1410px",
+      "wideSize": "1600px"
     },
     "custom": {
       "foundationGutterMobile": "1.25rem",
-      "foundationGutterDesktop": "1.875rem"
+      "foundationGutterDesktop": "1.875rem",
+      "fluidTypeMinVw": 640,
+      "fluidTypeScale": {
+        "text-xs": {
+          "min": 13,
+          "max": 15
+        },
+        "text-sm": {
+          "min": 14,
+          "max": 16
+        },
+        "text-base": {
+          "min": 16,
+          "max": 18
+        },
+        "text-md": {
+          "min": 18,
+          "max": 26
+        },
+        "text-lg": {
+          "min": 20,
+          "max": 32
+        },
+        "text-xl": {
+          "min": 24,
+          "max": 40
+        },
+        "text-2xl": {
+          "min": 28,
+          "max": 48
+        }
+      }
     }
   }
 }

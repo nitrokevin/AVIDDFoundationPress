@@ -450,6 +450,71 @@ if (gutterMatch) {
   themeJson.settings.custom.foundationGutterMobile = toRem(gutterMap.small);
   themeJson.settings.custom.foundationGutterDesktop = toRem(gutterMap.medium);
 }
+// ------------------------------------------------------------
+// 🔤 Extract fluid type scale from :root CSS custom properties
+// ------------------------------------------------------------
+
+function extractRootBlock(scss) {
+    const start = scss.indexOf(':root');
+    if (start === -1) return null;
+
+    const openBrace = scss.indexOf('{', start);
+    if (openBrace === -1) return null;
+
+    let depth = 1;
+    let i = openBrace + 1;
+
+    while (i < scss.length && depth > 0) {
+        if (scss[i] === '{') depth++;
+        if (scss[i] === '}') depth--;
+        i++;
+    }
+
+    return scss.slice(openBrace + 1, i - 1);
+}
+
+const rootContent = extractRootBlock(scss);
+const fluidTypeScale = {};
+
+if (rootContent) {
+    console.log('🔍 :root block found, length:', rootContent.length);
+    
+    const tokenRegex = /--(text-[a-z0-9-]+)\s*:\s*#\{fluid\((\d+)px,\s*(\d+)px\)\}/g;
+    let tokenMatch;
+
+    while ((tokenMatch = tokenRegex.exec(rootContent)) !== null) {
+        const [, token, min, max] = tokenMatch;
+        fluidTypeScale[token] = {
+            min: parseInt(min),
+            max: parseInt(max),
+        };
+    }
+
+    if (Object.keys(fluidTypeScale).length > 0) {
+        themeJson.settings.custom.fluidTypeScale = fluidTypeScale;
+        console.log(`🔤 Extracted ${Object.keys(fluidTypeScale).length} fluid type tokens:`, Object.keys(fluidTypeScale));
+    } else {
+        console.warn('⚠️  :root block found but no --text-* fluid() tokens matched');
+        console.log('Root content sample:', rootContent.substring(0, 300));
+    }
+} else {
+    console.warn('⚠️  No :root block found in _settings.scss');
+}
+
+// Extract medium breakpoint
+const breakpointsMatch = scss.match(/\$breakpoints\s*:\s*\(([\s\S]*?)\);/);
+if (breakpointsMatch) {
+    const mediumMatch = breakpointsMatch[1].match(/"medium"\s*:\s*([\d.]+)(px|em|rem)?/);
+    if (mediumMatch) {
+        const value = parseFloat(mediumMatch[1]);
+        const unit = mediumMatch[2] || 'px';
+        const px = unit === 'px' ? value : value * 16;
+        
+        themeJson.settings.custom.fluidTypeMinVw = px;
+        console.log(`📐 Fluid min viewport: ${value}${unit} → ${px}px`);
+    }
+}
+
 
 // ------------------------------------------------------------
 // 💾 Write theme.json

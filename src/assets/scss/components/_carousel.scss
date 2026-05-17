@@ -1,6 +1,6 @@
 .block-carousel {
 	&.has-background.is-style-full-bleed , &.alignfull  {
-		@include alignfull-bleed;
+		@include alignfull;
 	}
 	&.is-style-full-bleed{
 		.block-carousel-container {

@@ -57,16 +57,38 @@ add_filter('acf/load_field/name=options_page_selector', function ($field) {
 // ------------------------------------------------------------
 // GUTENBERG SUPPORT
 // ------------------------------------------------------------
+function my_register_block_styles()
+{
 
+    $blocks = [
+        'core/columns',
+        'core/group',
+        'core/media-text',
+        'core/buttons',
+    ];
+
+    foreach ($blocks as $block) {
+        register_block_style(
+            $block,
+            array(
+                'name'  => 'full-bleed',
+                'label' => __('Full Bleed', 'foundationpress'),
+            )
+        );
+    }
+}
+add_action('init', 'my_register_block_styles');
 //Custom alignment for columns
 add_action('init', function () {
+
     register_block_style(
-        'core/columns',
+        'core/media-text',
         array(
-            'name'  => 'full-bleed',
-            'label' => __('Full Bleed', 'foundationpress'),
+            'name'  => 'full-bleed-image',
+            'label' => __('Full Bleed Image', 'foundationpress'),
         )
     );
+   
     register_block_style(
         'core/media-text',
         array(
@@ -83,6 +105,39 @@ add_action('init', function () {
         )
     );
 });
+function avidd_register_media_text_attributes($metadata)
+{
+    if ($metadata['name'] !== 'core/media-text') {
+        return $metadata;
+    }
+    $metadata['attributes']['mediaBackgroundColor'] = [
+        'type'    => 'string',
+        'default' => '',
+    ];
+    return $metadata;
+}
+add_filter('block_type_metadata', 'avidd_register_media_text_attributes');
+
+function avidd_render_media_text_block($block_content, $block)
+{
+    if ($block['blockName'] !== 'core/media-text') {
+        return $block_content;
+    }
+    $slug = $block['attrs']['mediaBackgroundColor'] ?? '';
+    if (! $slug) {
+        return $block_content;
+    }
+
+    $slug = sanitize_html_class($slug);
+
+    $processor = new WP_HTML_Tag_Processor($block_content);
+    if ($processor->next_tag(['class_name' => 'wp-block-media-text'])) {
+        $processor->add_class('has-' . $slug . '-background-color-media');
+    }
+
+    return $processor->get_updated_html();
+}
+add_filter('render_block', 'avidd_render_media_text_block', 10, 2);
 
 /**
  * Automatically generate unique anchors for ACF blocks

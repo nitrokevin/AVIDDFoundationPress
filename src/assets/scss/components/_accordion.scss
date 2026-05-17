@@ -1,6 +1,6 @@
 .block-accordion {
 	&.has-background.is-style-full-bleed , &.alignfull  {
-		@include alignfull-bleed;
+		@include alignfull;
 	}
 	&.is-style-full-bleed {
 		.block-accordion-container {
