@@ -104,6 +104,14 @@ add_action('init', function () {
             'label' => __('Scaled', 'foundationpress'),
         )
     );
+
+    register_block_style(
+        'core/column',
+        array(
+            'name'  => 'full-bleed-image',
+            'label' => __('Full bleed image', 'foundationpress'),
+        )
+    );
 });
 function avidd_register_media_text_attributes($metadata)
 {

@@ -83,7 +83,9 @@
         // Only apply preview styles if parent columns has edge-to-edge style
         const parentClientId = wp.data.select('core/block-editor').getBlockParents(props.clientId)[0];
         const parentBlock = parentClientId ? wp.data.select('core/block-editor').getBlock(parentClientId) : null;
-        const isEdgeToEdge = parentBlock?.attributes?.className?.includes('is-style-edge-to-edge');
+        const isEdgeToEdge = parentBlock?.attributes?.className?.includes(
+          "is-style-full-bleed-image",
+        );
 
         if (!isEdgeToEdge) return el(BlockListBlock, props);
 

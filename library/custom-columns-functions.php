@@ -5,27 +5,31 @@ defined('ABSPATH') || exit;
 ========================= */
 
 
-function avidd_render_column_background( string $block_content, array $block ): string {
-    if ( $block['blockName'] !== 'core/column' ) {
+function avidd_render_column_background(string $block_content, array $block): string
+{
+    if ($block['blockName'] !== 'core/column') {
         return $block_content;
     }
 
     $bg_url = $block['attrs']['backgroundImage'] ?? '';
-    if ( ! $bg_url ) {
+    if (! $bg_url) {
         return $block_content;
     }
 
-    $processor = new WP_HTML_Tag_Processor( $block_content );
+    $processor = new WP_HTML_Tag_Processor($block_content);
 
-    if ( $processor->next_tag( [ 'tag_name' => 'div', 'class_name' => 'wp-block-column' ] ) ) {
-        $existing_style = $processor->get_attribute( 'style' ) ?? '';
-        $bg_style       = 'background-image:url(' . esc_url( $bg_url ) . ');';
-        $processor->set_attribute( 'style', trim( $existing_style . ' ' . $bg_style ) );
+    if ($processor->next_tag(['tag_name' => 'div', 'class_name' => 'wp-block-column'])) {
+        $existing_style = $processor->get_attribute('style') ?? '';
+        $bg_style       = '--column-bg:url(' . esc_url($bg_url) . ');';
+        $processor->set_attribute('style', trim($existing_style . ' ' . $bg_style));
+
+        $existing_class = $processor->get_attribute('class') ?? '';
+        $processor->set_attribute('class', trim($existing_class . ' has-background-image'));
     }
 
     return $processor->get_updated_html();
 }
-add_filter( 'render_block', 'avidd_render_column_background', 10, 2 );
+add_filter('render_block', 'avidd_render_column_background', 10, 2);
 
 
 /**
