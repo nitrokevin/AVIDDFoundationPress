@@ -16,6 +16,32 @@ add_action('acf/init', function () {
 		'key' => 'group_page_options',
 		'title' => 'Page Options',
 		'fields' => array(
+			array(
+				'key' => 'field_page_tagline',
+				'label' => 'Page Tagline',
+				'name' => 'page_tagline',
+				'type' => 'textarea',
+				'instructions' => 'Text shown over hero image',
+				'required' => 0,
+			),
+
+
+			array(
+				'key' => 'field_intro_button_text',
+				'label' => 'Button Text',
+				'name' => 'intro_button_text',
+				'type' => 'text',
+				'instructions' => 'Text shown on the intro button.',
+				'required' => 0,
+			),
+			array(
+				'key' => 'field_intro_button_url',
+				'label' => 'Button URL',
+				'name' => 'intro_button_url',
+				'type' => 'page_link',
+				'instructions' => 'Where the button should link to.',
+				'required' => 0,
+			),
 
 
 			array(

@@ -365,14 +365,14 @@ $locked-gradient-link-colors: (
   // First column — bleed to left screen edge, stop at column right boundary
   &:first-child::before {
     left: 0;
-    margin-left: calc(50% - 50vw);
-    width: 50vw;
+    margin-left: calc(100% - 50vw) !important;
+    width: 50vw !important;
   }
 
   // Last column — start at column left boundary, bleed to right screen edge
   &:last-child::before {
     left: 0;
-    width: 50vw;
+    width: 50vw !important;
   }
 
   // Mobile — columns stack full width, bleed both edges

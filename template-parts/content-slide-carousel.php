@@ -1,4 +1,19 @@
-<div class="swiper slide-carousel">
+<?php
+$loop            = get_field('carousel_loop');
+$autoplay        = get_field('carousel_autoplay');
+$autoplay_delay  = get_field('carousel_autoplay_delay') ?: 4400;
+$speed           = get_field('carousel_speed') ?: 800;
+$slides_per_view = get_field('carousel_slides_per_view') ?: 1;
+$space_between   = get_field('carousel_space_between') ?: 0;
+?>
+<div class="swiper slide-carousel"
+    data-loop="<?php echo $loop ? 'true' : 'false'; ?>"
+    data-autoplay="<?php echo $autoplay ? 'true' : 'false'; ?>"
+    data-autoplay-delay="<?php echo esc_attr($autoplay_delay); ?>"
+    data-speed="<?php echo esc_attr($speed); ?>"
+    data-slides-per-view="<?php echo esc_attr($slides_per_view); ?>"
+    data-space-between="<?php echo esc_attr($space_between); ?>">
+
     <div class="swiper-button-prev" aria-label="Go to previous slide"></div>
     <div class="swiper-button-next" aria-label="Next slide"></div>
     <div class="swiper-pagination"></div>
@@ -13,11 +28,8 @@
                 $content = get_sub_field('carousel_content') ?: '';
                 $alt = !empty($image['alt']) ? $image['alt'] : $heading;
 
-
-
                 // Build slide classes
                 $slide_classes = trim($bg_color . ($has_bg ? ' has_background_image' : ''));
-
             ?>
                 <div class="swiper-slide <?php echo esc_attr($slide_classes); ?>">
                     <?php if ($has_bg && $image): ?>
@@ -50,7 +62,6 @@
                     <div class="info" data-swiper-parallax="-600">
                         <h3><?php echo esc_html($heading); ?></h3>
                         <?php echo wp_kses_post($content); ?>
-
 
                         <?php if ($image && !$has_bg): ?>
                             <?php

@@ -123,14 +123,15 @@
   var frontTaglineColor = "";
   var frontTaglineOpacity = 0.4;
 
-  var aviddUpdateFrontTagline = function () {
-    if (frontTaglineColor) {
-      $(".front-hero .tagline__bg-colour").css(
-        "background-color",
-        aviddHexToRgba(frontTaglineColor, frontTaglineOpacity),
-      );
-    }
-  };
+var aviddUpdateFrontTagline = function () {
+  if (frontTaglineColor) {
+    $(".front-hero").css(
+      "--tagline-bg-colour",
+
+      aviddHexToRgba(frontTaglineColor, frontTaglineOpacity),
+    );
+  }
+};
 
   wp.customize("color_front_tagline_overlay_background", function (value) {
     value.bind(function (newval) {
