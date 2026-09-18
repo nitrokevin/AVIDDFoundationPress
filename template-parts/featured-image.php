@@ -4,9 +4,12 @@ if (has_post_thumbnail($post->ID)) :
     $alt = get_post_meta($img_id, '_wp_attachment_image_alt', true);
     $alt = $alt ? esc_attr($alt) : '';
     $is_front   = is_front_page();
-    $hero_class = $is_front ? 'front-hero' : 'featured-hero';
+    $hero_classes = $is_front ? 'front-hero' : 'featured-hero';
+    $hero_full_height      = (bool) get_theme_mod('hero_full_height', true);
+
+    if (! $hero_full_height)      $hero_classes .= ' front-hero--reduced-height';
 ?>
-    <header class="<?php echo esc_attr($hero_class); ?>">
+    <header class="<?php echo esc_attr($hero_classes); ?>">
         <picture class="hero__media">
             <source media="(min-width: 1440px)" srcset="<?php echo esc_url(wp_get_attachment_image_url($img_id, 'featured-xxlarge')); ?>">
             <source media="(min-width: 1200px)" srcset="<?php echo esc_url(wp_get_attachment_image_url($img_id, 'featured-xlarge')); ?>">

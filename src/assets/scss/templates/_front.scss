@@ -32,6 +32,29 @@
     height: rem-calc(700);
   }
 
+    // ─── Reduced height variant (toggled independently via customizer) ──────────
+  &.front-hero--reduced-height {
+    @include breakpoint(small) {
+      height: rem-calc(290);
+    }
+
+    @include breakpoint(medium) {
+      height: rem-calc(400);
+    }
+
+    @include breakpoint(large) {
+      height: rem-calc(400);
+    }
+
+    @include breakpoint(xlarge) {
+      height: rem-calc(500);
+    }
+
+    @include breakpoint(xxlarge) {
+      height: rem-calc(600);
+    }
+  }
+
   .hero__media {
     position: absolute;
     inset: 0; 

@@ -126,20 +126,56 @@ if (! function_exists('foundationpress_mobile_nav')) {
 }
 
 
-/**
- * Add support for buttons in the top-bar menu:
- * 1) In WordPress admin, go to Apperance -> Menus.
- * 2) Click 'Screen Options' from the top panel and enable 'CSS CLasses' and 'Link Relationship (XFN)'
- * 3) On your menu item, type 'has-form' in the CSS-classes field. Type 'button' in the XFN field
- * 4) Save Menu. Your menu item will now appear as a button in your top-menu
- */
-if (! function_exists('foundationpress_add_menuclass')) {
-	function foundationpress_add_menuclass($ulclass)
-	{
-		$find    = array('/<a rel="button"/', '/<a title=".*?" rel="button"/');
-		$replace = array('<a rel="button" class="button"', '<a rel="button" class="button"');
 
-		return preg_replace($find, $replace, $ulclass, 1);
+function foundationpress_move_button_classes_to_link($atts, $item, $args)
+{
+	if (empty($item->classes) || ! is_array($item->classes)) {
+		return $atts;
 	}
-	add_filter('wp_nav_menu', 'foundationpress_add_menuclass');
+
+	$button_classes = array(
+		'button',
+		'primary',
+		'secondary',
+		'success',
+		'alert',
+		'warning',
+		'hollow',
+		'expanded',
+		'large',
+		'small',
+		'tiny',
+		'disabled'
+	);
+
+	$link_classes = array_intersect($button_classes, $item->classes);
+
+	if (! empty($link_classes)) {
+		$existing = isset($atts['class']) ? explode(' ', $atts['class']) : array();
+		$atts['class'] = implode(' ', array_unique(array_merge($existing, $link_classes)));
+	}
+
+	return $atts;
 }
+add_filter('nav_menu_link_attributes', 'foundationpress_move_button_classes_to_link', 10, 3);
+
+function foundationpress_clean_menu_item_classes($classes, $item, $args, $depth)
+{
+	$remove = array(
+		'button',
+		'primary',
+		'secondary',
+		'success',
+		'alert',
+		'warning',
+		'hollow',
+		'expanded',
+		'large',
+		'small',
+		'tiny',
+		'disabled'
+	);
+
+	return array_diff($classes, $remove);
+}
+add_filter('nav_menu_css_class', 'foundationpress_clean_menu_item_classes', 10, 4);
